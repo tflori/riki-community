@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         printerClass="\Test\Printer">
+    <testsuites>
+        <testsuite name="units">
+            <directory>./tests/Unit/</directory>
+        </testsuite>
+        <testsuite name="http">
+            <directory>./tests/Http/</directory>
+        </testsuite>
+        <testsuite name="cli">
+            <directory>./tests/Cli/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./app/</directory>
+            <directory suffix=".php">./src/</directory>
+            <exclude>
+                <file>./app/Http/routes.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
