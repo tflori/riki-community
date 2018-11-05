@@ -2,7 +2,6 @@
 
 namespace App\Factory;
 
-use DependencyInjector\Factory\AbstractFactory;
 use Hugga\Console;
 
 class ConsoleFactory extends AbstractFactory
