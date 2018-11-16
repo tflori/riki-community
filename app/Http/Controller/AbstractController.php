@@ -48,27 +48,23 @@ abstract class AbstractController implements RequestHandlerInterface
      */
     protected function error(int $status, string $reason, string $message, \Throwable $exception = null): ServerResponse
     {
-        $response = new ServerResponse($status);
         // @todo check the accept header and format a proper error (html/json,xml)
-        $response->setBody(stream_for($this->buildHtmlErrorPage($status, $reason, $message, $exception)));
+        $body = Application::views()->render('error', compact('status', 'reason', 'message', 'exception'));
+        $response = new ServerResponse($status, [], $body);
         return $response;
     }
 
     /**
-     * Builds an error page from template error.php
+     * Create a response for $view using $data
      *
-     * You may want to implement a template engine and replace this calls with something else.
-     *
-     * @param int $status
-     * @param string $title
-     * @param string $message
-     * @param \Exception $exception
-     * @return false|string
+     * @param string $view
+     * @param array $data
+     * @param null|string $layout
+     * @return ServerResponse
      */
-    protected function buildHtmlErrorPage(int $status, string $title, string $message, $exception = null)
+    protected function view(string $view, array $data = [], ?string $layout = 'fullPage'): ServerResponse
     {
-        ob_start();
-        include Application::environment()->viewPath('error.php');
-        return ob_get_clean();
+        $body = Application::views()->render($view, $data, $layout);
+        return new ServerResponse(200, [], $body);
     }
 }

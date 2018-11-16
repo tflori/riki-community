@@ -25,7 +25,8 @@
         "tflori/orm": "^1.5",
         "tflori/secure-token": "^1.0",
         "tflori/verja": "^1.1",
-        "tijsverkoyen/css-to-inline-styles": "^2.2"
+        "tijsverkoyen/css-to-inline-styles": "^2.2",
+        "tflori/syna": "1.0.0-rc.1"
     },
     "autoload": {
         "psr-4": {

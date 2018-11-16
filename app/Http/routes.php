@@ -21,25 +21,26 @@ use Tal\ServerResponse;
 /** @var MiddlewareRouteCollector $router */
 $r = $router;
 
+$r->get('/', 'getHome@HomeController');
+$r->get('/home', 'getHome@HomeController');
+
 // example routes - comment them out and use as reference
-$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
-    return $next->handle($request)
-        ->withHeader('X-Handeled-By', 'closure middleware');
-});
-
-$r->addGroup('/foo', function (MiddlewareRouteCollector $router) {
-    $router->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
-        return $next->handle($request)
-            ->withHeader('X-foo', 'another closure handler');
-    });
-
-    $router->get('/bar', function (ServerRequest $request) {
-        /** @var ServerResponse $response */
-        $response = Application::app()->make(ServerResponse::class);
-        return $response->withBody(stream_for('<h1>Bazinga!</h1>'));
-    });
-});
-
-$r->get('/error', 'unexpectedError@ErrorController');
-
-$r->get('/', 'IndexController');
+//$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
+//    return $next->handle($request)
+//        ->withHeader('X-Handeled-By', 'closure middleware');
+//});
+//
+//$r->addGroup('/foo', function (MiddlewareRouteCollector $router) {
+//    $router->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
+//        return $next->handle($request)
+//            ->withHeader('X-foo', 'another closure handler');
+//    });
+//
+//    $router->get('/bar', function (ServerRequest $request) {
+//        /** @var ServerResponse $response */
+//        $response = Application::app()->make(ServerResponse::class);
+//        return $response->withBody(stream_for('<h1>Bazinga!</h1>'));
+//    });
+//});
+//
+//$r->get('/error', 'unexpectedError@ErrorController');

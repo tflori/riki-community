@@ -306,10 +306,10 @@
 
         window.setTimeout(function() {
             let st = document.documentElement.scrollTop || document.body.scrollTop;
-            if (st < 100) {
+            if (st < headerAnimationEnd) {
                 $(window).scrollTo(headerAnimationEnd, 500);
             }
-        }, window.location.href.match(/^https?:\/\/[a-z-.]+\/(home?)$/) ? 10000 : 2000);
+        }, window.location.href.match(/^https?:\/\/[a-zA-Z0-9:.-]+\/?(home)?$/) ? 10000 : 2000);
 
         $('#mobile-nav').sidenav({
             onOpenStart: function() {

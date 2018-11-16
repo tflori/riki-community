@@ -5,6 +5,7 @@ namespace App;
 use Http\Response;
 use Hugga\Console;
 use Monolog\Logger;
+use Syna\Factory;
 use Whoops;
 use Whoops\Handler\PlainTextHandler;
 
@@ -18,11 +19,13 @@ use Whoops\Handler\PlainTextHandler;
  * @method static Config config()
  * @method static Logger logger()
  * @method static Console console()
+ * @method static Factory views()
  * @property-read Application $app
  * @property-read Environment $environment
  * @property-read Config $config
  * @property-read Logger $logger
  * @property-read Console $console
+ * @property-read Factory $views
  */
 class Application extends \Riki\Application
 {
