@@ -5,6 +5,13 @@ php:
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - openssl
+      - libssl
+      - git
+
 cache:
   directories:
     - $HOME/.composer/cache
