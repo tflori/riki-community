@@ -1,14 +1,9 @@
 language: php
 php:
-  - 7.1
-  - 7.2
+  - 7.1.24
+  - 7.2.12
 
 sudo: false
-
-addons:
-  apt:
-    packages:
-      - libssl1.0.0
 
 cache:
   directories:
