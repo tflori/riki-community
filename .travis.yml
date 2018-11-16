@@ -9,7 +9,7 @@ addons:
   apt:
     packages:
       - openssl
-      - libssl
+      - libssl1.0.0
       - git
 
 cache:
