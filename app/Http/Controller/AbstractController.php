@@ -49,9 +49,8 @@ abstract class AbstractController implements RequestHandlerInterface
     protected function error(int $status, string $reason, string $message, \Throwable $exception = null): ServerResponse
     {
         // @todo check the accept header and format a proper error (html/json,xml)
-        $body = Application::views()->render('error', compact('status', 'reason', 'message', 'exception'));
-        $response = new ServerResponse($status, [], $body);
-        return $response;
+        return $this->view('error', compact('status', 'reason', 'message', 'exception'), null)
+            ->withStatus($status);
     }
 
     /**
