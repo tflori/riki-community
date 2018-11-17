@@ -1,16 +1,9 @@
 language: php
 php:
-  - 7.1.18
-  - 7.2.6
+  - 7.1
+  - 7.2
 
 sudo: false
-
-addons:
-  apt:
-    packages:
-      - openssl
-      - libssl1.0.0
-      - git
 
 cache:
   directories:
@@ -21,10 +14,10 @@ matrix:
 
 before_script:
   - composer install --no-interaction
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then composer require satooshi/php-coveralls:~0.6@stable; fi;'
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then composer require php-coveralls/php-coveralls; fi;'
   - mkdir -p build/logs
 
 script:
   - composer code-style
   - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php bin/coveralls -v; fi;'
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php bin/php-coveralls -v; fi;'
