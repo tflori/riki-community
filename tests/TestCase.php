@@ -53,6 +53,7 @@ abstract class TestCase extends MockeryTestCase
         $this->app->alias('environment', Environment::class);
 
         $this->mocks['config'] = m::mock(Config::class)->makePartial();
+        $this->mocks['config']->__construct($this->mocks['environment']);
         $this->app->instance('config', $this->mocks['config']);
         $this->app->alias('config', Config::class);
 

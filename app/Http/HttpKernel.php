@@ -136,7 +136,22 @@ class HttpKernel extends \App\Kernel
     {
         if ($app->environment->canShowErrors()) {
             $handler = new PrettyPageHandler();
-            // $handler->setEditor(...)
+            if ($app->config->env('PROJECT_PATH')) {
+                /** @codeCoverageIgnore no way to test opening files in editor in ci */
+                $handler->setEditor(function (string $file, int $line) use ($app) {
+                    $file =preg_replace(
+                        '~^' . $app->getBasePath() . '~',
+                        $app->config->env('PROJECT_PATH'),
+                        $file
+                    );
+                    $url = sprintf(
+                        $app->config->env('EDITOR_URL', 'http://localhost:63342/api/file/?file=%s&line=%d'),
+                        $file,
+                        $line
+                    );
+                    return parse_url($url, PHP_URL_SCHEME) === 'http' ? ['url' => $url, 'ajax' => true] : $url;
+                });
+            }
             return [$handler];
         } else {
             return [function ($exception = null) {

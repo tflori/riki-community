@@ -4,13 +4,13 @@ namespace App\Cli;
 
 use App\Application;
 use App\Cli\Command;
+use App\Exception\ConsoleHandler;
 use GetOpt\ArgumentException;
 use GetOpt\ArgumentException\Missing;
 use GetOpt\Arguments;
 use GetOpt\GetOpt;
 use GetOpt\Option;
 use Hugga\Console;
-use Whoops\Handler\PlainTextHandler;
 
 class CliKernel extends \App\Kernel
 {
@@ -79,7 +79,7 @@ class CliKernel extends \App\Kernel
 
     public function getErrorHandlers(Application $app): array
     {
-        return [new PlainTextHandler()];
+        return [new ConsoleHandler($app)];
     }
 
     /**

@@ -3,14 +3,12 @@
 namespace Test\Unit\Cli;
 
 use App\Cli\CliKernel;
-use GetOpt\ArgumentException\Missing;
+use App\Exception\ConsoleHandler;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
-use GetOpt\Option;
 use Hugga\Console;
 use Test\TestCase;
-use Whoops\Handler\PlainTextHandler;
 use Mockery as m;
 
 class CliKernelTest extends TestCase
@@ -38,7 +36,7 @@ class CliKernelTest extends TestCase
     {
         $result = $this->kernel->getErrorHandlers($this->app);
 
-        self::assertInstanceOf(PlainTextHandler::class, $result[0]);
+        self::assertInstanceOf(ConsoleHandler::class, $result[0]);
     }
 
     public function provideDefaultOptions()
