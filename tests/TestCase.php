@@ -8,6 +8,7 @@ use App\Environment;
 use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
+use ORM\EntityManager;
 use Whoops;
 
 abstract class TestCase extends MockeryTestCase
@@ -70,7 +71,16 @@ abstract class TestCase extends MockeryTestCase
         $console->setStdout(fopen('php://memory', 'w'));
         $console->setStderr(fopen('php://memory', 'w'));
         $this->mocks['console']->shouldNotReceive(['read', 'readLine', 'readUntil']);
-        $this->app->instance('console', $this->mocks['console']);
+        $this->app->instance('console', $console);
+
+        /** @var \PDO|m\Mock $pdo */
+        $pdo = $this->mocks['pdo'] = m::mock(\PDO::class);
+        $pdo->shouldReceive('setAttribute')->andReturn(true)->byDefault();
+
+        /** @var EntityManager|m\Mock $entityManager */
+        $entityManager = $this->mocks['entityManager'] = m::mock(EntityManager::class)->makePartial();
+        $entityManager->setConnection($pdo);
+        $this->app->instance('entityManager', $entityManager);
     }
 
     /**
@@ -97,5 +107,22 @@ abstract class TestCase extends MockeryTestCase
         $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
+    }
+
+    /**
+     * Get the value of a protected or private variable from $object
+     *
+     * @param $object
+     * @param string $string
+     * @return mixed
+     */
+    protected function getProtectedVar($object, string $string)
+    {
+        $class = new \ReflectionClass($object);
+        $property = $class->getProperty($string);
+        $property->setAccessible(true);
+        $value = $property->getValue($object);
+        $property->setAccessible(false);
+        return $value;
     }
 }

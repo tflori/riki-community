@@ -13,7 +13,7 @@
         "filp/whoops": "^2.2",
         "monolog/monolog": "^1.9",
         "ulrichsg/getopt-php": "^3.2",
-        "tflori/hugga": "1.0.0-rc.1",
+        "tflori/hugga": "1.0.0-rc.2",
         "tflori/tal": "^1.0.1",
         "nikic/fast-route": "^1.3.0",
         "psr/http-server-handler": "^1.0.0",
@@ -26,7 +26,12 @@
         "tflori/secure-token": "^1.0",
         "tflori/verja": "^1.1",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
-        "tflori/syna": "1.0.0-rc.1"
+        "tflori/syna": "1.0.0-rc.1",
+        "tflori/breyta": "1.0.0-rc.1"
+    },
+    "suggest": {
+        "ext-pcntl": "*",
+        "ext-posix": "*"
     },
     "autoload": {
         "psr-4": {
