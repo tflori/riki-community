@@ -19,6 +19,7 @@ class CliKernel extends \App\Kernel
         Command\Config\Cache::class,
         Command\Db\CreateMigration::class,
         Command\Db\Migrate::class,
+        Command\Db\Revert::class,
     ];
 
     /** @var GetOpt */
