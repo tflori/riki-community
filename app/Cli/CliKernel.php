@@ -18,7 +18,7 @@ class CliKernel extends \App\Kernel
     protected static $commands = [
         Command\Config\Cache::class,
         Command\Db\CreateMigration::class,
-        Command\Db\Migrate::class,
+//        Command\Db\Migrate::class,
     ];
 
     /** @var GetOpt */
