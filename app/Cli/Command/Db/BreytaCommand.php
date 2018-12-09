@@ -15,9 +15,6 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
     protected $progress;
 
     /** @var ProgressBar */
-    protected $migrationProgress;
-
-    /** @var ProgressBar */
     protected $statementProgress;
 
     /** @var string */
@@ -43,9 +40,11 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
 
     public function beforeMigration(Migration $migration)
     {
-        $title = ucfirst($this->action) . ' ' . $migration->file;
-        $this->migrationProgress = new ProgressBar($this->console, null, $title);
-        $this->migrationProgress->start();
+        $this->console->line(sprintf(
+            '%s ${b}%s${r}...',
+            ucfirst($this->action),
+            $migration->file
+        ));
     }
 
     public function beforeExecution(Statement $statement)
@@ -62,6 +61,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
         }
 
         $this->statementProgress = new ProgressBar($this->console, null, $title);
+        $this->console->addDrawing($this->statementProgress, true);
         $this->statementProgress->start();
 
         // skip forking of process in tests
@@ -73,14 +73,14 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
             if ($pid) {
                 // in the parent process we continue with the migration
                 $this->pid = $pid;
+                // usleep(mt_rand(1000, 6000) * 1000); // see how progress looks like
                 return;
             }
 
             // in the fork we start an endless loop
             while (true) {
-                usleep(0.08 * 1000 * 1000);
+                usleep(10 * 1000);
                 $this->statementProgress->advance();
-                $this->migrationProgress->advance();
             }
             // to be sure we exit the fork (if true is not true...)
             exit;
@@ -106,12 +106,10 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
 
     public function afterMigration(Migration $migration)
     {
-        $this->migrationProgress
-            ->template(sprintf(
-                '{title} ... ${green}done${r} (%.6g seconds)',
-                $migration->executionTime
-            ))
-            ->finish();
+        $this->console->line(sprintf(
+            '... ${green}done${r} (%.6g seconds)',
+            $migration->execution_time
+        ));
         $this->progress->advance();
     }
 
@@ -149,7 +147,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
             }
 
             /** @var ProgressBar $progressBar */
-            foreach ([$this->progress, $this->migrationProgress, $this->statementProgress] as $progressBar) {
+            foreach ([$this->progress, $this->statementProgress] as $progressBar) {
                 if ($progressBar) {
                     $this->console->removeDrawing($progressBar);
                 }

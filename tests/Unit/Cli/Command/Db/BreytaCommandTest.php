@@ -65,16 +65,17 @@ class BreytaCommandTest extends TestCase
     }
 
     /** @test */
-    public function startsAProgressBarForEachMigration()
+    public function showsAMessageWhenUpdateStarts()
     {
         $command = new Example($this->app, $this->mocks['console']);
         $command->start((object)['task' => 'migrate', 'count' => 3]);
 
-        $this->mocks['console']->shouldReceive('addDrawing')->with(m::type(ProgressBar::class))
-            ->once()->andReturnUsing(function (ProgressBar $progressBar) {
-                self::assertStringStartsWith('Applying any/filename.php', $progressBar->getText());
-                self::assertSame(null, $this->getProtectedVar($progressBar, 'max'));
-                return true;
+        $this->mocks['console']->shouldReceive('line')->with(m::type('string'))
+            ->once()->andReturnUsing(function ($text) {
+                self::assertSame(
+                    'Applying any/filename.php...',
+                    $this->mocks['console']->format($text)
+                );
             });
 
         $command->beforeMigration(Migration::createInstance([
@@ -160,19 +161,18 @@ class BreytaCommandTest extends TestCase
         $migration = Migration::createInstance([
             'file' => 'any/filename.php',
             'status' => 'done',
-            'executionTime' => 2.3,
+            'execution_time' => 2.3,
         ]);
         $command = new Example($this->app, $this->mocks['console']);
         $command->start((object)['task' => 'migrate', 'count' => 3]);
         $command->beforeMigration($migration);
 
-        $this->mocks['console']->shouldReceive('removeDrawing')->with(m::type(ProgressBar::class))
-            ->once()->andReturnUsing(function (ProgressBar $progressBar) {
+        $this->mocks['console']->shouldReceive('line')->with(m::type('string'))
+            ->once()->andReturnUsing(function ($text) {
                 self::assertSame(
-                    'Applying any/filename.php ... done (2.3 seconds)',
-                    $this->mocks['console']->format($progressBar->getText()) // remove formatting
+                    '... done (2.3 seconds)',
+                    $this->mocks['console']->format($text) // remove formatting
                 );
-                return true;
             });
 
         $command->afterMigration($migration);

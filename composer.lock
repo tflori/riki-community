@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9bada65657c410645234d8cf4fba462",
+    "content-hash": "47dc8254e62ab21eecc0f79ed74f3fc2",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1471,16 +1471,16 @@
         },
         {
             "name": "tflori/breyta",
-            "version": "v1.0.0-rc.1",
+            "version": "v1.0.0-rc.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/breyta.git",
-                "reference": "68acee7aa64fae60d0b013f22d13cde69e4cb7b4"
+                "reference": "4febf8be3117ef5e9fc26d2f42c20ddc6e727571"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/breyta/zipball/68acee7aa64fae60d0b013f22d13cde69e4cb7b4",
-                "reference": "68acee7aa64fae60d0b013f22d13cde69e4cb7b4",
+                "url": "https://api.github.com/repos/tflori/breyta/zipball/4febf8be3117ef5e9fc26d2f42c20ddc6e727571",
+                "reference": "4febf8be3117ef5e9fc26d2f42c20ddc6e727571",
                 "shasum": ""
             },
             "require": {
@@ -1504,7 +1504,7 @@
                 "MIT"
             ],
             "description": "Library for database migrations",
-            "time": "2018-12-04T07:01:26+00:00"
+            "time": "2018-12-08T09:51:47+00:00"
         },
         {
             "name": "tflori/dependency-injector",
@@ -1558,16 +1558,16 @@
         },
         {
             "name": "tflori/hugga",
-            "version": "v1.0.0-rc.2",
+            "version": "v1.0.0-rc.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/hugga.git",
-                "reference": "1d160995d6c2164951762dfe0cfa795928c35ab8"
+                "reference": "e107ad0530777f4175906209befafbf767029882"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/hugga/zipball/1d160995d6c2164951762dfe0cfa795928c35ab8",
-                "reference": "1d160995d6c2164951762dfe0cfa795928c35ab8",
+                "url": "https://api.github.com/repos/tflori/hugga/zipball/e107ad0530777f4175906209befafbf767029882",
+                "reference": "e107ad0530777f4175906209befafbf767029882",
                 "shasum": ""
             },
             "require": {
@@ -1596,7 +1596,7 @@
                 "MIT"
             ],
             "description": "library for console applications with input and output handling",
-            "time": "2018-12-05T08:51:23+00:00"
+            "time": "2018-12-08T10:41:43+00:00"
         },
         {
             "name": "tflori/nb-sessions",
