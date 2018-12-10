@@ -5,9 +5,11 @@ COPY src /community/src
 COPY app /community/app
 COPY bin /community/bin
 COPY vendor /community/vendor
+COPY resources /community/resources
+COPY storage /community/storage
 COPY ["composer.json", "composer.lock", "/community/"]
 
-WORKDIR /app
+WORKDIR /community
 
 COPY docker/php/install.sh /tmp/install.sh
 RUN /bin/sh /tmp/install.sh && rm /tmp/install.sh
