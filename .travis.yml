@@ -1,23 +1,66 @@
-language: php
-php:
-  - 7.1
-  - 7.2
+jobs:
+  include:
+    - stage: "Test"
+      language: php
+      php:
+        - 7.1
+        - 7.2
 
-sudo: false
+      sudo: false
 
-cache:
-  directories:
-    - $HOME/.composer/cache
+      cache:
+        directories:
+          - $HOME/.composer/cache
 
-matrix:
-  fast_finish: true
+      matrix:
+        fast_finish: true
 
-before_script:
-  - composer install --no-interaction
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then composer require php-coveralls/php-coveralls; fi;'
-  - mkdir -p build/logs
+      before_script:
+        - composer install --no-interaction
+        - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then composer require php-coveralls/php-coveralls; fi;'
+        - mkdir -p build/logs
 
-script:
-  - composer code-style
-  - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php bin/php-coveralls -v; fi;'
+      script:
+        - composer code-style
+        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+        - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php bin/php-coveralls -v; fi;'
+
+    - stage: "Build"
+      if: !fork
+      services:
+        - docker
+      before_script:
+        - docker info
+        - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+      name: "php"
+      script:
+        - rm -Rf vendor
+        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer composer install --no-dev --no-ansi --optimize-autoloader
+        - if [ ! -z "$TRAVIS_TAG" ]; then
+            docker build --tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG --file docker/php/Dockerfile . &&
+            docker tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-php:latest &&
+            docker push $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG &&
+            docker push $DOCKER_REGISTRY/riki-community-php:latest;
+          else
+            docker build --tag $REGISTRY_HOST/riki-community-php:dev-$TRAVIS_BRANCH --file docker/php/Dockerfile . &&
+            docker push $REGISTRY_HOST/riki-community-php:dev-$TRAVIS_BRANCH;
+          fi;
+
+    - stage: "Build"
+      if: !fork
+      services:
+        - docker
+      before_script:
+        - docker info
+        - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+      name: "nginx"
+      script:
+        - if [ ! -z "$TRAVIS_TAG" ]; then
+            docker build --tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG --file docker/nginx/Dockerfile . &&
+            docker tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-nginx:latest &&
+            docker push $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG &&
+            docker push $DOCKER_REGISTRY/riki-community-nginx:latest;
+          else
+            docker build --tag $REGISTRY_HOST/riki-community-nginx:dev-$TRAVIS_BRANCH --file docker/nginx/Dockerfile . &&
+            docker push $REGISTRY_HOST/riki-community-nginx:dev-$TRAVIS_BRANCH;
+          fi;
