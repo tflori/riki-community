@@ -18,7 +18,7 @@ mkdir -p /home/www-user/.config/psysh
 # download manual for psysh
 apk add --no-cache ca-certificates openssl wget
 mkdir -p /usr/local/share/psysh
-wget https://psysh.org/manual/en/php_manual.sqlite -O /usr/local/share/psysh/php_manual.sqlite
+wget https://psysh.org/manual/en/php_manual.sqlite -qO /usr/local/share/psysh/php_manual.sqlite
 
 # enable environment variables in php
 echo 'env[APP_ENV] = $APP_ENV' >> /etc/php7/php-fpm.d/www.conf

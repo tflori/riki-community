@@ -3,7 +3,7 @@ body, input, select {
 }
 
 nav .nav-wrapper {
-    max-width: 992px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -46,7 +46,7 @@ label.label-icon.right {
 }
 
 .container {
-    max-width: 992px;
+    max-width: 1280px;
     width: 100%;
 }
 
@@ -58,12 +58,14 @@ label.label-icon.right {
     padding: 0 0 0 0.75rem;
 }
 
-/*#right-col > .card:first-child { margin-top: 0; }*/
-/*#left-col > .card:first-child { margin-top: 0; }*/
 #left-col {
-    width: 248px;
+    width: 100%;
+    max-width: 1280px;
     position: absolute;
-    z-index: 2;
+}
+
+#left-col-wrapper {
+    margin-right: calc(75% + 1.5rem);
 }
 
 #left-col .nav {
@@ -90,6 +92,10 @@ label.label-icon.right {
     margin: 0 32px 0 0;
     width: 24px;
     color: rgba(0, 0, 0, 0.54);
+}
+
+.card {
+    margin: 0 0 1.5rem 0;
 }
 
 .card.search:not(.active) {

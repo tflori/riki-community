@@ -64,24 +64,30 @@
         <!-- Content -->
         <div class="main container" style="min-height: 480px">
             <div class="row">
-                <div class="col l4 hide-on-med-and-down" id="left-col">
-                    <div class="card search">
-                        <div class="card-content search">
-                            <div class="input-field">
-                                <input type="text" placeholder="Search">
-                                <label class="label-icon right"><i class="material-icons">search</i></label>
+
+                <div id="left-col" class="col l3 hide-on-med-and-down">
+                    <div id="left-col-wrapper">
+                        <div class="card search">
+                            <div class="card-content search">
+                                <div class="input-field">
+                                    <input type="text" placeholder="Search">
+                                    <label class="label-icon right"><i class="material-icons">search</i></label>
+                                </div>
                             </div>
                         </div>
+                        <ul class="nav">
+                            <li><a href="/home"><i class="material-icons">home</i> Home</a></li>
+                            <li><a href="/blog"><i class="material-icons">rss_feed</i> Blog</a></li>
+                            <li><a href="/guide"><i class="material-icons">toc</i> Guide</a></li>
+                            <li><a href="/docs"><i class="material-icons">library_books</i> Documentation</a></li>
+                            <li><a href="/exchange"><i class="material-icons">question_answer</i> Exchange</a></li>
+                        </ul>
                     </div>
-                    <ul class="nav">
-                        <li><a href="/home"><i class="material-icons">home</i> Home</a></li>
-                        <li><a href="/blog"><i class="material-icons">rss_feed</i> Blog</a></li>
-                        <li><a href="/guide"><i class="material-icons">toc</i> Guide</a></li>
-                        <li><a href="/docs"><i class="material-icons">library_books</i> Documentation</a></li>
-                        <li><a href="/exchange"><i class="material-icons">question_answer</i> Exchange</a></li>
-                    </ul>
                 </div>
-                <div class="col s12 l9 offset-l3" id="right-col">
+
+                <div id="right-col" class="col s12 l9 offset-l3">
+
+                    <!-- search result -->
                     <div class="card search show-on-medium-and-down" style="display: none;">
                         <div class="card-content search">
                             <div class="input-field">
@@ -157,8 +163,11 @@
                             </div>
                         </div>
                     </div>
+
                     <?= $v->section('content') ?>
+
                 </div>
+
             </div>
         </div>
 

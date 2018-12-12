@@ -19,7 +19,7 @@
         let scrollAnimations = [
             {
                 from: 0,
-                to: 200,
+                to: headerAnimationEnd/2,
                 before: [
                     {
                         element: headerIcon,
@@ -138,7 +138,7 @@
                 ],
             },
             {
-                from: 200,
+                from: headerAnimationEnd/2,
                 to: headerAnimationEnd,
                 before: [
                     {
