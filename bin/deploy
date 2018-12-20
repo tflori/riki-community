@@ -70,14 +70,14 @@ if [[ $REPLY =~ ^[^Yy]$ ]]; then
 fi
 
 # tag new images
-#images=('riki-community-php' 'riki-community-nginx')
-#for image in ${images[@]}; do
-#  printf "Tagging $image:$tag..."
-#  docker pull "$DOCKER_REGISTRY/$image:$tag" > /dev/null
-#  docker tag "$DOCKER_REGISTRY/$image:$tag" "$DOCKER_REGISTRY/$image:$target" > /dev/null
-#  docker push "$DOCKER_REGISTRY/$image:$target" > /dev/null
-#  echo -e "\e[32m done\e[0m"
-#done
+images=('riki-community-php' 'riki-community-nginx')
+for image in ${images[@]}; do
+  printf "Tagging $image:$tag..."
+  docker pull "$DOCKER_REGISTRY/$image:$tag" > /dev/null
+  docker tag "$DOCKER_REGISTRY/$image:$tag" "$DOCKER_REGISTRY/$image:$target" > /dev/null
+  docker push "$DOCKER_REGISTRY/$image:$target" > /dev/null
+  echo -e "\e[32m done\e[0m"
+done
 
 # update containers on servers
 echo "Updating docker container..."
