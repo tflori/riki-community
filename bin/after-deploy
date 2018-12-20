@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+# get the path of the current script
+pushd `dirname $0` > /dev/null
+SCRIPT_PATH=`pwd`
+popd > /dev/null
+
+baseDir=`dirname "$SCRIPT_PATH"`
+
+"$baseDir/bin/community" db:migrate

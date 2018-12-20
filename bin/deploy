@@ -1,0 +1,97 @@
+#!/bin/bash
+set -e
+
+function usage() {
+    echo "Usage: deploy [options][ <tag>][ <target>]"
+    echo ""
+    echo "Deploy riki-community docker <tag> to <target>. Targets can be production or staging (default). If tag is not"
+    echo "given the tag 'latest' will be deployed."
+    echo ""
+    echo "Options:"
+    echo "  -h, --help                 Shows this help message"
+}
+
+function sync() {
+    for job in `jobs -p`; do
+        wait "$job"
+    done
+}
+
+# parse options
+OPTS=`getopt -o h --long help -n $0 -- "$@"`
+if [[ $? != 0 ]] ; then
+    echo "Failed parsing options." >&2
+    usage
+    exit 1
+fi
+eval set -- "${OPTS}"
+while true; do
+  case "$1" in
+    -h | --help ) usage; exit 0 ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+# get the path of the current script
+pushd `dirname $0` > /dev/null
+SCRIPT_PATH=`pwd`
+popd > /dev/null
+
+# read .env file
+pathToDotEnv=`dirname "$SCRIPT_PATH"`"/.env"
+if [[ -f ${pathToDotEnv} ]]; then
+    . ${pathToDotEnv}
+fi
+
+# determine tag and target
+if [[ $# == 2 ]]; then
+  target=$2
+  tag=$1
+elif [[ $# == 1 ]]; then
+  if [[ "$1" == 'production' ]] || [[ "$1" == 'staging' ]]; then
+    target=$1
+    tag='latest'
+  else
+    target='staging'
+    tag=$1
+  fi
+else
+  target='staging'
+  tag='latest'
+fi
+
+# confirm tag and target
+read -p "Are you sure to release $tag on $target [Y/n]? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[^Yy]$ ]]; then
+  echo "canceled"
+  exit 0;
+fi
+
+# tag new images
+#images=('riki-community-php' 'riki-community-nginx')
+#for image in ${images[@]}; do
+#  printf "Tagging $image:$tag..."
+#  docker pull "$DOCKER_REGISTRY/$image:$tag" > /dev/null
+#  docker tag "$DOCKER_REGISTRY/$image:$tag" "$DOCKER_REGISTRY/$image:$target" > /dev/null
+#  docker push "$DOCKER_REGISTRY/$image:$target" > /dev/null
+#  echo -e "\e[32m done\e[0m"
+#done
+
+# update containers on servers
+echo "Updating docker container..."
+case "$target" in
+    production)
+        read -ra servers <<<$PRODUCTION_SERVERS
+        command=upgrade-riki-community
+        ;;
+    staging)
+        read -ra servers <<<$STAGING_SERVERS
+        command=upgrade-riki-community-staging
+        ;;
+esac
+for server in ${servers[@]}; do
+  ssh $server sudo $command &
+done
+sync

@@ -18,8 +18,8 @@ class Config extends \Riki\Config
         $this->logLevel = Logger::toMonologLevel($this->env('LOG_LEVEL', $this->logLevel));
         $this->dbConfig = new DbConfig(
             'pgsql',
-            $this->env('DB_DATABASE', 'community'),
-            $this->env('DB_USERNAME', 'community'),
+            $this->env('DB_DATABASE', 'riki_community'),
+            $this->env('DB_USERNAME', 'riki'),
             $this->env('DB_PASSWORD'),
             $this->env('DB_HOST', 'postgres'),
             $this->env('DB_PORT', '5432')

@@ -4,6 +4,28 @@ jobs:
       language: php
       php:
         - 7.1
+
+      sudo: false
+
+      cache:
+        directories:
+          - $HOME/.composer/cache
+
+      matrix:
+        fast_finish: true
+
+      before_script:
+        - composer install --no-interaction
+        - composer require php-coveralls/php-coveralls
+        - mkdir -p build/logs
+
+      script:
+        - composer code-style
+        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+        - php bin/php-coveralls -v
+    - stage: "Test"
+      language: php
+      php:
         - 7.2
 
       sudo: false
@@ -17,13 +39,11 @@ jobs:
 
       before_script:
         - composer install --no-interaction
-        - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then composer require php-coveralls/php-coveralls; fi;'
         - mkdir -p build/logs
 
       script:
         - composer code-style
         - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-        - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then php bin/php-coveralls -v; fi;'
 
     - stage: "Build"
       if: !fork
