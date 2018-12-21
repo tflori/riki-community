@@ -49,11 +49,14 @@ class ConsoleHandler extends Handler
     {
         $projectPath = $this->config->env('PROJECT_PATH');
         if ($projectPath) {
+            // a project path is not given in travis
+            // @codeCoverageIgnoreStart
             $path = preg_replace(
                 '~^' . $this->app->getBasePath() . '~',
                 $projectPath,
                 $path
             );
+            // @codeCoverageIgnoreEnd
         }
 
         return $path;

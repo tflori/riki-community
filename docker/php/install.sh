@@ -11,6 +11,7 @@ mkdir -p /home/www-user/.config/psysh
   echo '  "pager" => "more",'; \
   echo '  "historySize" => 0,'; \
   echo '  "eraseDuplicates" => true,'; \
+  echo '  "updateCheck" => never,'; \
   echo '];'; \
   echo ''; \
 } | tee /root/.config/psysh/config.php > /home/www-user/.config/psysh/config.php

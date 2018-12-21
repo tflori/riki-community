@@ -11,11 +11,13 @@ use GetOpt\Arguments;
 use GetOpt\GetOpt;
 use GetOpt\Option;
 use Hugga\Console;
+use Psy\Shell;
 
 class CliKernel extends \App\Kernel
 {
     /** @var string[] */
     protected static $commands = [
+        Command\Console::class,
         Command\Config\Cache::class,
         Command\Db\CreateMigration::class,
         Command\Db\Migrate::class,
