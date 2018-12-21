@@ -78,6 +78,25 @@ class ConsoleHandlerTest extends TestCase
     }
 
     /** @test */
+    public function replacesBasePathWithProjectPath()
+    {
+        $exception = new RuntimeException('Test Exception');
+        $handler = $this->prepareHandler($exception);
+
+
+        $this->mocks['config']->shouldReceive('env')->with('PROJECT_PATH')
+            ->atLeast()->once()->andReturn('/project');
+
+        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+            ->once()->andReturnUsing(function (string $message) use ($exception) {
+                $expected = '/project' . substr($exception->getFile(), strlen($this->app->getBasePath()));
+                self::assertContains($expected, $message);
+            });
+
+        $handler->handle();
+    }
+
+    /** @test */
     public function messageContainsPreviousExceptions()
     {
         $innerException = new RuntimeException('Inner Exception', 23);
