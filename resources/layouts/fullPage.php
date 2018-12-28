@@ -8,10 +8,9 @@
         <link rel="icon" href="/images/favicon.png" sizes="48x48">
         <link rel="apple-touch-icon" sizes="256x256" href="/images/favicon-2x.png">
         <title>Ríki:Welcome!</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans">
-        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="/bundle.css">
     </head>
     <body class="grey lighten-4">
 
@@ -198,11 +197,6 @@
             </div>
         </footer>
 
-        <!-- JS sources -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
-        <script src="/js/scrolling.js"></script>
-
+        <script src="/bundle.js"></script>
     </body>
 </html>

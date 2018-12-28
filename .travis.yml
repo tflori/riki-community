@@ -68,13 +68,17 @@ jobs:
 
     - stage: "Build"
       if: !fork
+      language: node
       services:
         - docker
       before_script:
         - docker info
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
+        - npm info
+        - npm install
       name: "nginx"
       script:
+        - NODE_ENV=production npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG --file docker/nginx/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-nginx:latest &&
