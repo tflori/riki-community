@@ -55,7 +55,7 @@ jobs:
       name: "php"
       script:
         - rm -Rf vendor
-        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer composer install --no-dev --no-ansi --optimize-autoloader
+        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:1 composer install --no-dev --no-ansi --optimize-autoloader
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG --file docker/php/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-php:latest &&
@@ -68,17 +68,15 @@ jobs:
 
     - stage: "Build"
       if: !fork
-      language: node
       services:
         - docker
       before_script:
         - docker info
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
-        - npm info
-        - npm install
+        - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
       name: "nginx"
       script:
-        - NODE_ENV=production npm run build
+        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:lts-alpine npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG --file docker/nginx/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-nginx:latest &&
