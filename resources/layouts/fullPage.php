@@ -8,8 +8,6 @@
         <link rel="icon" href="/images/favicon.png" sizes="48x48">
         <link rel="apple-touch-icon" sizes="256x256" href="/images/favicon-2x.png">
         <title>Ríki:Welcome!</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans">
         <link rel="stylesheet" href="/bundle.css">
     </head>
     <body class="grey lighten-4">
