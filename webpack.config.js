@@ -44,6 +44,9 @@ module.exports = {
         path: Path.resolve(__dirname, 'public'),
         publicPath: '/assets/',
     },
+    externals: {
+        jquery: 'jQuery'
+    },
     module: {
         rules: [
             {

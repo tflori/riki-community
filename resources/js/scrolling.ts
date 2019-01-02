@@ -1,9 +1,5 @@
 import * as jQuery from 'jquery';
 
-// @ts-ignore
-window.jQuery = jQuery;
-require('materialize-css/dist/js/materialize');
-
 jQuery(function($) {
     let heightOfLargeHeader = $('body > header').height() || 0;
     let $navbar = $('.navbar-fixed');
