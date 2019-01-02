@@ -24,6 +24,7 @@
     "main.css": "^1.0.0"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   }
 }

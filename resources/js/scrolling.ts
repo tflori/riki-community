@@ -319,7 +319,7 @@ jQuery(function($) {
                 scrollTop: headerAnimationEnd
             }, 500);
         }
-    }, window.location.href.match(/^https?:\/\/[a-zA-Z0-9:.-]+\/?(home)?$/) ? 10000 : 2000);
+    }, window.location.href.match(/^https?:\/\/[a-zA-Z0-9:.-]+\/?(home)?$/) ? 5000 : 2000);
 
     $('#mobile-nav').sidenav({
         onOpenStart: function() {

@@ -189,8 +189,12 @@
             </div>
             <div class="footer-copyright">
                 <div class="container">
-                    © 2018 Copyright Thomas Flori
-                    <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+                    <div class="row">
+                        <div class="col s12">
+                            © 2018 Copyright Thomas Flori
+                            <a class="grey-text text-lighten-4 right" href="https://github.com/tflori/riki-community">View on <b>GitHub</b></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>
