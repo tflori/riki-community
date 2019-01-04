@@ -1,5 +1,23 @@
 body, input, select {
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Open Sans", sans-serif;
+}
+
+b,
+strong,
+.toast .toast-action,
+.chip,
+.table-of-contents a.active,
+.sidenav li > a,
+.sidenav .subheader,
+.sidenav .user-view .name,
+.carousel.carousel-slider .carousel-item h2,
+.datepicker-date-display,
+.datepicker-date-display .date-text {
+    font-weight: 600;
+}
+
+code,kbd,samp {
+    font-family: "Ubuntu Mono", monospace;
 }
 
 nav {
@@ -93,7 +111,7 @@ label.label-icon.right {
         height: 48px;
         line-height: 48px;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
     }
 
     .nav li > a {

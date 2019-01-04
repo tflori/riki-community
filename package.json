@@ -3,28 +3,42 @@
   "author": "Thomas Flori",
   "license": "MIT",
   "devDependencies": {
-    "@types/jquery": "^3.3.28",
+    "@types/jest": "^23.3.11",
+    "@types/jquery": "^3.3.29",
     "@types/materialize-css": "^1.0.6",
+    "@vue/test-utils": "^1.0.0-beta.28",
     "awesome-typescript-loader": "^5.2.1",
-    "css-loader": "^2.0.2",
-    "cssnano": "^4.1.7",
-    "jquery": "^3.3.1",
-    "materialize-css": "^1.0.0",
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.8",
+    "jest": "^23.6.0",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
-    "parcel-bundler": "^1.11.0",
     "sass-loader": "^7.1.0",
+    "ts-jest": "^23.10.5",
     "typescript": "^3.2.2",
     "vue": "^2.5.21",
     "vue-class-component": "^6.3.2",
-    "webpack": "^4.28.1",
-    "webpack-cli": "^3.1.2"
-  },
-  "dependencies": {
-    "main.css": "^1.0.0"
+    "vue-jest": "^3.0.2",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0"
   },
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "test": "jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testURL": "http://localhost/",
+    "testRegex": "/tests/js/.*\\.spec\\.ts$"
   }
 }

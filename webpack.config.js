@@ -9,7 +9,7 @@ class Without {
     }
 
     apply(compiler) {
-        compiler.hooks.emit.tapAsync("MiniCssExtractPluginCleanup", (compilation, callback) => {
+        compiler.hooks.emit.tapAsync("Without", (compilation, callback) => {
             Object.keys(compilation.assets)
                 .filter(asset => {
                     let match = false,

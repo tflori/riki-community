@@ -1,5 +1,3 @@
-import * as jQuery from 'jquery';
-
 jQuery(function($) {
     let heightOfLargeHeader = $('body > header').height() || 0;
     let $navbar = $('.navbar-fixed');

@@ -4,46 +4,46 @@ jobs:
       language: php
       php:
         - 7.1
-
       sudo: false
-
       cache:
         directories:
           - $HOME/.composer/cache
-
       matrix:
         fast_finish: true
-
       before_script:
         - composer install --no-interaction
         - composer require php-coveralls/php-coveralls
         - mkdir -p build/logs
-
       script:
         - composer code-style
         - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
         - php bin/php-coveralls -v
+
     - stage: "Test"
       language: php
       php:
         - 7.2
-
       sudo: false
-
       cache:
         directories:
           - $HOME/.composer/cache
-
       matrix:
         fast_finish: true
-
       before_script:
         - composer install --no-interaction
         - mkdir -p build/logs
-
       script:
         - composer code-style
         - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+
+    - sage: "Test"
+      language: nodejs
+      node_js:
+        - 10
+      before_script:
+        - npm install
+      script:
+        - npm test
 
     - stage: "Build"
       if: !fork
