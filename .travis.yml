@@ -37,9 +37,9 @@ jobs:
         - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
 
     - sage: "Test"
-      language: nodejs
+      language: node_js
       node_js:
-        - 10
+        - 8
       before_script:
         - npm install
       script:
