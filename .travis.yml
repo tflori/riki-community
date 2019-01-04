@@ -43,7 +43,7 @@ jobs:
       before_script:
         - npm install
       script:
-        - npm test
+        - npm test -- --color
 
     - stage: "Build"
       if: !fork
