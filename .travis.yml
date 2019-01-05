@@ -52,10 +52,12 @@ jobs:
       before_script:
         - docker info
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
+        - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
       name: "php"
       script:
         - rm -Rf vendor
         - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:1 composer install --no-dev --no-ansi --optimize-autoloader
+        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:lts-alpine npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG --file docker/php/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-php:latest &&
