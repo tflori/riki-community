@@ -45,6 +45,11 @@ class Environment extends \Riki\Environment
         return $this->resourcePath('views', ...$path);
     }
 
+    public function publicPath(string ...$path): string
+    {
+        return $this->path('public', ...$path);
+    }
+
     public function path(string ...$path)
     {
         array_unshift($path, $this->getBasePath());

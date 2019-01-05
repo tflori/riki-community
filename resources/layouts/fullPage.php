@@ -8,7 +8,7 @@
         <link rel="icon" href="/images/favicon.png" sizes="48x48">
         <link rel="apple-touch-icon" sizes="256x256" href="/images/favicon-2x.png">
         <title>Ríki:Welcome!</title>
-        <link rel="stylesheet" href="/bundle.css">
+        <link rel="stylesheet" href="<?= $v->cacheBuster('/bundle.css'); ?>">
     </head>
     <body class="grey lighten-4">
 
@@ -201,6 +201,6 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="/bundle.js"></script>
+        <script src="<?= $v->cacheBuster('/bundle.js') ?>"></script>
     </body>
 </html>
