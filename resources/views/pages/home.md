@@ -26,74 +26,10 @@ dapibus. Vivamus elementum semper nisi.
     1. first item under fifth element
 6. item
 
-
-Example Code:
+The dispatcher that was just executed...
 
 ```php
-<?php
-
-namespace App\Http;
-
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
-/**
- * Queue Dispatcher
- *
- * The queue dispatcher is a simple one class middleware dispatcher.
- *
- * A handler in queue can either be a string in form of 'Controller@method', a class name
- * of a middleware or request
- * handler or a callable that may act as request handler or middleware.
- * 
- * @package App\Http
- */
-class Dispatcher implements RequestHandlerInterface
-{
-    /** @var array */
-    protected $queue;
-
-    /** @var callable */
-    protected $resolver;
-
-    /**
-     * Dispatcher constructor.
-     *
-     * @param array $queue
-     * @param callable $resolver
-     */
-    public function __construct(array $queue, callable $resolver)
-    {
-        $this->queue = $queue;
-        $this->resolver = $resolver;
-    }
-
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
-        if (empty($this->queue)) {
-            throw new \LogicException('Queue is empty');
-        }
-
-        $handler = array_shift($this->queue);
-        if (!$handler instanceof MiddlewareInterface && 
-            !$handler instanceof RequestHandlerInterface
-        ) {
-            $handler = call_user_func($this->resolver, $handler);
-        }
-
-        if ($handler instanceof MiddlewareInterface) {
-            return $handler->process($request, $this);
-        }
-
-        if ($handler instanceof RequestHandlerInterface) {
-            return $handler->handle($request);
-        }
-
-        return $handler($request, $this);
-    }
-}
+<?= substr(file_get_contents(App\Application::environment()->path('app/Http/Dispatcher.php')), 7); ?>
 ```
 
 Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem

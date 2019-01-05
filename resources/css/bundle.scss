@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Ubuntu+Mono:400,700&amp;subset=latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=latin-ext');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css');
+@import './prism';
+
 //@import '~materialize-css/sass/materialize';
 @import './main';
-@import './prism';

@@ -16,8 +16,9 @@ strong,
     font-weight: 600;
 }
 
-code,kbd,samp {
-    font-family: "Ubuntu Mono", monospace;
+code[class*="language-"], pre[class*="language-"] {
+    font-family: "mononoki Nerd Font", "mononoki", monospace;
+    font-size: 10pt;
 }
 
 nav {
