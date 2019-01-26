@@ -1,35 +1,26 @@
-import Easings = JQuery.Easings;
-import { isArray } from 'util';
+import Timeout = NodeJS.Timeout;
 
 export class ScrollAnimator {
-    protected steps: number[] = [];
+    protected scrollTop: number = 0;
+    protected worker: Timeout|undefined;
 
     constructor(protected scrollAnimations: ScrollAnimation[]) {}
 
     public start() {
         jQuery(window).on('scroll', () => {
-            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 
-            // remove steps that have not started yet
-            if (this.steps.length > 1) {
-                this.steps.pop();
+            if (this.worker) {
+                clearTimeout(this.worker);
             }
-
-            this.steps.push(scrollTop);
-            this.execute();
+            this.worker = setTimeout(() => {
+                console.log(this.scrollTop);
+                for (let animation of this.scrollAnimations) {
+                    animation.execute(this.scrollTop);
+                }
+                this.worker = undefined;
+            }, 0);
         }).triggerHandler('scroll');
-    }
-
-    protected execute(): void {
-        // when there is more than one scroll top in the stack it means another execution is still running
-        if (this.steps.length > 1) {
-            return;
-        }
-
-        while (this.steps.length > 0) {
-            this.scrollAnimations.map(animation => animation.execute(this.steps[0]));
-            this.steps.shift();
-        }
     }
 }
 
@@ -91,13 +82,7 @@ export class ScrollAnimation {
     constructor(protected element: JQuery, protected style: string, protected animation: {
         from: number,
         to: number,
-        steps?: {
-            from: number,
-            to?: number,
-            start: number,
-            end: number,
-            easing?: Easing
-        }[]|((scrollTop: number) => number),
+        steps?: Array<StaticStep|CalculatedStep>,
         suffix?: string,
         before?: string,
         after?: string,
@@ -138,38 +123,58 @@ export class ScrollAnimation {
         }
 
         if (this.animation.steps !== undefined) {
-            let value = '';
-            if (typeof this.animation.steps === 'function') {
-                // calculate the value with steps function
-                value = this.animation.steps(scrollTop).toString(10) + this.animation.suffix;
-            } else {
-                // find the correct step
-                let step: {
-                    from: number,
-                    to?: number,
-                    start: number,
-                    end: number,
-                    easing?: Easing
-                } = this.animation.steps[0];
-                if (this.animation.steps.length > 1) {
-                    for (let i = 1; i < this.animation.steps.length; i++) {
-                        if (this.animation.steps[i].from > scrollTop) {
-                            break;
-                        }
-                        step = this.animation.steps[i];
+            // find the correct step
+            let step: StaticStep|CalculatedStep = this.animation.steps[0];
+            if (this.animation.steps.length > 1) {
+                for (let i = 1; i < this.animation.steps.length; i++) {
+                    if (this.animation.steps[i].from > scrollTop) {
+                        break;
                     }
+                    step = this.animation.steps[i];
                 }
-                step.to = step.to || 0; // we need a to value
+            }
+            step.to = step.to || 0; // we need a to value
 
+            if (step instanceof StaticStep) {
                 // calculate the value for this step
                 let t: number = (scrollTop - step.from) / (step.to - step.from);
                 t = Math.max(0, Math.min(1, t)); // limit to 0 - 1
                 if (step.easing) {
                     t = (EasingFunctions as any as {[method: string]: (t: number) => number})[Easing[step.easing]](t);
                 }
-                value = (step.start + (step.end - step.start) * t) + (this.animation.suffix || '');
+                let value = (step.start + (step.end - step.start) * t) + (this.animation.suffix || '');
+                this.element.css(this.style, value);
+            } else if (step.wait) {
+                // wait for this execution loop to finish before calculating with calc
+                let calc = step.calc;
+                setTimeout(() => {
+                    let value = calc(scrollTop).toString(10);
+                    this.element.css(this.style, value + this.animation.suffix)
+                }, 0);
+            } else {
+                // calculate the value from this steps calc function
+                let value = step.calc(scrollTop).toString(10);
+                this.element.css(this.style, value + this.animation.suffix)
             }
-            this.element.css(this.style, value);
         }
     }
+}
+
+export class StaticStep {
+    public to: number = 0;
+    constructor(
+        public from: number,
+        public start: number,
+        public end: number,
+        public easing?: Easing
+    ) {}
+}
+
+export class CalculatedStep {
+    public to: number = 0;
+    constructor(
+        public from: number,
+        public calc: (scrollTop: number) => number,
+        public wait?: boolean,
+    ) {}
 }

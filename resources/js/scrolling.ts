@@ -1,4 +1,4 @@
-import { Easing, ScrollAnimation, ScrollAnimator } from './ScrollAnimator';
+import { CalculatedStep, Easing, ScrollAnimation, ScrollAnimator, StaticStep } from './ScrollAnimator';
 
 jQuery(function($) {
     // get the elements
@@ -68,50 +68,50 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerIconPosition.left,
-                    end: offset + logoIconPosition.left,
-                    easing: Easing.easeOutQuart,
-                }
-            ]
+                new StaticStep(
+                    0,
+                    headerIconPosition.left,
+                    offset + logoIconPosition.left,
+                    Easing.easeOutQuart,
+                )
+            ],
         }),
         new ScrollAnimation($headerIcon, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerIconPosition.top,
-                    end: logoIconPosition.top + headerAnimationEnd,
-                    easing: Easing.easeInQuad,
-                }
-            ]
+                new StaticStep(
+                    0,
+                    headerIconPosition.top,
+                    logoIconPosition.top + headerAnimationEnd,
+                    Easing.easeInQuad,
+                )
+            ],
         }),
         new ScrollAnimation($headerIcon, 'width', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerIconWidth,
-                    end: headerIconWidth * iconRatio,
-                }
-            ]
+                new StaticStep(
+                    0,
+                    headerIconWidth,
+                    headerIconWidth * iconRatio,
+                )
+            ],
         }),
         new ScrollAnimation($headerIcon, 'height', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerIconHeight,
-                    end: headerIconHeight * iconRatio,
-                }
-            ]
+                new StaticStep(
+                    0,
+                    headerIconHeight,
+                    headerIconHeight * iconRatio,
+                )
+            ],
         }),
 
         // modules animation
@@ -119,52 +119,47 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: scrollTop => {
-                // bound to center of icon
-                let center = $headerIcon.position().left + ($headerIcon.width() || 0) / 2;
-                return center - ($headerModules.width() || 0) / 2;
-            }
+            steps: [
+                new CalculatedStep(0, () => {
+                    // bound to center of icon
+                    let center = $headerIcon.position().left + ($headerIcon.width() || 0) / 2;
+                    return center - ($headerModules.width() || 0) / 2;
+                }, true),
+            ],
         }),
         new ScrollAnimation($headerModules, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: scrollTop => {
-                // bound to center of icon
-                let center = $headerIcon.position().top + ($headerIcon.height() || 0) / 2;
-                return center - ($headerModules.height() || 0) / 2;
-            }
+            steps: [
+                new CalculatedStep(0, () => {
+                    // bound to center of icon
+                    let center = $headerIcon.position().top + ($headerIcon.height() || 0) / 2;
+                    return center - ($headerModules.height() || 0) / 2 + 1;
+                }, true),
+            ],
         }),
         new ScrollAnimation($headerModules, 'width', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: scrollTop => {
-                // bound to size of icon
-                let iconRatio = ($headerIcon.width() || 0) / headerIconWidth;
-                return headerModulesWidth * iconRatio;
-            }
+            steps: [
+                new StaticStep(0, headerModulesWidth, headerModulesWidth * iconRatio)
+            ],
         }),
         new ScrollAnimation($headerModules, 'height', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: scrollTop => {
-                // bound to size of icon
-                let iconRatio = ($headerIcon.height() || 0) / headerIconHeight;
-                return headerModulesHeight * iconRatio;
-            }
+            steps: [
+                new StaticStep(0, headerModulesHeight, headerModulesHeight * iconRatio)
+            ],
         }),
         new ScrollAnimation($headerModules, 'opacity', {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
             steps: [
-                {
-                    from: 0,
-                    start: 1,
-                    end: 0,
-                    easing: Easing.easeOutQuart,
-                }
+                new StaticStep(0, 1, 0, Easing.easeOutQuart)
             ]
         }),
 
@@ -174,12 +169,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerNamePosition.left,
-                    end: offset + logoNamePosition.left,
-                    easing: Easing.easeOutQuart,
-                }
+                new StaticStep(0, headerNamePosition.left, offset + logoNamePosition.left, Easing.easeOutQuart)
             ]
         }),
         new ScrollAnimation($headerName, 'top', {
@@ -187,12 +177,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerNamePosition.top,
-                    end: logoNamePosition.top + headerAnimationEnd,
-                    easing: Easing.easeInQuad,
-                }
+                new StaticStep(0, headerNamePosition.top, logoNamePosition.top + headerAnimationEnd, Easing.easeInQuad)
             ]
         }),
         new ScrollAnimation($headerName, 'width', {
@@ -200,11 +185,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: $headerName.width() || 0,
-                    end: $logoName.width() || 0,
-                }
+                new StaticStep(0, $headerName.width() || 0, $logoName.width() || 0)
             ]
         }),
 
@@ -214,12 +195,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerSubtitlePosition.left,
-                    end: offset + logoSubtitlePosition.left,
-                    easing: Easing.easeInQuad,
-                }
+                new StaticStep(0, headerSubtitlePosition.left, offset + logoSubtitlePosition.left, Easing.easeInQuad)
             ]
         }),
         new ScrollAnimation($headerSubtitle, 'top', {
@@ -227,24 +203,14 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                {
-                    from: 0,
-                    start: headerSubtitlePosition.top,
-                    end: logoSubtitlePosition.top + headerAnimationEnd,
-                    easing: Easing.easeOutQuad,
-                }
+                new StaticStep(0, headerSubtitlePosition.top, logoSubtitlePosition.top + headerAnimationEnd, Easing.easeOutQuad)
             ]
         }),
         new ScrollAnimation($headerSubtitle, 'opacity', {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
             steps: [
-                {
-                    from: 0,
-                    start: 1,
-                    end: showSubtitle ? 1 : 0,
-                    easing: Easing.easeOutQuart,
-                }
+                new StaticStep(0, 1, showSubtitle ? 1 : 0, Easing.easeOutQuart)
             ]
         }),
     ])).start();
