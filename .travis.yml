@@ -17,6 +17,7 @@ jobs:
       script:
         - composer code-style
         - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+      after_success:
         - php bin/php-coveralls -v
 
     - stage: "Test"
@@ -34,16 +35,18 @@ jobs:
         - mkdir -p build/logs
       script:
         - composer code-style
-        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+        - bin/phpunit -c phpunit.xml --color=always --coverage-text
 
     - stage: "Test"
       language: node_js
       node_js:
         - 8
       before_script:
-        - npm install
+        - npm install coveralls
       script:
-        - npm test -- --color
+        - npm test -- --color --verbose
+      after_success:
+        - npm run coveralls
 
     - stage: "Build"
       if: !fork

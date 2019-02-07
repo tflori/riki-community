@@ -1,4 +1,5 @@
-import { CalculatedStep, Easing, ScrollAnimation, ScrollAnimator, StaticStep } from './ScrollAnimator';
+import { Easing, EasingDirection, EasingFx } from './AnimationSpeed';
+import { CalculatedStep, ScrollAnimation, ScrollAnimator, StaticStep } from './ScrollAnimator';
 
 jQuery(function($) {
     // get the elements
@@ -72,8 +73,8 @@ jQuery(function($) {
                     0,
                     headerIconPosition.left,
                     offset + logoIconPosition.left,
-                    Easing.easeOutQuart,
-                )
+                    new Easing(EasingFx.Quart, EasingDirection.Out)
+                ),
             ],
         }),
         new ScrollAnimation($headerIcon, 'top', {
@@ -85,8 +86,8 @@ jQuery(function($) {
                     0,
                     headerIconPosition.top,
                     logoIconPosition.top + headerAnimationEnd,
-                    Easing.easeInQuad,
-                )
+                    new Easing(EasingFx.Quad, EasingDirection.In)
+                ),
             ],
         }),
         new ScrollAnimation($headerIcon, 'width', {
@@ -110,7 +111,7 @@ jQuery(function($) {
                     0,
                     headerIconHeight,
                     headerIconHeight * iconRatio,
-                )
+                ),
             ],
         }),
 
@@ -159,8 +160,8 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
             steps: [
-                new StaticStep(0, 1, 0, Easing.easeOutQuart)
-            ]
+                new StaticStep(0, 1, 0, new Easing(EasingFx.Quart, EasingDirection.Out)),
+            ],
         }),
 
         // name animation
@@ -169,16 +170,26 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new StaticStep(0, headerNamePosition.left, offset + logoNamePosition.left, Easing.easeOutQuart)
-            ]
+                new StaticStep(
+                    0,
+                    headerNamePosition.left,
+                    offset + logoNamePosition.left,
+                    new Easing(EasingFx.Quart, EasingDirection.Out)
+                ),
+            ],
         }),
         new ScrollAnimation($headerName, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new StaticStep(0, headerNamePosition.top, logoNamePosition.top + headerAnimationEnd, Easing.easeInQuad)
-            ]
+                new StaticStep(
+                    0,
+                    headerNamePosition.top,
+                    logoNamePosition.top + headerAnimationEnd,
+                    new Easing(EasingFx.Quad, EasingDirection.In)
+                ),
+            ],
         }),
         new ScrollAnimation($headerName, 'width', {
             from: 0,
@@ -195,23 +206,33 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new StaticStep(0, headerSubtitlePosition.left, offset + logoSubtitlePosition.left, Easing.easeInQuad)
-            ]
+                new StaticStep(
+                    0,
+                    headerSubtitlePosition.left,
+                    offset + logoSubtitlePosition.left,
+                    new Easing(EasingFx.Quad, EasingDirection.In)
+                ),
+            ],
         }),
         new ScrollAnimation($headerSubtitle, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new StaticStep(0, headerSubtitlePosition.top, logoSubtitlePosition.top + headerAnimationEnd, Easing.easeOutQuad)
-            ]
+                new StaticStep(
+                    0,
+                    headerSubtitlePosition.top,
+                    logoSubtitlePosition.top + headerAnimationEnd,
+                    new Easing(EasingFx.Quad, EasingDirection.Out)
+                ),
+            ],
         }),
         new ScrollAnimation($headerSubtitle, 'opacity', {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
             steps: [
-                new StaticStep(0, 1, showSubtitle ? 1 : 0, Easing.easeOutQuart)
-            ]
+                new StaticStep(0, 1, showSubtitle ? 1 : 0, new Easing(EasingFx.Quart, EasingDirection.Out)),
+            ],
         }),
     ])).start();
 });

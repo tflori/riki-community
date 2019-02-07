@@ -1,4 +1,5 @@
 import Timeout = NodeJS.Timeout;
+import { AnimationSpeed } from './AnimationSpeed';
 
 export class ScrollAnimator {
     protected scrollTop: number = 0;
@@ -14,67 +15,12 @@ export class ScrollAnimator {
                 clearTimeout(this.worker);
             }
             this.worker = setTimeout(() => {
-                console.log(this.scrollTop);
                 for (let animation of this.scrollAnimations) {
                     animation.execute(this.scrollTop);
                 }
                 this.worker = undefined;
             }, 0);
         }).triggerHandler('scroll');
-    }
-}
-
-export enum Easing {
-    easeInQuad,
-    easeOutQuad,
-    easeInOutQuad,
-    easeInCubic,
-    easeOutCubic,
-    easeInOutCubic,
-    easeInQuart,
-    easeOutQuart,
-    easeInOutQuart,
-    easeInQuint,
-    easeOutQuint,
-    easeInOutQuint
-}
-
-class EasingFunctions {
-    static easeInQuad (t: number): number {
-        return t*t;
-    }
-    static easeOutQuad (t: number): number {
-        return t*(2-t);
-    }
-    static easeInOutQuad (t: number): number {
-        return t<.5 ? 2*t*t : -1+(4-2*t)*t;
-    }
-    static easeInCubic (t: number): number {
-        return t*t*t;
-    }
-    static easeOutCubic (t: number): number {
-        return (--t)*t*t+1;
-    }
-    static easeInOutCubic (t: number): number {
-        return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
-    }
-    static easeInQuart (t: number): number {
-        return t*t*t*t;
-    }
-    static easeOutQuart (t: number): number {
-        return 1-(--t)*t*t*t;
-    }
-    static easeInOutQuart (t: number): number {
-        return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t;
-    }
-    static easeInQuint (t: number): number {
-        return t*t*t*t*t;
-    }
-    static easeOutQuint (t: number): number {
-        return 1+(--t)*t*t*t*t;
-    }
-    static easeInOutQuint (t: number): number {
-        return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t;
     }
 }
 
@@ -140,7 +86,7 @@ export class ScrollAnimation {
                 let t: number = (scrollTop - step.from) / (step.to - step.from);
                 t = Math.max(0, Math.min(1, t)); // limit to 0 - 1
                 if (step.easing) {
-                    t = (EasingFunctions as any as {[method: string]: (t: number) => number})[Easing[step.easing]](t);
+                    t = step.easing.calc(t);
                 }
                 let value = (step.start + (step.end - step.start) * t) + (this.animation.suffix || '');
                 this.element.css(this.style, value);
@@ -166,7 +112,7 @@ export class StaticStep {
         public from: number,
         public start: number,
         public end: number,
-        public easing?: Easing
+        public easing?: AnimationSpeed
     ) {}
 }
 

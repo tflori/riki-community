@@ -25,7 +25,8 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "test": "jest"
+    "test": "jest --coverageReporters text --coverageReporters lcov --coverage --coverageDirectory tests/coverage",
+    "coveralls": "cat tests/coverage/lcov.info | coveralls"
   },
   "jest": {
     "moduleFileExtensions": [
