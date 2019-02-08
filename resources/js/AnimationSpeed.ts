@@ -46,7 +46,7 @@ export enum EasingDirection {
 }
 
 export class Easing extends AnimationSpeed {
-    constructor(protected fx: EasingFx, protected direction: EasingDirection, protected strength: number = 1.70158) {
+    constructor(protected fx: EasingFx, protected direction: EasingDirection, protected strength: number = 1.70154) {
         super()
     }
 
