@@ -68,51 +68,31 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerIconPosition.left,
-                    offset + logoIconPosition.left,
-                    new Easing(EasingFx.Quart, EasingDirection.Out)
-                ),
-            ],
+            start: headerIconPosition.left,
+            end: offset + logoIconPosition.left,
+            easing: new Easing(EasingFx.Quart, EasingDirection.Out),
         }),
         new ScrollAnimation($headerIcon, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerIconPosition.top,
-                    logoIconPosition.top + headerAnimationEnd,
-                    new Easing(EasingFx.Quad, EasingDirection.In)
-                ),
-            ],
+            start: headerIconPosition.top,
+            end: logoIconPosition.top + headerAnimationEnd,
+            easing: new Easing(EasingFx.Quad, EasingDirection.In),
         }),
         new ScrollAnimation($headerIcon, 'width', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerIconWidth,
-                    headerIconWidth * iconRatio,
-                )
-            ],
+            start: headerIconWidth,
+            end: headerIconWidth * iconRatio,
         }),
         new ScrollAnimation($headerIcon, 'height', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerIconHeight,
-                    headerIconHeight * iconRatio,
-                ),
-            ],
+            start: headerIconHeight,
+            end: headerIconHeight * iconRatio,
         }),
 
         // modules animation
@@ -121,7 +101,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new CalculatedStep(0, () => {
+                new CalculatedStep(() => {
                     // bound to center of icon
                     let center = $headerIcon.position().left + ($headerIcon.width() || 0) / 2;
                     return center - ($headerModules.width() || 0) / 2;
@@ -133,7 +113,7 @@ jQuery(function($) {
             to: headerAnimationEnd,
             suffix: 'px',
             steps: [
-                new CalculatedStep(0, () => {
+                new CalculatedStep(() => {
                     // bound to center of icon
                     let center = $headerIcon.position().top + ($headerIcon.height() || 0) / 2;
                     return center - ($headerModules.height() || 0) / 2 + 1;
@@ -144,24 +124,22 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(0, headerModulesWidth, headerModulesWidth * iconRatio)
-            ],
+            start: headerModulesWidth,
+            end: headerModulesWidth * iconRatio,
         }),
         new ScrollAnimation($headerModules, 'height', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(0, headerModulesHeight, headerModulesHeight * iconRatio)
-            ],
+            start: headerModulesHeight,
+            end: headerModulesHeight * iconRatio,
         }),
         new ScrollAnimation($headerModules, 'opacity', {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
-            steps: [
-                new StaticStep(0, 1, 0, new Easing(EasingFx.Quart, EasingDirection.Out)),
-            ],
+            start: 1,
+            end: 0,
+            easing: new Easing(EasingFx.Quart, EasingDirection.Out),
         }),
 
         // name animation
@@ -169,35 +147,24 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerNamePosition.left,
-                    offset + logoNamePosition.left,
-                    new Easing(EasingFx.Quart, EasingDirection.Out)
-                ),
-            ],
+            start: headerNamePosition.left,
+            end: offset + logoNamePosition.left,
+            easing: new Easing(EasingFx.Quart, EasingDirection.Out),
         }),
         new ScrollAnimation($headerName, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerNamePosition.top,
-                    logoNamePosition.top + headerAnimationEnd,
-                    new Easing(EasingFx.Quad, EasingDirection.In)
-                ),
-            ],
+            start: headerNamePosition.top,
+            end: logoNamePosition.top + headerAnimationEnd,
+            easing: new Easing(EasingFx.Quad, EasingDirection.In),
         }),
         new ScrollAnimation($headerName, 'width', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(0, $headerName.width() || 0, $logoName.width() || 0)
-            ]
+            start: $headerName.width(),
+            end: $logoName.width(),
         }),
 
         // subtitle animation
@@ -205,34 +172,24 @@ jQuery(function($) {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerSubtitlePosition.left,
-                    offset + logoSubtitlePosition.left,
-                    new Easing(EasingFx.Quad, EasingDirection.In)
-                ),
-            ],
+            start: headerSubtitlePosition.left,
+            end: offset + logoSubtitlePosition.left,
+            easing: new Easing(EasingFx.Quad, EasingDirection.In),
         }),
         new ScrollAnimation($headerSubtitle, 'top', {
             from: 0,
             to: headerAnimationEnd,
             suffix: 'px',
-            steps: [
-                new StaticStep(
-                    0,
-                    headerSubtitlePosition.top,
-                    logoSubtitlePosition.top + headerAnimationEnd,
-                    new Easing(EasingFx.Quad, EasingDirection.Out)
-                ),
-            ],
+            start: headerSubtitlePosition.top,
+            end: logoSubtitlePosition.top + headerAnimationEnd,
+            easing: new Easing(EasingFx.Quad, EasingDirection.Out),
         }),
         new ScrollAnimation($headerSubtitle, 'opacity', {
             from: 0,
             to: headerAnimationEnd / 4 * 3,
-            steps: [
-                new StaticStep(0, 1, showSubtitle ? 1 : 0, new Easing(EasingFx.Quart, EasingDirection.Out)),
-            ],
+            start: 1,
+            end: showSubtitle ? 1 : 0,
+            easing: new Easing(EasingFx.Quart, EasingDirection.Out),
         }),
     ])).start();
 });

@@ -5,7 +5,7 @@ export class ScrollAnimator {
     protected scrollTop: number = 0;
     protected worker: Timeout|undefined;
 
-    constructor(protected scrollAnimations: ScrollAnimation[]) {}
+    constructor(public scrollAnimations: ScrollAnimation[]) {}
 
     public start() {
         jQuery(window).on('scroll', () => {
@@ -25,34 +25,92 @@ export class ScrollAnimator {
 }
 
 export class ScrollAnimation {
-    constructor(protected element: JQuery, protected style: string, protected animation: {
+    protected _from: number;
+    protected _to: number;
+    protected _steps: Step[] = [];
+    protected _suffix?: string;
+    protected _before?: string;
+    protected _after?: string;
+
+    constructor(protected _element: JQuery, protected _style: string, animation: {
         from: number,
         to: number,
-        steps?: Array<StaticStep|CalculatedStep>,
+        steps?: Step[],
         suffix?: string,
         before?: string,
         after?: string,
+        start?: number,
+        end?: number,
+        easing?: AnimationSpeed,
     }) {
-        if (this.animation.steps instanceof Array) {
-            this.animation.steps.sort((a, b) => {
+        this._from = animation.from;
+        this._to = animation.to;
+        this._before = animation.before;
+        this._after = animation.after;
+        this._suffix = animation.suffix;
+
+        if (animation.steps !== undefined && animation.steps.length > 0) {
+            this._steps = animation.steps;
+            this._steps.sort((a, b) => {
                 return a.from - b.from;
             });
 
             // force from and to for the first and last step
-            this.animation.steps[0].from = this.animation.from;
-            this.animation.steps[this.animation.steps.length - 1].to = this.animation.to;
+            this._steps[0].from = animation.from;
+            this._steps[this._steps.length - 1].to = animation.to;
 
             // set to for all steps
-            if (this.animation.steps.length > 1) {
-                for (let i = 1; i < this.animation.steps.length; i++) {
-                    this.animation.steps[i].from = Math.max(
-                        this.animation.steps[i-1].from + 1,
-                        this.animation.steps[i].from
+            if (this._steps.length > 1) {
+                for (let i = 1; i < this._steps.length; i++) {
+                    this._steps[i].from = Math.max(
+                        this._steps[i-1].from + 1,
+                        this._steps[i].from
                     );
-                    this.animation.steps[i-1].to = this.animation.steps[i].from;
+                    this._steps[i - 1].to = !this._steps[i - 1].to ?
+                                            this._steps[i].from :
+                                            Math.min(
+                                                this._steps[i - 1].to,
+                                                this._steps[i].from,
+                                            );
                 }
             }
+        } else if (animation.start !==  undefined && animation.end !== undefined) {
+            this._steps = [
+                new StaticStep(animation.start, animation.end, animation.easing, animation.from, animation.to)
+            ];
         }
+    }
+
+    public get from(): number {
+        return this._from;
+    }
+
+    public get to(): number {
+        return this._to;
+    }
+
+    public get steps(): Step[] {
+        return this._steps;
+    }
+
+    public get suffix(): undefined|string {
+        return this._suffix;
+    }
+
+    public get before(): undefined|string {
+        return this._before;
+    }
+
+    public get after(): undefined|string {
+        return this._after;
+    }
+
+    get element(): JQuery {
+        return this._element;
+    }
+
+    get style(): string {
+        return this._style;
     }
 
     public execute(scrollTop: number) {
@@ -60,26 +118,25 @@ export class ScrollAnimation {
             return;
         }
 
-        if (this.animation.before !== undefined && this.animation.from > scrollTop) {
-            this.element.css(this.style, this.animation.before);
+        if (this.before !== undefined && this.from > scrollTop) {
+            this.element.css(this.style, this.before);
             return;
-        } else if (this.animation.after !== undefined && this.animation.to < scrollTop) {
-            this.element.css(this.style, this.animation.after);
+        } else if (this.after !== undefined && this.to < scrollTop) {
+            this.element.css(this.style, this.after);
             return;
         }
 
-        if (this.animation.steps !== undefined) {
+        if (this.steps.length > 0) {
             // find the correct step
-            let step: StaticStep|CalculatedStep = this.animation.steps[0];
-            if (this.animation.steps.length > 1) {
-                for (let i = 1; i < this.animation.steps.length; i++) {
-                    if (this.animation.steps[i].from > scrollTop) {
+            let step: Step = this.steps[0];
+            if (this.steps.length > 1) {
+                for (let i = 1; i < this.steps.length; i++) {
+                    if (this.steps[i].from > scrollTop) {
                         break;
                     }
-                    step = this.animation.steps[i];
+                    step = this.steps[i];
                 }
             }
-            step.to = step.to || 0; // we need a to value
 
             if (step instanceof StaticStep) {
                 // calculate the value for this step
@@ -88,39 +145,50 @@ export class ScrollAnimation {
                 if (step.easing) {
                     t = step.easing.calc(t);
                 }
-                let value = (step.start + (step.end - step.start) * t) + (this.animation.suffix || '');
+                let value = (step.start + (step.end - step.start) * t) + (this.suffix || '');
                 this.element.css(this.style, value);
-            } else if (step.wait) {
-                // wait for this execution loop to finish before calculating with calc
-                let calc = step.calc;
-                setTimeout(() => {
-                    let value = calc(scrollTop).toString(10);
-                    this.element.css(this.style, value + this.animation.suffix)
-                }, 0);
-            } else {
+            } else if (step instanceof CalculatedStep) {
                 // calculate the value from this steps calc function
-                let value = step.calc(scrollTop).toString(10);
-                this.element.css(this.style, value + this.animation.suffix)
+                if (step.wait) {
+                    // wait for this execution loop to finish before calculating with calc
+                    let calc = step.calc;
+                    setTimeout(() => {
+                        let value = calc(scrollTop).toString(10);
+                        this.element.css(this.style, value + this.suffix)
+                    }, 0);
+                } else {
+                    let value = step.calc(scrollTop).toString(10);
+                    this.element.css(this.style, value + this.suffix)
+                }
             }
         }
     }
 }
 
-export class StaticStep {
+export abstract class Step {
+    public from: number = 0;
     public to: number = 0;
-    constructor(
-        public from: number,
-        public start: number,
-        public end: number,
-        public easing?: AnimationSpeed
-    ) {}
 }
 
-export class CalculatedStep {
-    public to: number = 0;
+export class StaticStep extends Step {
     constructor(
-        public from: number,
+        public start: number,
+        public end: number,
+        public easing?: AnimationSpeed,
+        public from: number = 0,
+        public to: number = 0,
+    ) {
+        super();
+    }
+}
+
+export class CalculatedStep extends Step {
+    constructor(
         public calc: (scrollTop: number) => number,
-        public wait?: boolean,
-    ) {}
+        public wait: boolean = false,
+        public from: number = 0,
+        public to: number = 0,
+    ) {
+        super();
+    }
 }
