@@ -1,12 +1,12 @@
 import $ from 'jquery';
 import { Easing, EasingDirection, EasingFx } from '../../resources/js/AnimationSpeed';
-import { CalculatedStep, ScrollAnimation, ScrollAnimator, StaticStep } from '../../resources/js/ScrollAnimator';
+import { CalculatedStep, ScrollAnimation, ScrollAnimator, Step } from '../../resources/js/ScrollAnimator';
 
 describe('ScrollAnimation', () => {
     describe('constructor', () => {
         it('sorts the steps', () => {
-            let step1 = new StaticStep(1, 0);
-            let step2 = new StaticStep(0, 1, undefined, 10);
+            let step1 = new Step(1, 0);
+            let step2 = new Step(0, 1, undefined, 10);
             let animation = {
                 from: 0,
                 to: 20,
@@ -23,7 +23,7 @@ describe('ScrollAnimation', () => {
         });
 
         it('forces the first step to start from scroll animation', () => {
-            let step1 = new StaticStep(1, 0, undefined, 10);
+            let step1 = new Step(1, 0, undefined, 10);
             let animation = {
                 from: 0,
                 to: 20,
@@ -40,8 +40,8 @@ describe('ScrollAnimation', () => {
                 from: 0,
                 to: 20,
                 steps: [
-                    new StaticStep(1, 0),
-                    new StaticStep(0, 1),
+                    new Step(1, 0),
+                    new Step(0, 1),
                 ],
             };
 
@@ -56,8 +56,8 @@ describe('ScrollAnimation', () => {
                 from: 0,
                 to: 20,
                 steps: [
-                    new StaticStep(1, 0),
-                    new StaticStep(0, 1, undefined, 10),
+                    new Step(1, 0),
+                    new Step(0, 1, undefined, 10),
                 ],
             };
 
@@ -72,8 +72,8 @@ describe('ScrollAnimation', () => {
                 from: 0,
                 to: 20,
                 steps: [
-                    new StaticStep(1, 0, undefined, 0, 2),
-                    new StaticStep(0, 1, undefined, 10),
+                    new Step(1, 0, undefined, 0, 2),
+                    new Step(0, 1, undefined, 10),
                 ],
             };
 
@@ -88,8 +88,8 @@ describe('ScrollAnimation', () => {
                 from: 0,
                 to: 20,
                 steps: [
-                    new StaticStep(1, 0, undefined, 0, 12),
-                    new StaticStep(0, 1, undefined, 10),
+                    new Step(1, 0, undefined, 0, 12),
+                    new Step(0, 1, undefined, 10),
                 ],
             };
 
@@ -121,7 +121,7 @@ describe('ScrollAnimation', () => {
             });
 
             // @ts-ignore
-            expect(scrollAnimation.steps[0]).toBeInstanceOf(StaticStep);
+            expect(scrollAnimation.steps[0]).toBeInstanceOf(Step);
             // @ts-ignore
             expect(scrollAnimation.steps[0].start).toBe(0);
             // @ts-ignore
@@ -176,7 +176,7 @@ describe('ScrollAnimation', () => {
                 from: 0,
                 to: 20,
                 steps: [
-                    new StaticStep(0, 10),
+                    new Step(0, 10),
                 ],
                 suffix: 'px'
             });
@@ -184,6 +184,22 @@ describe('ScrollAnimation', () => {
             scrollAnimation.execute(15);
 
             expect(element.css).toHaveBeenCalledWith('left', '7.5px');
+        });
+
+        it('converts numbers to strings', () => {
+            let element = $('<div>');
+            spyOn(element, 'css');
+            let scrollAnimation = new ScrollAnimation(element, 'opacity', {
+                from: 0,
+                to: 20,
+                steps: [
+                    new Step(0, 1),
+                ]
+            });
+
+            scrollAnimation.execute(15);
+
+            expect(element.css).toHaveBeenCalledWith('opacity', '0.75');
         });
 
         it('applies the minimum for scrollTop < animation.from', () => {
@@ -194,7 +210,7 @@ describe('ScrollAnimation', () => {
                 to: 20,
                 suffix: 'px',
                 steps: [
-                    new StaticStep(0, 10),
+                    new Step(0, 10),
                 ]
             });
 
@@ -211,7 +227,7 @@ describe('ScrollAnimation', () => {
                 to: 20,
                 suffix: 'px',
                 steps: [
-                    new StaticStep(0, 10),
+                    new Step(0, 10),
                 ]
             });
 
@@ -228,7 +244,7 @@ describe('ScrollAnimation', () => {
                 to: 20,
                 suffix: 'px',
                 steps: [
-                    new StaticStep(0, 10, new Easing(EasingFx.Quad, EasingDirection.In)),
+                    new Step(0, 10, new Easing(EasingFx.Quad, EasingDirection.In)),
                 ],
             });
 
@@ -245,9 +261,9 @@ describe('ScrollAnimation', () => {
                 to: 30,
                 suffix: 'px',
                 steps: [
-                    new StaticStep(0, 20, undefined,  0),
-                    new StaticStep(20, 0, undefined, 10), // from scrollTop 10 to scrollTop 20
-                    new StaticStep(0, 40, undefined, 20), // unused step in this test
+                    new Step(0, 20, undefined,  0),
+                    new Step(20, 0, undefined, 10), // from scrollTop 10 to scrollTop 20
+                    new Step(0, 40, undefined, 20), // unused step in this test
                 ],
             });
 
@@ -279,7 +295,7 @@ describe('ScrollAnimation', () => {
         it('defers calculation to next execution loop', () => {
             let step = new CalculatedStep(function () {
                 return 23;
-            }, true);
+            }, true, 0, 20);
             let element = $('<div>');
             spyOn(element, 'css');
             let scrollAnimation = new ScrollAnimation(element, 'left', {
@@ -399,6 +415,27 @@ describe('ScrollAnimator', () => {
 
             expect(animation1.execute).toHaveBeenCalledWith(10);
             expect(animation2.execute).toHaveBeenCalledWith(10);
+        });
+
+        it('uses document.body.scrollTop as fallback', () => {
+            let animation1: ScrollAnimation = new ScrollAnimation($('<div>'), 'left', {
+                from: 0,
+                to: 50,
+                suffix: 'px',
+                start: 0,
+                end: 100,
+                easing: new Easing(EasingFx.Quad, EasingDirection.Out)
+            });
+            scrollAnimator.scrollAnimations.push(animation1);
+            spyOn(animation1, 'execute');
+            // @ts-ignore
+            document.documentElement.scrollTop = undefined;
+            document.body.scrollTop = 10;
+
+            scrollHandler();
+            jest.runAllTimers();
+
+            expect(animation1.execute).toHaveBeenCalledWith(10);
         });
 
         it('does not execute two times', () => {

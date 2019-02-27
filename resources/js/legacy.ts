@@ -8,7 +8,7 @@ jQuery(function($) {
         if (st < headerAnimationEnd) {
             $('html, body').animate({
                 scrollTop: headerAnimationEnd
-            }, 500);
+            }, 1000);
         }
     }, window.location.href.match(/^https?:\/\/[a-zA-Z0-9:.-]+\/?(home)?$/) ? 5000 : 2000);
 

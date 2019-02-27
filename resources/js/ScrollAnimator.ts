@@ -28,7 +28,7 @@ export class ScrollAnimation {
     protected _from: number;
     protected _to: number;
     protected _steps: Step[] = [];
-    protected _suffix?: string;
+    protected _suffix: string = '';
     protected _before?: string;
     protected _after?: string;
 
@@ -47,7 +47,7 @@ export class ScrollAnimation {
         this._to = animation.to;
         this._before = animation.before;
         this._after = animation.after;
-        this._suffix = animation.suffix;
+        this._suffix = animation.suffix || '';
 
         if (animation.steps !== undefined && animation.steps.length > 0) {
             this._steps = animation.steps;
@@ -76,7 +76,7 @@ export class ScrollAnimation {
             }
         } else if (animation.start !==  undefined && animation.end !== undefined) {
             this._steps = [
-                new StaticStep(animation.start, animation.end, animation.easing, animation.from, animation.to)
+                new Step(animation.start, animation.end, animation.easing, animation.from, animation.to)
             ];
         }
     }
@@ -93,7 +93,7 @@ export class ScrollAnimation {
         return this._steps;
     }
 
-    public get suffix(): undefined|string {
+    public get suffix(): string {
         return this._suffix;
     }
 
@@ -138,47 +138,38 @@ export class ScrollAnimation {
                 }
             }
 
-            if (step instanceof StaticStep) {
-                // calculate the value for this step
-                let t: number = (scrollTop - step.from) / (step.to - step.from);
-                t = Math.max(0, Math.min(1, t)); // limit to 0 - 1
-                if (step.easing) {
-                    t = step.easing.calc(t);
-                }
-                let value = (step.start + (step.end - step.start) * t) + (this.suffix || '');
-                this.element.css(this.style, value);
-            } else if (step instanceof CalculatedStep) {
-                // calculate the value from this steps calc function
-                if (step.wait) {
-                    // wait for this execution loop to finish before calculating with calc
-                    let calc = step.calc;
-                    setTimeout(() => {
-                        let value = calc(scrollTop).toString(10);
-                        this.element.css(this.style, value + this.suffix)
-                    }, 0);
-                } else {
-                    let value = step.calc(scrollTop).toString(10);
-                    this.element.css(this.style, value + this.suffix)
-                }
+            if (step.wait) {
+                let calc = step.calc;
+                setTimeout(() => {
+                    let value = calc(scrollTop).toString(10);
+                    this.element.css(this.style, value + this.suffix);
+                });
+            } else {
+                let value = step.calc(scrollTop).toString(10);
+                this.element.css(this.style, value + this.suffix);
             }
         }
     }
 }
 
-export abstract class Step {
-    public from: number = 0;
-    public to: number = 0;
-}
+export class Step {
+    public wait: boolean = false;
 
-export class StaticStep extends Step {
     constructor(
         public start: number,
         public end: number,
         public easing?: AnimationSpeed,
         public from: number = 0,
         public to: number = 0,
-    ) {
-        super();
+    ) {}
+
+    public calc(scrollTop: number): number {
+        let t: number = (scrollTop - this.from) / (this.to - this.from);
+        t = Math.max(0, Math.min(1, t)); // limit to 0 - 1
+        if (this.easing) {
+            t = this.easing.calc(t);
+        }
+        return (this.start + (this.end - this.start) * t);
     }
 }
 
@@ -189,6 +180,6 @@ export class CalculatedStep extends Step {
         public from: number = 0,
         public to: number = 0,
     ) {
-        super();
+        super(0, 0);
     }
 }
