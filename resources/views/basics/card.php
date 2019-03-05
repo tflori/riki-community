@@ -1,9 +1,11 @@
 <?php /** @var callable $e */ /** @var Syna\View $v */ ?>
 <div class="card">
-    <div class="card-content">
+    <article class="card-content">
         <?php if ($v->section('title')) : ?>
+        <header>
             <span class="card-title"><?= $e($v->section('title')) ?></span>
+        </header>
         <?php endif; ?>
         <?= $v->section('content', $content ?? '') ?>
-    </div>
+    </article>
 </div>

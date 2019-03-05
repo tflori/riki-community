@@ -3,7 +3,7 @@ import { CalculatedStep, ScrollAnimation, ScrollAnimator } from './ScrollAnimato
 
 jQuery(function($) {
     // get the elements
-    let $body = $('body > header');
+    let $body = $('#riki-community > header');
     let $navBar = $('.navbar-fixed');
     let $headerIcon = $('#header-background-icon');
     let $headerModules = $('#header-background-modules');

@@ -33,7 +33,10 @@ class Without {
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
     resolve: {
-        extensions: ['.ts', '.js', '.scss', '.css']
+        extensions: ['.ts', '.js', '.scss', '.css'],
+        alias: {
+            vue: 'vue/dist/vue.js'
+        },
     },
     devtool: 'source-map',
     entry: {

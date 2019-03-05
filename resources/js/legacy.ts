@@ -1,5 +1,5 @@
 jQuery(function($) {
-    let heightOfLargeHeader = $('body > header').height() || 0;
+    let heightOfLargeHeader = $('#riki-community > header').height() || 0;
     let heightOfSmallHeader = $('.navbar-fixed').height() || 0;
     let headerAnimationEnd = heightOfLargeHeader - heightOfSmallHeader;
 

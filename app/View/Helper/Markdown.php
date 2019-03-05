@@ -8,6 +8,6 @@ class Markdown extends AbstractViewHelper
 {
     public function __invoke($content = '')
     {
-        return '<div class="markdown">' . (new \Parsedown())->parse($content) . '</div>';
+        return '<article class="markdown">' . (new \Parsedown())->parse($content) . '</article>';
     }
 }

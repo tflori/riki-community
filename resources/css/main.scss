@@ -297,6 +297,30 @@ header ul {
     background-image: url('/images/subtitle.svg');
 }
 
+.user-status .avatar {
+    display: block;
+    float: left;
+    height: 24px;
+    width: 24px;
+    margin: 20px 15px 20px 0;
+    border-radius: 12px;
+}
+
+.btn-flat.btn-small:hover {
+    background: inherit;
+}
+
+.modal .modal-footer {
+    padding-right: 10px;
+}
+
+@media only screen and (min-width: 993px) {
+    .modal {
+        min-width: 794px;
+        max-width: 900px;
+    }
+}
+
 @media only screen and (max-width: 992px) {
     nav .brand-logo.left {
         left: 64px;
@@ -336,6 +360,10 @@ header ul {
         height: 56px;
         width: 64px;
         padding: 0 20px
+    }
+
+    .user-status .avatar {
+        margin: 16px 0;
     }
 
     .sidenav-overlay {

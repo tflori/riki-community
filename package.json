@@ -3,25 +3,25 @@
   "author": "Thomas Flori",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^23.3.11",
+    "@types/jest": "^23.3.14",
     "@types/jquery": "^3.3.29",
     "@types/materialize-css": "^1.0.6",
-    "@vue/test-utils": "^1.0.0-beta.28",
+    "@vue/test-utils": "^1.0.0-beta.29",
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^2.1.0",
-    "cssnano": "^4.1.8",
+    "cssnano": "^4.1.10",
     "jest": "^23.6.0",
     "jquery": "^3.3.1",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "ts-jest": "^23.10.5",
-    "typescript": "^3.2.2",
-    "vue": "^2.5.21",
+    "typescript": "^3.3.3333",
+    "vue": "^2.6.8",
     "vue-class-component": "^6.3.2",
-    "vue-jest": "^3.0.2",
-    "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.0"
+    "vue-jest": "^3.0.3",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "scripts": {
     "build": "webpack",
@@ -42,5 +42,6 @@
     },
     "testURL": "http://localhost/",
     "testRegex": "/tests/js/.*\\.spec\\.ts$"
-  }
+  },
+  "dependencies": {}
 }

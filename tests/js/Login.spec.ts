@@ -1,10 +1,10 @@
-import Login from '../../resources/js/Login';
+import UserStatus from '../../resources/js/Vue/UserStatus';
 
 import Vue from 'vue';
 
-describe('Login dialog', () => {
+describe('User Status', () => {
     it('is a vue component', () => {
-        let login = new Login();
+        let login = new UserStatus();
 
         expect(login instanceof Vue).toBeTruthy();
     });

@@ -26,7 +26,7 @@ dapibus. Vivamus elementum semper nisi.
     1. first item under fifth element
 6. item
 
-The dispatcher that was just executed...
+This is the dispatcher that was just executed:
 
 ```php
 <?= substr(file_get_contents(App\Application::environment()->path('app/Http/Dispatcher.php')), 7); ?>
