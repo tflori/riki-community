@@ -314,6 +314,26 @@ header ul {
     padding-right: 10px;
 }
 
+@media only screen and (max-height: 700px) {
+    .modal {
+        max-height: 80%;
+    }
+}
+
+@media only screen and (max-height: 500px) {
+    .modal {
+        max-height: 90%;
+        top: 5% !important;
+    }
+}
+
+@media only screen and (max-height: 400px) {
+    .modal {
+        max-height: 100%;
+        top: 0 !important;
+    }
+}
+
 @media only screen and (min-width: 993px) {
     .modal {
         min-width: 794px;
@@ -384,5 +404,9 @@ header ul {
 
     .card.search-result .search-area {
         flex-basis: 48px;
+    }
+
+    .modal {
+        width: 90%;
     }
 }
