@@ -6,7 +6,7 @@ import Component from 'vue-class-component';
     // All component options are allowed in here
     template: `
         <li class="icon user-status">
-            <a v-if="!user" class="btnLogin" @click="showLoginDialog">
+            <a v-if="!user" class="btnLogin" @click="$root.$refs.loginDialog.open()">
                 <i class="material-icons left">account_circle</i>
                 <span class="icon-text"> Login / Signup</span>
             </a>
@@ -20,10 +20,6 @@ import Component from 'vue-class-component';
 export default class UserStatus extends Vue {
     get user() {
         return this.$root.$data.user;
-    }
-
-    showLoginDialog(): void {
-        $('#login-dialog').modal('open');
     }
 
     showUserMenu (): void {

@@ -48,8 +48,8 @@
             </div>
 
             <!-- Overlays -->
-            <login-dialog></login-dialog>
-            <signup-dialog></signup-dialog>
+            <login-dialog ref="loginDialog"></login-dialog>
+            <signup-dialog ref="signupDialog"></signup-dialog>
 
             <!-- Mobile Navigation -->
             <ul class="sidenav" id="mobile-nav">

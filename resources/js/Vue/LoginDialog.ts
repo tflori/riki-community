@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import SignupDialog from './SignupDialog';
+import Modal = M.Modal;
 
 @Component({
     template: `
-        <div id="login-dialog" class="modal">
+        <div class="modal">
             <button class="btn-small btn-flat right modal-close"><i class="material-icons">close</i></button>
             <div class="modal-content row">
                 <div class="col s12">
@@ -12,11 +14,11 @@ import Component from 'vue-class-component';
                 <form class="col s12 l8 offset-l2" @submit.prevent="authenticate" action="/any_url">
                     <div class="row">
                         <div class="input-field col s12">
-                            <input class="validate" id="login-email" name="email" type="email" v-model="login.email" />
+                            <input id="login-email" name="email" ref="email" type="email" v-model="email" />
                             <label for="login-email">eMail Address</label>
                         </div>
                         <div class="input-field col s12">
-                            <input id="login-password" name="password" type="password" v-model="login.password" />
+                            <input id="login-password" name="password" type="password" v-model="password" />
                             <label for="login-password">Password</label>
                         </div>
                     </div>
@@ -34,20 +36,29 @@ import Component from 'vue-class-component';
     `,
 })
 export default class LoginDialog extends Vue {
-    protected login = {
-        email: '',
-        password: '',
-    };
+    protected email: string = '';
+    protected password: string = '';
 
-    public mounted () {
-        this.$nextTick(() => {
-            let $el = jQuery(this.$el);
-            $el.modal({
+    protected _modalInstance: Modal|undefined;
+
+    protected get dialog(): Modal {
+        if (!this._modalInstance) {
+            this._modalInstance = Modal.init(this.$el, {
                 onOpenEnd: () => {
-                    $el.find('#login-email').focus();
+                    (<HTMLElement>this.$refs.email).focus();
                 },
             });
-        });
+        }
+
+        return this._modalInstance;
+    }
+
+    public close() {
+        this.dialog.close();
+    }
+
+    public open() {
+        this.dialog.open();
     }
 
     public authenticate() {
@@ -64,10 +75,6 @@ export default class LoginDialog extends Vue {
 
     public showSignup() {
         this.close();
-        jQuery('#signup-dialog').modal('open');
-    }
-
-    public close() {
-        jQuery(this.$el).modal('close');
+        (<SignupDialog>this.$root.$refs.signupDialog).open();
     }
 }

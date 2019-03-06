@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import LoginDialog from './LoginDialog';
+import Modal = M.Modal;
 
 @Component({
     template: `
-        <div id="signup-dialog" class="modal">
+        <div class="modal">
             <button class="btn-small btn-flat right modal-close"><i class="material-icons">close</i></button>
             <div class="modal-content row">
                 <div class="col s12">
@@ -12,24 +14,23 @@ import Component from 'vue-class-component';
                 <form class="col s12 l8 offset-l2" @submit.prevent="register" action="/any_url">
                     <div class="row">
                         <div class="input-field col s12">
-                            <input class="validate" id="signup-email" name="email" type="email" v-model="email" />
+                            <input class="validate" id="signup-email" ref="email" type="email" v-model="email" />
                             <label for="signup-email">eMail Address</label>
                         </div>
                         <div class="input-field col s12 m6">
-                            <input id="signup-password" name="password" type="password" v-model="password" />
+                            <input id="signup-password" type="password" v-model="password" />
                             <label for="signup-password">Password</label>
                         </div>
                         <div class="input-field col s12 m6">
-                            <input id="signup-password-confirmation" name="password-confirmation" type="password" 
-                                 v-model="passwordConfirmation" />
+                            <input id="signup-password-confirmation" type="password" v-model="passwordConfirmation" />
                             <label for="signup-password-confirmation">Confirmation</label>
                         </div>
                         <div class="input-field col s12 m6">
-                            <input id="signup-displayName" name="displayName" type="text" v-model="displayName" />
+                            <input id="signup-displayName" type="text" v-model="displayName" />
                             <label for="signup-displayName">Pseudonym</label>
                         </div>
                         <div class="input-field col s12 m6">
-                            <input id="signup-name" name="name" type="text" v-model="name" />
+                            <input id="signup-name" type="text" v-model="name" />
                             <label for="signup-name">Name</label>
                         </div>
                     </div>
@@ -54,16 +55,27 @@ export default class SignupDialog extends Vue {
     protected displayName: string = '';
     protected name: string = '';
 
-    public mounted() {
-        this.$nextTick(() => {
-            let $el = jQuery(this.$el);
-            $el.modal({
+    protected _modalInstance: Modal|undefined;
+
+    protected get dialog(): Modal {
+        if (!this._modalInstance) {
+            this._modalInstance = Modal.init(this.$el, {
                 onOpenStart: this.reset,
                 onOpenEnd: () => {
-                    $el.find('#signup-email').focus();
+                    (<HTMLElement>this.$refs.email).focus();
                 },
             });
-        });
+        }
+
+        return this._modalInstance;
+    }
+
+    public close() {
+        this.dialog.close();
+    }
+
+    public open() {
+        this.dialog.open();
     }
 
     public reset() {
@@ -77,14 +89,10 @@ export default class SignupDialog extends Vue {
 
     public showLogin() {
         this.close();
-        jQuery('#login-dialog').modal('open');
+        (<LoginDialog>this.$root.$refs.loginDialog).open();
     }
 
     public register() {
         console.log(this.email, this.password, this.passwordConfirmation);
-    }
-
-    public close() {
-        jQuery(this.$el).modal('close');
     }
 }
