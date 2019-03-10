@@ -9,6 +9,18 @@
         "module": "es2015",
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "experimentalDecorators": true
-    }
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "baseUrl": ".",
+        "paths": {
+            "@view/*": [
+                "resources/views/components/*"
+            ]
+        }
+    },
+    "include": [
+        "tests/js/**/*.ts",
+        "resources/js/**/*.ts",
+        "resources/views/components/**/*.html"
+    ]
 }

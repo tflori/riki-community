@@ -1,5 +1,6 @@
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Path = require('path');
 
 
@@ -35,8 +36,11 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.scss', '.css'],
         alias: {
-            vue: 'vue/dist/vue.js'
+            vue: 'vue/dist/vue.js',
         },
+        plugins: [
+            new TsconfigPathsPlugin(),
+        ],
     },
     devtool: 'source-map',
     entry: {
@@ -74,6 +78,10 @@ module.exports = {
                 test: /\.ts$/,
                 loader: 'awesome-typescript-loader',
             },
+            {
+                test: /\.html$/,
+                loader: 'vue-template-loader',
+            }
         ],
     },
     plugins: [

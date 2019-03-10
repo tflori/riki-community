@@ -2,6 +2,7 @@
   "name": "riki-community",
   "author": "Thomas Flori",
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^23.3.14",
     "@types/jquery": "^3.3.29",
@@ -16,10 +17,14 @@
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "ts-jest": "^23.10.5",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
     "typescript": "^3.3.3333",
     "vue": "^2.6.8",
     "vue-class-component": "^6.3.2",
     "vue-jest": "^3.0.3",
+    "vue-template-compiler": "^2.6.8",
+    "vue-template-loader": "^1.0.0",
+    "vue-template-loader-jest": "^0.1.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
   },
@@ -33,15 +38,16 @@
     "moduleFileExtensions": [
       "js",
       "ts",
-      "json",
-      "vue"
+      "html"
     ],
     "transform": {
-      ".*\\.(vue)$": "vue-jest",
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.html?$": "vue-template-loader-jest"
     },
     "testURL": "http://localhost/",
-    "testRegex": "/tests/js/.*\\.spec\\.ts$"
-  },
-  "dependencies": {}
+    "testRegex": "/tests/js/.*\\.spec\\.ts$",
+    "moduleNameMapper": {
+      "@view/(.*)": "<rootDir>/resources/views/components/$1"
+    }
+  }
 }
