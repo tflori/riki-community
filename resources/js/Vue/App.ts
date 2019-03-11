@@ -23,13 +23,6 @@ export default class App extends Vue {
     }
 
     public created() {
-        console.log('something happened');
-        this.$data.user = {
-            id: Math.round(Math.random() * 1000000),
-            name: "John Arthur Doe",
-            email: "john.doe@example.com",
-            avatar: "https://www.gravatar.com/avatar/3cbc553a0a4353f5986bf8e8d36fe64a?s=24",
-            displayName: "arthur42",
-        };
+        // @todo update user status
     }
 }
