@@ -1,5 +1,5 @@
-import { Easing, EasingDirection, EasingFx } from './AnimationSpeed';
-import { CalculatedStep, ScrollAnimation, ScrollAnimator } from './ScrollAnimator';
+import { Easing, EasingDirection, EasingFx } from './Models/AnimationSpeed';
+import { CalculatedStep, ScrollAnimation, ScrollAnimator } from './Models/ScrollAnimator';
 
 jQuery(function($) {
     // get the elements

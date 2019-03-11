@@ -22,6 +22,7 @@
     "vue": "^2.6.8",
     "vue-class-component": "^6.3.2",
     "vue-jest": "^3.0.3",
+    "vue-resource": "^1.5.1",
     "vue-template-compiler": "^2.6.8",
     "vue-template-loader": "^1.0.0",
     "vue-template-loader-jest": "^0.1.0",
@@ -47,7 +48,8 @@
     "testURL": "http://localhost/",
     "testRegex": "/tests/js/.*\\.spec\\.ts$",
     "moduleNameMapper": {
-      "@view/(.*)": "<rootDir>/resources/views/components/$1"
+      "@view/(.*)": "<rootDir>/resources/views/components/$1",
+      "@src/(.*)": "<rootDir>/resources/js/$1"
     }
   }
 }

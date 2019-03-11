@@ -15,6 +15,9 @@
         "paths": {
             "@view/*": [
                 "resources/views/components/*"
+            ],
+            "@src/*": [
+                "resources/js/*"
             ]
         }
     },

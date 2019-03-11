@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import { Easing, EasingDirection, EasingFx } from '../../resources/js/AnimationSpeed';
-import { CalculatedStep, ScrollAnimation, ScrollAnimator, Step } from '../../resources/js/ScrollAnimator';
+import { Easing, EasingDirection, EasingFx } from '@src/Models/AnimationSpeed';
+import { CalculatedStep, ScrollAnimation, ScrollAnimator, Step } from '@src/Models/ScrollAnimator';
 
 describe('ScrollAnimation', () => {
     describe('constructor', () => {

@@ -1,4 +1,4 @@
-import UserStatus from '../../../resources/js/Vue/UserStatus';
+import UserStatus from '@src/Vue/UserStatus';
 
 import Vue from 'vue';
 
