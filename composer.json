@@ -13,7 +13,7 @@
         "filp/whoops": "^2.2",
         "monolog/monolog": "^1.9",
         "ulrichsg/getopt-php": "^3.2",
-        "tflori/hugga": "1.0.0-rc.3",
+        "tflori/hugga": "1.0.0",
         "tflori/tal": "^1.0.1",
         "nikic/fast-route": "^1.3.0",
         "psr/http-server-handler": "^1.0.0",
