@@ -1,5 +1,6 @@
-import Vue from 'vue';
 import Component from 'vue-class-component';
+import Vue from 'vue';
+
 import WithRender from '@view/UserStatus.html'
 
 @WithRender
@@ -9,6 +10,7 @@ export default class UserStatus extends Vue{
         return this.$root.$data.user;
     }
 
+    /* istanbul ignore next */
     showUserMenu (): void {
         alert(JSON.stringify(this.user));
     }

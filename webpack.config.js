@@ -35,9 +35,6 @@ module.exports = {
     mode: process.env.NODE_ENV || 'development',
     resolve: {
         extensions: ['.ts', '.js', '.scss', '.css'],
-        alias: {
-            vue: 'vue/dist/vue.js',
-        },
         plugins: [
             new TsconfigPathsPlugin(),
         ],
@@ -52,7 +49,9 @@ module.exports = {
         publicPath: '/assets/',
     },
     externals: {
-        jquery: 'jQuery'
+        jquery: 'jQuery',
+        'materialize-css': 'M',
+        'vue': 'Vue',
     },
     module: {
         rules: [

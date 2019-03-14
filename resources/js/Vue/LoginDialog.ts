@@ -1,7 +1,8 @@
-import Vue from 'vue';
 import Component from 'vue-class-component';
+import M from 'materialize-css';
+import Vue from 'vue';
+
 import SignupDialog from './SignupDialog';
-import Modal = M.Modal;
 import WithRender from '@view/LoginDialog.html';
 
 @WithRender
@@ -10,11 +11,11 @@ export default class LoginDialog extends Vue {
     protected email: string = '';
     protected password: string = '';
 
-    protected _modalInstance: Modal|undefined;
+    protected _modalInstance: M.Modal|undefined;
 
-    protected get dialog(): Modal {
+    protected get dialog(): M.Modal {
         if (!this._modalInstance) {
-            this._modalInstance = Modal.init(this.$el, {
+            this._modalInstance = M.Modal.init(this.$el, {
                 onOpenEnd: () => {
                     (<HTMLElement>this.$refs.email).focus();
                 },
