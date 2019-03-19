@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { clickOn } from '../helper';
+import { clickOn, containing } from '../helper';
 
 import LoginDialog from '@src/Vue/LoginDialog';
 import UserStatus from '@src/Vue/UserStatus';
@@ -8,7 +8,7 @@ describe('UserStatus', () => {
     it('is a vue component', () => {
         let userStatus = new UserStatus();
 
-        expect(userStatus instanceof Vue).toBeTruthy();
+        expect(userStatus).toBeInstanceOf(Vue);
     });
 
     describe('without login', () =>{
@@ -17,14 +17,14 @@ describe('UserStatus', () => {
 
             userStatus.$mount();
 
-            expect(userStatus.$el.innerHTML).toMatch(/<a[^>]*>.*Login.*<\/a>/);
+            expect(containing(userStatus.$el.querySelectorAll('a'), 'Login').length).toBe(1);
         });
 
         it('opens the login dialog on click', () => {
             let userStatus = new UserStatus();
             userStatus.$mount();
             let loginDialog = userStatus.$root.$refs.loginDialog = new LoginDialog();
-            spyOn(loginDialog, 'open').and.returnValue(undefined);
+            spyOn(loginDialog, 'open').and.stub();
 
             clickOn(userStatus.$el.querySelector('a'));
 
@@ -39,7 +39,7 @@ describe('UserStatus', () => {
 
             userStatus.$mount();
 
-            expect(userStatus.$el.innerHTML).toMatch(/<a[^>]*>.*jdoe.*<\/a>/);
+            expect(containing(userStatus.$el.querySelectorAll('a'), 'jdoe').length).toBe(1);
         });
     });
 });

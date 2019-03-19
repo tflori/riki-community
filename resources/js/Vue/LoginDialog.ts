@@ -10,20 +10,7 @@ import WithRender from '@view/LoginDialog.html';
 export default class LoginDialog extends Vue {
     protected email: string = '';
     protected password: string = '';
-
     protected _modalInstance: M.Modal|undefined;
-
-    protected get dialog(): M.Modal {
-        if (!this._modalInstance) {
-            this._modalInstance = M.Modal.init(this.$el, {
-                onOpenEnd: () => {
-                    (<HTMLElement>this.$refs.email).focus();
-                },
-            });
-        }
-
-        return this._modalInstance;
-    }
 
     public close() {
         this.dialog.close();
@@ -33,8 +20,22 @@ export default class LoginDialog extends Vue {
         this.dialog.open();
     }
 
-    public authenticate() {
+    protected get dialog(): M.Modal {
+        if (!this._modalInstance) {
+            this._modalInstance = M.Modal.init(this.$el, {
+                onOpenEnd: () => {
+                    /* istanbul ignore next */
+                    (<HTMLElement>this.$refs.email).focus();
+                },
+            });
+        }
+
+        return this._modalInstance;
+    }
+
+    protected authenticate() {
         // for now lets assume it works - so we store a user object in $root.$data.user
+        /* istanbul ignore next */
         this.$root.$data.user = {
             id: Math.round(Math.random() * 1000000),
             name: "John Arthur Doe",
@@ -45,7 +46,7 @@ export default class LoginDialog extends Vue {
         this.close();
     }
 
-    public showSignup() {
+    protected showSignup() {
         this.close();
         (<SignupDialog>this.$root.$refs.signupDialog).open();
     }
