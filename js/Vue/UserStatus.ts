@@ -1,7 +1,7 @@
 import Component from 'vue-class-component';
 import Vue from 'vue';
 
-import WithRender from '@view/UserStatus.html'
+import WithRender from '../../resources/views/components/UserStatus.html'
 
 @WithRender
 @Component

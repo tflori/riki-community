@@ -50,7 +50,7 @@
     "testRegex": "/tests/js/.*\\.spec\\.ts$",
     "moduleNameMapper": {
       "@view/(.*)": "<rootDir>/resources/views/components/$1",
-      "@src/(.*)": "<rootDir>/resources/js/$1"
+      "@src/(.*)": "<rootDir>/js/$1"
     },
     "coverageReporters": ["text","lcov"],
     "coverageDirectory": "tests/coverage",

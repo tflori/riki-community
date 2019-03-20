@@ -4,7 +4,7 @@ import M from 'materialize-css';
 import Vue from 'vue';
 
 import LoginDialog from './LoginDialog';
-import WithRender from '@view/SignupDialog.html';
+import WithRender from '../../resources/views/components/SignupDialog.html';
 
 @WithRender
 @Component

@@ -17,13 +17,13 @@
                 "resources/views/components/*"
             ],
             "@src/*": [
-                "resources/js/*"
+                "js/*"
             ]
         }
     },
     "include": [
         "tests/js/**/*.ts",
-        "resources/js/**/*.ts",
+        "js/**/*.ts",
         "resources/views/components/**/*.html"
     ]
 }

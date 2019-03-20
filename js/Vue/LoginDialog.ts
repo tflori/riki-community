@@ -3,7 +3,7 @@ import M from 'materialize-css';
 import Vue from 'vue';
 
 import SignupDialog from './SignupDialog';
-import WithRender from '@view/LoginDialog.html';
+import WithRender from '../../resources/views/components/LoginDialog.html';
 
 @WithRender
 @Component

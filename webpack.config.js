@@ -41,7 +41,7 @@ module.exports = {
     },
     devtool: 'source-map',
     entry: {
-        'bundle': './resources/js/bundle.ts',
+        'bundle': './js/bundle.ts',
         'bundle.css': './resources/css/bundle.scss',
     },
     output: {
