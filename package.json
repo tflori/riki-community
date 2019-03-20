@@ -33,7 +33,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "test": "jest --coverageReporters text --coverageReporters lcov --coverage --coverageDirectory tests/coverage",
+    "test": "jest --coverage",
     "coveralls": "cat tests/coverage/lcov.info | coveralls"
   },
   "jest": {
@@ -52,12 +52,11 @@
       "@view/(.*)": "<rootDir>/resources/views/components/$1",
       "@src/(.*)": "<rootDir>/resources/js/$1"
     },
-    "collectCoverageFrom": [
-      "resources/js/**/*.ts",
-      "!resources/js/bundle.ts",
-      "!resources/js/vue.ts",
-      "!resources/js/legacy.ts",
-      "!resources/js/scrolling.ts"
+    "coverageReporters": ["text","lcov"],
+    "coverageDirectory": "tests/coverage",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/"
     ]
   }
 }
