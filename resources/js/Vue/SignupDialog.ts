@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Component from 'vue-class-component';
 import M from 'materialize-css';
 import Vue from 'vue';
