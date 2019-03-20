@@ -51,6 +51,13 @@
     "moduleNameMapper": {
       "@view/(.*)": "<rootDir>/resources/views/components/$1",
       "@src/(.*)": "<rootDir>/resources/js/$1"
-    }
+    },
+    "collectCoverageFrom": [
+      "resources/js/**/*.ts",
+      "!resources/js/bundle.ts",
+      "!resources/js/vue.ts",
+      "!resources/js/legacy.ts",
+      "!resources/js/scrolling.ts"
+    ]
   }
 }

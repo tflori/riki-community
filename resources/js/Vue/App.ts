@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueResource from 'vue-resource';
