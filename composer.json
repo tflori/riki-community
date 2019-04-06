@@ -9,6 +9,7 @@
     "require": {
         "php": "^7.1",
         "ext-mbstring": "*",
+        "ext-bcmath": "*",
         "tflori/riki-framework": "1.0.0-rc.1",
         "filp/whoops": "^2.2",
         "monolog/monolog": "^1.9",
@@ -22,12 +23,13 @@
         "nette/mail": "^2.4",
         "psy/psysh": "^0.9.9",
         "tflori/nb-sessions": "^1.1",
-        "tflori/orm": "^1.5",
+        "tflori/orm": "^1.6",
         "tflori/secure-token": "^1.0",
         "tflori/verja": "^1.1",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
         "tflori/syna": "1.0.0-rc.1",
-        "tflori/breyta": "1.0.0-rc.3"
+        "tflori/breyta": "1.0.0-rc.3",
+        "nesbot/carbon": "^2.16"
     },
     "suggest": {
         "ext-pcntl": "*",

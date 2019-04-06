@@ -17,7 +17,8 @@ class EntityManagerFactory extends AbstractFactory
     protected function build()
     {
         return new EntityManager([
-            EntityManager::OPT_CONNECTION => $this->container->config->dbConfig
+            EntityManager::OPT_CONNECTION => $this->container->config->dbConfig,
+            'tableNameTemplate' => '%short%s',
         ]);
     }
 }

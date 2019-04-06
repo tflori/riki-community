@@ -9,12 +9,18 @@ use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use ORM\EntityManager;
+use ORM\MockTrait;
 use Whoops;
 
 abstract class TestCase extends MockeryTestCase
 {
+    use MockTrait;
+
     /** @var Application|m\Mock */
     protected $app;
+
+    /** @var EntityManager|m\Mock */
+    protected $em;
 
     /** @var m\Mock[] */
     protected $mocks = [];
@@ -73,14 +79,11 @@ abstract class TestCase extends MockeryTestCase
         $this->mocks['console']->shouldNotReceive(['read', 'readLine', 'readUntil']);
         $this->app->instance('console', $console);
 
-        /** @var \PDO|m\Mock $pdo */
-        $pdo = $this->mocks['pdo'] = m::mock(\PDO::class);
-        $pdo->shouldReceive('setAttribute')->andReturn(true)->byDefault();
-
-        /** @var EntityManager|m\Mock $entityManager */
-        $entityManager = $this->mocks['entityManager'] = m::mock(EntityManager::class)->makePartial();
-        $entityManager->setConnection($pdo);
-        $this->app->instance('entityManager', $entityManager);
+        $this->em = $this->mocks['entityManager'] = $this->ormInitMock([
+            'tableNameTemplate' => '%short%s',
+        ], 'pgsql');
+        $this->mocks['pdo'] = $this->em->getConnection();
+        $this->app->instance('entityManager', $this->em);
     }
 
     /**
