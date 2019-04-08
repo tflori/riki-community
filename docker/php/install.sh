@@ -1,8 +1,6 @@
 #!/bin/sh
 set -ex
 
-adduser -D www-user
-
 # setup psysh config
 mkdir -p /root/.config/psysh
 mkdir -p /home/www-user/.config/psysh
@@ -17,10 +15,9 @@ mkdir -p /home/www-user/.config/psysh
   echo '];'; \
   echo ''; \
 } | tee /root/.config/psysh/config.php > /home/www-user/.config/psysh/config.php
-chown -R www-user /home/www-user
 
 # download manual for psysh
-apk add --no-cache ca-certificates openssl wget
+apk add --no-cache ca-certificates openssl wget bash
 mkdir -p /usr/local/share/psysh
 wget https://psysh.org/manual/en/php_manual.sqlite -qO /usr/local/share/psysh/php_manual.sqlite
 
