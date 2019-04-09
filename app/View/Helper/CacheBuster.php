@@ -15,7 +15,6 @@ class CacheBuster extends AbstractViewHelper
             return $path;
         }
 
-        // @todo implement caching...
         $md5 = md5_file($filePath);
         return $path . '?_=' . substr($md5, 0, 10);
     }
