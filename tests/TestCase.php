@@ -10,11 +10,12 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use ORM\EntityManager;
 use ORM\MockTrait;
+use Test\PhpUnit\ArraySubsetAssert;
 use Whoops;
 
 abstract class TestCase extends MockeryTestCase
 {
-    use MockTrait;
+    use MockTrait, ArraySubsetAssert;
 
     /** @var Application|m\Mock */
     protected $app;
