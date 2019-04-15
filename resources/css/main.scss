@@ -144,31 +144,29 @@ footer {
         box-shadow: none;
         background: none;
     }
-}
 
-.card-content {
-    &.search {
-        padding: 5px 32px;
+    .card-content {
+        &.search {
+            padding: 5px 32px;
 
-        .input-field {
-            margin: 0;
+            .input-field {
+                margin: 0;
 
-            input {
-                padding-right: 28px;
-                box-sizing: border-box;
+                input {
+                    padding-right: 28px;
+                    box-sizing: border-box;
+                }
+            }
+
+            #close-search {
+                position: absolute;
+                top: 0;
+                right: 0;
+                color: #777;
+                display: none;
             }
         }
 
-        #close-search {
-            position: absolute;
-            top: 0;
-            right: 0;
-            color: #777;
-            display: none;
-        }
-    }
-
-    .markdown {
         ul>li, ul {
             list-style-type: disc;
         }

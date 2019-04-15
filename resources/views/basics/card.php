@@ -2,9 +2,7 @@
 <div class="card">
     <article class="card-content">
         <?php if ($v->section('title')) : ?>
-        <header>
-            <span class="card-title"><?= $e($v->section('title')) ?></span>
-        </header>
+          <header class="card-title"><?= $e($v->section('title')) ?></header>
         <?php endif; ?>
         <?= $v->section('content', $content ?? '') ?>
     </article>
