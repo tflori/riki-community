@@ -167,7 +167,7 @@ footer {
             }
         }
 
-        ul>li, ul {
+        ul > li, ul {
             list-style-type: disc;
         }
 
@@ -267,7 +267,7 @@ header ul {
 
 .navbar-fixed {
     position: absolute;
-    top: 0px;
+    top: 0;
     display: none;
 }
 
