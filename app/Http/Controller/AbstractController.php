@@ -5,6 +5,7 @@ namespace App\Http\Controller;
 use App\Application;
 use Exception;
 use function GuzzleHttp\Psr7\stream_for;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -138,5 +139,104 @@ abstract class AbstractController implements RequestHandlerInterface
         krsort($accepted); // sort by quality
         $accepted = array_intersect($accepted, $possible);
         return array_shift($accepted) ?? $possible[0];
+    }
+
+    /**
+     * Check parameters with validation
+     *
+     * Returns true when valid and false when not. $data will be filled with validated data (when valid) and $errors
+     * will be filled with Verja\Error (when invalid).
+     *
+     * $source has to be an array or an existing getter (query, post, json).
+     *
+     * Usage:
+     * ```php
+     *   if (!$this->validate(['name' => ['required']], 'post', $data, $errors)) {
+     *     // fail and show $errors
+     *   }
+     *   // use $data
+     * ```
+     *
+     * @param array        $fields
+     * @param string|array $source
+     * @param array        $data
+     * @param array        $errors
+     * @return bool
+     * @throws InvalidArgumentException
+     */
+    protected function validate(array $fields, $source = 'query', &$data = [], &$errors = [])
+    {
+        if (!is_array($source)) {
+            if (!method_exists($this, 'get' . ucfirst($source))) {
+                throw new InvalidArgumentException(
+                    '$source has to be an array or an existing getter (query, post, json)'
+                );
+            }
+            $source = call_user_func([$this, 'get' . ucfirst($source)]);
+        }
+        $gate = Application::verja();
+        $gate->accepts($fields);
+
+        if ($gate->validate($source)) {
+            $data = $gate->getData();
+            return true;
+        }
+
+        $errors = $gate->getErrors();
+        return false;
+    }
+
+    /**
+     * Get all params or the parameter $key from query
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return array|mixed
+     */
+    protected function getQuery(string $key = null, $default = null)
+    {
+        if (!$key) {
+            return $this->request->getQueryParams();
+        }
+
+        return $this->request->getQueryParams()[$key] ?? $default;
+    }
+
+    /**
+     * Get all params or the parameter $key from post body
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return array|mixed
+     */
+    protected function getPost(string $key = null, $default = null)
+    {
+        if (!$key) {
+            return $this->request->getParsedBody();
+        }
+
+        return $this->request->getParsedBody()[$key] ?? $default;
+    }
+
+    /**
+     * Get the parsed json from request body
+     *
+     * Warning: $assoc defaults to true in this method.
+     *
+     * @param bool $assoc
+     * @param int  $depth
+     * @param int  $options
+     * @see json_decode()
+     * @return mixed
+     */
+    protected function getJson(bool $assoc = true, int $depth = 512, int $options = 0)
+    {
+        $data = json_decode((string)$this->request->getBody(), $assoc, $depth, $options);
+
+        if ($data === null && (string)$this->request->getBody() !== 'null') {
+            throw new InvalidArgumentException('Invalid json provided in body');
+        }
+
+        return $data;
     }
 }
