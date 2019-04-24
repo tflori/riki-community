@@ -1,3 +1,5 @@
+# About this framework
+
 The ríki framework is a micro framework. At the moment I'm writing this it contains only five classes (four of them are
 abstract and one is an exception). Also it has only two dependencies: `symfony/dotenv` for reading a `.env` file with
 custom configuration for an instance and `tflori/dependency-injector` as a lightweight dependency injection system with

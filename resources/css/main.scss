@@ -16,7 +16,7 @@ strong,
     font-weight: 600;
 }
 
-code[class*="language-"], pre[class*="language-"] {
+code, pre[class*="language-"] {
     font-family: "mononoki Nerd Font", "mononoki", monospace;
     font-size: 10pt;
 }
@@ -177,6 +177,42 @@ footer {
 
         p {
             margin-top: 1em
+        }
+
+        h1 {
+            /* display as card title */
+            font-size: 160%;
+            font-weight: 300;
+            line-height: 32px;
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 150%;
+        }
+
+        h3 {
+            font-size: 140%;
+        }
+
+        h4 {
+            font-size: 130%;
+        }
+
+        h5 {
+            font-size: 120%;
+        }
+
+        h6 {
+            font-size: 110%;
+        }
+
+        code {
+            background: #e9e9e9;
+            padding: 2px;
+            line-height: calc(1.5em - 4px);
+            color: #933;
         }
     }
 }

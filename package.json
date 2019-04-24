@@ -52,7 +52,10 @@
       "@view/(.*)": "<rootDir>/resources/views/components/$1",
       "@src/(.*)": "<rootDir>/js/$1"
     },
-    "coverageReporters": ["text","lcov"],
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
     "coverageDirectory": "tests/coverage",
     "coveragePathIgnorePatterns": [
       "/node_modules/",

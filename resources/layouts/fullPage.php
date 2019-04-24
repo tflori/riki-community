@@ -7,12 +7,12 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="icon" href="/images/favicon.png" sizes="48x48">
     <link rel="apple-touch-icon" sizes="256x256" href="/images/favicon-2x.png">
-    <title>Ríki:Welcome!</title>
-    <meta property="og:site_name" content="Ríki:Welcome!"/>
-    <meta property="og:type" content="article"/>
-    <meta property="og:description" content="Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-      consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus
-      viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue."/>
+    <title>Ríki:Welcome!<?= $v->section('article-title') ? ' - ' . $v->section('article-title') : '' ?></title>
+    <?php if ($v->section('article-title')) : ?>
+      <meta property="og:site_name" content="<?= $v->section('article-title') ?>"/>
+      <meta property="og:type" content="article"/>
+      <meta property="og:description" content="<?= $v->section('article-description', $v->section('article-title')) ?>"/>
+    <?php endif; ?>
     <link rel="stylesheet" href="<?= $v->cacheBuster('/bundle.css'); ?>">
   </head>
   <body class="grey lighten-4">

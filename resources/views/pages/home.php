@@ -4,7 +4,7 @@
 /** @var Syna\View $v */
 
 $v->extend('basics/card');
-$v->provide('title', 'About this framework');
+$v->provide('article-title', 'About this framework');
 
 $v->start('markdown');
 include __DIR__ . '/home.md';
