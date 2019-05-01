@@ -74,7 +74,7 @@
       </ul>
 
       <!-- Content -->
-      <main class="main container" style="min-height: 480px">
+      <main class="main container">
         <div class="row">
 
           <aside id="left-col" class="col l3 hide-on-med-and-down">
