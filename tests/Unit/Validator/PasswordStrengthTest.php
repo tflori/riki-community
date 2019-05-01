@@ -57,4 +57,3 @@ class PasswordStrengthTest extends TestCase
         ];
     }
 }
-
