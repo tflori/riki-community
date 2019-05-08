@@ -3,6 +3,8 @@
 namespace Community\Model;
 
 use Carbon\Carbon;
+use Community\Model\Concerns\WithCreated;
+use Community\Model\Concerns\WithUpdated;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\Token\PasswordResetToken;
@@ -30,6 +32,9 @@ use ORM\Entity;
  */
 class User extends Entity
 {
+    use WithCreated;
+    use WithUpdated;
+
     const PENDING = 'pending';
     const ACTIVATED = 'activated';
     const DISABLED = 'disabled';
