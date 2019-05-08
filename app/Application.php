@@ -7,6 +7,7 @@ use Hugga\Console;
 use Monolog\Logger;
 use ORM\EntityManager;
 use Syna\Factory;
+use Verja\Gate;
 use Whoops;
 use Whoops\Handler\PlainTextHandler;
 
@@ -22,6 +23,7 @@ use Whoops\Handler\PlainTextHandler;
  * @method static Environment environment()
  * @method static Factory views()
  * @method static Logger logger()
+ * @method static Gate verja()
  * @property-read Application $app
  * @property-read Config $config
  * @property-read Console $console
@@ -29,6 +31,7 @@ use Whoops\Handler\PlainTextHandler;
  * @property-read Environment $environment
  * @property-read Factory $views
  * @property-read Logger $logger
+ * @property-read Gate $verja
  */
 class Application extends \Riki\Application
 {
