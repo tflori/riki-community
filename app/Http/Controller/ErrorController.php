@@ -12,7 +12,7 @@ class ErrorController extends AbstractController
             'The requested url %s is not available on this server. ' .
             'Either you misspelled the url or you clicked on a dead link.',
             $this->request->getUri()->getPath()
-        ));
+        ), []);
     }
 
     public function methodNotAllowed(array $allowedMethods)
@@ -22,11 +22,11 @@ class ErrorController extends AbstractController
             'Allowed methods: %s',
             $this->request->getUri()->getPath(),
             implode(', ', $allowedMethods)
-        ));
+        ), []);
     }
 
     public function unexpectedError(\Throwable $exception = null): ServerResponse
     {
-        return $this->error(500, 'Unexpected Error', 'Whoops something went wrong!', $exception);
+        return $this->error(500, 'Unexpected Error', 'Whoops something went wrong!', [], $exception);
     }
 }

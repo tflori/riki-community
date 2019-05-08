@@ -13,16 +13,19 @@
 
 use App\Application;
 use App\Http\Router\MiddlewareRouteCollector;
-use function GuzzleHttp\Psr7\stream_for;
-use Psr\Http\Server\RequestHandlerInterface;
-use Tal\ServerRequest;
-use Tal\ServerResponse;
 
 /** @var MiddlewareRouteCollector $router */
 $r = $router;
 
 $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
+
+$r->post('/user', 'createUser@UserController');
+//$r->post('/user/activate', Authenticated::class, 'activate@UserController');
+//$r->get('/user/activate/{token}', 'activateByToken@UserController');
+//
+//$r->post('/auth', 'authenticate@AuthController');
+//$r->delete('/auth', 'logout@AuthController');
 
 // example routes - comment them out and use as reference
 //$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {

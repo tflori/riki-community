@@ -37,23 +37,33 @@ abstract class AbstractController implements RequestHandlerInterface
         $arguments = $request->getAttribute('arguments') ?? [];
         $response = call_user_func([$this, $action], ...array_values($arguments));
 
-        return $response;
+        return $response instanceof ResponseInterface ? $response : new ServerResponse(200, [], $response);
     }
 
     /**
      * Returns a error response
      *
-     * @param int $status
-     * @param string $reason
-     * @param string $message
+     * @param int       $status
+     * @param string    $reason
+     * @param string    $message
+     * @param array     $errors
      * @param Throwable $exception
+     *
      * @return ServerResponse
      */
-    protected function error(int $status, string $reason, string $message, Throwable $exception = null): ServerResponse
-    {
+    protected function error(
+        int $status,
+        string $reason,
+        string $message,
+        array $errors = [],
+        Throwable $exception = null
+    ): ServerResponse {
         switch ($this->getPreferredContentType(['text/html', 'application/json'])) {
             case 'application/json':
                 $data = compact('reason', 'message');
+                if (!empty($errors)) {
+                    $data['errors'] = $errors;
+                }
                 if ($exception instanceof Exception) {
                     $data['exception'] = [
                         'type' => get_class($exception),
