@@ -9,6 +9,7 @@ use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\Token\PasswordResetToken;
 use Community\Model\Token\RememberToken;
+use JsonSerializable;
 use ORM\Entity;
 
 /**
@@ -30,7 +31,7 @@ use ORM\Entity;
  * @property-read RememberToken[] rememberTokens
  * @property-read PasswordResetToken[] passwordResetTokens
  */
-class User extends Entity
+class User extends Entity implements JsonSerializable
 {
     use WithCreated;
     use WithUpdated;
@@ -127,5 +128,25 @@ class User extends Entity
         }
 
         $this->accountStatus = self::TRANSITIONS[$currentStatus][$transition];
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'displayName' => $this->displayName,
+            'email' => $this->email,
+            'created' => $this->created->format('Y-m-d\TH:i:s.u\Z'),
+            'updated' => $this->updated->format('Y-m-d\TH:i:s.u\Z'),
+        ];
     }
 }
