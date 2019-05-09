@@ -46,9 +46,6 @@ trait WithCreated
             return $this;
         }
 
-        if (!$dt instanceof Carbon) {
-            $dt = Carbon::instance($dt);
-        }
         $dt = $dt ?? Carbon::now('UTC');
         $this->data[$col] = $dt->format('Y-m-d\TH:i:s.u\Z');
 

@@ -10,6 +10,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use ORM\EntityManager;
 use ORM\MockTrait;
+use ReflectionClass;
 use Test\PhpUnit\ArraySubsetAssert;
 use Whoops;
 
@@ -128,5 +129,18 @@ abstract class TestCase extends MockeryTestCase
         $value = $property->getValue($object);
         $property->setAccessible(false);
         return $value;
+    }
+
+    protected function requiresTrait(string $class, string $trait)
+    {
+        $reflection = new ReflectionClass($class);
+
+        $traits = array_map(function (ReflectionClass $r) {
+            return $r->getName();
+        }, $reflection->getTraits());
+
+        if (!in_array($trait, $traits)) {
+            $this->markTestSkipped(sprintf('Class %s has to use %s for this test', $class, $trait));
+        }
     }
 }
