@@ -3,6 +3,8 @@
 namespace Test\Unit;
 
 use App\Kernel;
+use App\Service\Exception\ConsoleHandler;
+use App\Service\Exception\LogHandler;
 use Test\TestCase;
 use Whoops\Handler\PlainTextHandler;
 use Mockery as m;
@@ -21,19 +23,16 @@ class ApplicationTest extends TestCase
     /** @test */
     public function definesAnErrorHandlerForLogging()
     {
-        $handler = new PlainTextHandler($this->app->logger);
-        $handler->loggerOnly(true);
-
         $this->app->initWhoops();
 
-        self::assertEquals($handler, $this->app->get('whoops')->popHandler());
+        self::assertInstanceOf(LogHandler::class, $this->app->get('whoops')->popHandler());
     }
 
     /** @test */
     public function prependsAndRemovesHandlerFromKernel()
     {
         $handlersBefore = $this->app->whoops->getHandlers();
-        $kernelHandlers = [new PlainTextHandler()];
+        $kernelHandlers = [new ConsoleHandler()];
         $kernel = m::mock(Kernel::class);
         $kernel->shouldReceive('getBootstrappers')->andReturn([]);
         $kernel->shouldReceive('getErrorHandlers')->with($this->app)
@@ -42,11 +41,11 @@ class ApplicationTest extends TestCase
 
         $kernel->shouldReceive('handle')->with()
             ->once()->andReturnUsing(function () use ($handlersBefore, $kernelHandlers) {
-                self::assertSame(array_merge($kernelHandlers, $handlersBefore), $this->app->whoops->getHandlers());
+                self::assertEquals(array_merge($kernelHandlers, $handlersBefore), $this->app->whoops->getHandlers());
             });
 
         $this->app->run($kernel);
 
-        self::assertSame($handlersBefore, $this->app->whoops->getHandlers());
+        self::assertEquals($handlersBefore, $this->app->whoops->getHandlers());
     }
 }

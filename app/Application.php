@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Service\Exception\LogHandler;
 use Http\Response;
 use Hugga\Console;
 use Monolog\Logger;
@@ -9,7 +10,6 @@ use ORM\EntityManager;
 use Syna\Factory;
 use Verja\Gate;
 use Whoops;
-use Whoops\Handler\PlainTextHandler;
 
 /**
  * Class Application
@@ -37,9 +37,6 @@ class Application extends \Riki\Application
 {
     /** @var Whoops\Run */
     protected $whoops;
-
-    /** @var array */
-    protected $errorHandlers;
 
     public function __construct(string $basePath)
     {
@@ -91,13 +88,7 @@ class Application extends \Riki\Application
 
     protected function getErrorHandlers()
     {
-        if (!$this->errorHandlers) {
-            $plainTextHandler = new PlainTextHandler($this->logger);
-            $plainTextHandler->loggerOnly(true);
-            $this->errorHandlers = [$plainTextHandler];
-        }
-
-        return $this->errorHandlers;
+        return [new LogHandler()];
     }
 
     protected function setErrorHandlers(...$handlers)

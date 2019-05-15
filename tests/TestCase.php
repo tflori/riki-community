@@ -8,6 +8,8 @@ use App\Environment;
 use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use ORM\EntityManager;
 use ORM\MockTrait;
 use ReflectionClass;
@@ -80,6 +82,12 @@ abstract class TestCase extends MockeryTestCase
         $console->setStderr(fopen('php://memory', 'w'));
         $this->mocks['console']->shouldNotReceive(['read', 'readLine', 'readUntil']);
         $this->app->instance('console', $console);
+
+        /** @var Logger|m\Mock $logger */
+        $logger = $this->mocks['logger'] = m::mock(Logger::class)->makePartial();
+        $logger->__construct('test');
+        $logger->pushHandler(new StreamHandler('php://temp'));
+        $this->app->instance('logger', $logger);
 
         $this->em = $this->mocks['entityManager'] = $this->ormInitMock([
             'tableNameTemplate' => '%short%s',

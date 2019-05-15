@@ -3,13 +3,13 @@
 namespace Test\Unit\Cli;
 
 use App\Cli\CliKernel;
-use App\Exception\ConsoleHandler;
+use App\Service\Exception\ConsoleHandler;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
 use Hugga\Console;
-use Test\TestCase;
 use Mockery as m;
+use Test\TestCase;
 
 class CliKernelTest extends TestCase
 {

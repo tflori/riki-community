@@ -1,22 +1,21 @@
 <?php
 
-namespace Test\Unit\Exception;
+namespace Test\Unit\Service\Exception;
 
-use App\Exception\ConsoleHandler;
-use App\Http\Router\MiddlewareRouteCollector;
-use Hugga\Console;
+use App\Service\Exception\LogHandler;
+use Mockery as m;
 use RuntimeException;
 use Test\TestCase;
-use Mockery as m;
+use Throwable;
 use Whoops\Exception\Inspector;
 
-class ConsoleHandlerTest extends TestCase
+class LogHandlerTest extends TestCase
 {
-    protected function prepareHandler(\Throwable $exception = null): ConsoleHandler
+    protected function prepareHandler(Throwable $exception = null): LogHandler
     {
-        $exception = $exception ?? new RuntimeException('Test Exception');
+        $exception = $exception ?? new RuntimeException('Test exception');
 
-        $handler = new ConsoleHandler($this->app);
+        $handler = new LogHandler();
         $handler->setException($exception);
         $handler->setInspector(new Inspector($exception));
 
@@ -24,11 +23,11 @@ class ConsoleHandlerTest extends TestCase
     }
 
     /** @test */
-    public function writesToConsole()
+    public function writesToLog()
     {
         $handler = $this->prepareHandler();
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once();
 
         $handler->handle();
@@ -39,8 +38,8 @@ class ConsoleHandlerTest extends TestCase
     {
         $exceptionMessage = 'Test exception ' . md5(microtime());
         $handler = $this->prepareHandler(new RuntimeException($exceptionMessage));
-        
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exceptionMessage) {
                 self::assertContains($exceptionMessage, $message);
             });
@@ -52,9 +51,9 @@ class ConsoleHandlerTest extends TestCase
     public function messageContainsTheErrorCode()
     {
         $code = mt_rand(1, 1000);
-        $handler = $this->prepareHandler(new RuntimeException('Test Exception', $code));
+        $handler = $this->prepareHandler(new RuntimeException('Test exception', $code));
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($code) {
                 self::assertContains((string)$code, $message);
             });
@@ -65,10 +64,10 @@ class ConsoleHandlerTest extends TestCase
     /** @test */
     public function messageContainsFileAndLine()
     {
-        $exception = new RuntimeException('Test Exception');
+        $exception = new RuntimeException('Test exception');
         $handler = $this->prepareHandler($exception);
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
                 self::assertContains($exception->getFile(), $message);
                 self::assertContains((string)$exception->getLine(), $message);
@@ -87,7 +86,7 @@ class ConsoleHandlerTest extends TestCase
         $this->mocks['config']->shouldReceive('env')->with('PROJECT_PATH')
             ->atLeast()->once()->andReturn('/project');
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
                 $expected = '/project' . substr($exception->getFile(), strlen($this->app->getBasePath()));
                 self::assertContains($expected, $message);
@@ -103,7 +102,7 @@ class ConsoleHandlerTest extends TestCase
         $outerException = new RuntimeException('Outer Exception', 42, $innerException);
         $handler = $this->prepareHandler($outerException);
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+        $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($innerException) {
                 $messages = explode('Caused by', $message);
                 self::assertCount(2, $messages);
@@ -116,57 +115,12 @@ class ConsoleHandlerTest extends TestCase
     }
 
     /** @test */
-    public function writesTraceWithNormalWeight()
+    public function writesTraceAsDebugMessage()
     {
         $handler = $this->prepareHandler();
 
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'), Console::WEIGHT_NORMAL)
+        $this->mocks['logger']->shouldReceive('debug')->with(m::type('string'))
             ->once();
-
-        $handler->handle();
-    }
-
-    /** @test */
-    public function traceContainsArgs()
-    {
-        $getException = function (
-            array $array,
-            string $string,
-            string $class,
-            int $int,
-            float $double,
-            bool $bool,
-            $object
-        ) {
-            return new RuntimeException('Test exception');
-        };
-        $handler = $this->prepareHandler($getException(
-            ['anything'],
-            'a too long string will be cut off at 20 chars',
-            MiddlewareRouteCollector::class,
-            23,
-            0.42,
-            false,
-            $this
-        ));
-
-        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'), Console::WEIGHT_NORMAL)
-            ->once()->andReturnUsing(function (string $message) {
-                self::assertContains('{closure}', $message);
-                self::assertSame(1, preg_match(
-                    '~\{closure\}\((.*)\)~',
-                    $this->mocks['console']->format($message), // strip formatting
-                    $match
-                ));
-                $args = $match[1];
-                self::assertContains('array', $args);
-                self::assertContains('"a too long string wi…"', $args);
-                self::assertContains('"App\Http\Router\MiddlewareRouteCollector"', $args);
-                self::assertContains('23', $args);
-                self::assertContains('0.42', $args);
-                self::assertContains('false', $args);
-                self::assertContains(static::class, $args);
-            });
 
         $handler->handle();
     }

@@ -10,12 +10,14 @@ class Config extends \Riki\Config
 {
     public $logLevel = Logger::WARNING;
 
+    /** @var DbConfig */
     public $dbConfig;
 
     public function __construct(Environment $environment)
     {
         parent::__construct($environment);
         $this->logLevel = Logger::toMonologLevel($this->env('LOG_LEVEL', $this->logLevel));
+
         $this->dbConfig = new DbConfig(
             'pgsql',
             $this->env('DB_DATABASE', 'riki_community'),

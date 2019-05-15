@@ -14,6 +14,8 @@ class ConsoleFactory extends AbstractFactory
      */
     protected function build()
     {
-        return new Console($this->container->get('logger'));
+        $console = new Console($this->container->get('logger'));
+        $console->logMessages($this->container->config->env('LOG_CONSOLE', true));
+        return $console;
     }
 }
