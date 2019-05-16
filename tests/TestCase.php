@@ -5,11 +5,13 @@ namespace Test;
 use App\Application;
 use App\Config;
 use App\Environment;
+use App\Service\Mailer;
 use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Nette\Mail\Message;
 use ORM\EntityManager;
 use ORM\MockTrait;
 use ReflectionClass;
@@ -94,6 +96,10 @@ abstract class TestCase extends MockeryTestCase
         ], 'pgsql');
         $this->mocks['pdo'] = $this->em->getConnection();
         $this->app->instance('entityManager', $this->em);
+
+        /** @var Mailer|m\Mock $mailer */
+        $mailer = $this->mocks['mailer'] = m::mock(Mailer::class, []);
+        $mailer->shouldReceive('send')->with(m::type(Message::class))->byDefault();
     }
 
     /**

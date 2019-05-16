@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Config\SmtpConfig;
 use Monolog\Logger;
 use ORM\DbConfig;
 use Riki\Environment;
@@ -12,6 +13,9 @@ class Config extends \Riki\Config
 
     /** @var DbConfig */
     public $dbConfig;
+
+    /** @var SmtpConfig */
+    public $smtpConfig;
 
     public function __construct(Environment $environment)
     {
@@ -25,6 +29,14 @@ class Config extends \Riki\Config
             $this->env('DB_PASSWORD'),
             $this->env('DB_HOST', 'postgres'),
             $this->env('DB_PORT', '5432')
+        );
+
+        $this->smtpConfig = new SmtpConfig(
+            $this->env('SMTP_HOST', 'mailhog'),
+            $this->env('SMTP_PORT', '1025'),
+            $this->env('SMTP_USERNAME'),
+            $this->env('SMTP_PASSWORD'),
+            $this->env('SMTP_SECURITY', '')
         );
     }
 }

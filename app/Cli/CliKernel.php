@@ -22,6 +22,7 @@ class CliKernel extends \App\Kernel
         Command\Db\Migrate::class,
         Command\Db\Revert::class,
         Command\Db\Status::class,
+        Command\Test::class,
     ];
 
     /** @var GetOpt */
