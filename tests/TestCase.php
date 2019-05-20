@@ -54,6 +54,7 @@ abstract class TestCase extends MockeryTestCase
         /** @var Application|m\Mock $app */
         $app = $this->app = m::mock(Application::class)->makePartial();
         $app->__construct($basePath);
+        $app->registerNamespace('Test\Factory', 'Factory');
 
         $this->initDependencies();
     }
@@ -156,5 +157,10 @@ abstract class TestCase extends MockeryTestCase
         if (!in_array($trait, $traits)) {
             $this->markTestSkipped(sprintf('Class %s has to use %s for this test', $class, $trait));
         }
+    }
+
+    protected function resourcePath(string ...$path): string
+    {
+        return $this->app->environment->path('tests', 'resources', ...$path);
     }
 }

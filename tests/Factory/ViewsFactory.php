@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Factory;
+namespace Test\Factory;
 
 use Syna\Factory;
 use Syna\HelperLocator;
 use Syna\ViewLocator;
+use Mockery as m;
 
-class ViewsFactory extends AbstractFactory
+class ViewsFactory extends \App\Factory\ViewsFactory
 {
-    protected $shared = true;
-
     /** @return Factory */
     protected function build()
     {
-        $factory =  new Factory(
+        $factory = m::mock(Factory::class, [
             new ViewLocator($this->container->environment->resourcePath('views')),
             new HelperLocator('App\View\Helper'),
             new ViewLocator($this->container->environment->resourcePath('layouts'))
-        );
+        ])->makePartial();
 
         $factory->addLocator('mail', new ViewLocator($this->container->environment->resourcePath('mails'), '.md.php'));
 

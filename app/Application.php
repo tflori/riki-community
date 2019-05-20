@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Model\Mail;
 use App\Service\Exception\LogHandler;
+use App\Service\Mailer;
 use Http\Response;
 use Hugga\Console;
 use Monolog\Logger;
@@ -24,6 +26,8 @@ use Whoops;
  * @method static Factory views()
  * @method static Logger logger()
  * @method static Gate verja()
+ * @method static Mailer mailer()
+ * @method static Mail mail(string $name, array $data = [])
  * @property-read Application $app
  * @property-read Config $config
  * @property-read Console $console
@@ -32,6 +36,7 @@ use Whoops;
  * @property-read Factory $views
  * @property-read Logger $logger
  * @property-read Gate $verja
+ * @property-read Mailer $mailer
  */
 class Application extends \Riki\Application
 {

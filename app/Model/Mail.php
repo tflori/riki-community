@@ -6,6 +6,14 @@ use Nette\Mail\Message;
 
 class Mail extends Message
 {
+    public function __construct(array $headers = [])
+    {
+        parent::__construct();
+        foreach ($headers as $name => $value) {
+            $this->setHeader($name, $value);
+        }
+    }
+
     public function __toString()
     {
         $from = $this->getHeader('From');

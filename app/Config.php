@@ -17,6 +17,12 @@ class Config extends \Riki\Config
     /** @var SmtpConfig */
     public $smtpConfig;
 
+    public $email = [
+        'From' => ['riki@w00tserver.org' => 'ríki community'],
+        'Subject' => 'Notification from ríki community',
+        'X-Mailer' => 'riki application',
+    ];
+
     public function __construct(Environment $environment)
     {
         parent::__construct($environment);
