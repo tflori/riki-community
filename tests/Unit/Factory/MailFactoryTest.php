@@ -31,7 +31,8 @@ class MailFactoryTest extends TestCase
 Hello John Doe,
 
 **Note:** This is an automated message.
-BODY,
+BODY
+            ,
             $mail->getBody()
         );
     }
@@ -51,7 +52,8 @@ BODY,
 <title>This is a test</title>
 <body><p>Hello John Doe,</p>
 <p><strong>Note:</strong> This is an automated message.</p></body>
-HTMLBODY,
+HTMLBODY
+            ,
             $mail->getHtmlBody()
         );
     }
