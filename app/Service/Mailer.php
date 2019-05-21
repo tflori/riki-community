@@ -29,6 +29,7 @@ class Mailer extends SmtpMailer
             // @codeCoverageIgnoreStart
             // that would mean we sent an email and we cannot send an email during tests
             app::logger()->info('Sent ' . $mail);
+            return;
             // @codeCoverageIgnoreEnd
         } catch (SendException $e) {
             throw new MailerException(sprintf('Failed to send %s', $mail), 0, $e);
