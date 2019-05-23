@@ -10,6 +10,7 @@ use Hugga\Console;
 use Monolog\Logger;
 use ORM\EntityManager;
 use Syna\Factory;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Verja\Gate;
 use Whoops;
 
@@ -28,6 +29,7 @@ use Whoops;
  * @method static Gate verja()
  * @method static Mailer mailer()
  * @method static Mail mail(string $name, array $data = [])
+ * @method static CssToInlineStyles cssInliner()
  * @property-read Application $app
  * @property-read Config $config
  * @property-read Console $console
@@ -37,6 +39,7 @@ use Whoops;
  * @property-read Logger $logger
  * @property-read Gate $verja
  * @property-read Mailer $mailer
+ * @property-read CssToInlineStyles $cssInliner
  */
 class Application extends \Riki\Application
 {
@@ -60,6 +63,7 @@ class Application extends \Riki\Application
 
         // Register Whoops\Run under whoops
         $this->share('whoops', Whoops\Run::class);
+        $this->share('cssInliner', CssToInlineStyles::class);
     }
 
 

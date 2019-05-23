@@ -15,14 +15,19 @@ class MailFactory extends AbstractFactory
      */
     protected function build(string $name = '', array $data = [])
     {
+        $config = $this->container->config;
+        $environment = $this->container->environment;
+        $views  = $this->container->views;
+        $cssInliner = $this->container->cssInliner;
+
         // create a mail
-        $mail = new Mail($this->container->config->email);
+        $mail   = new Mail($config->email);
 
         // render the email body
-        $view = $this->container->views->view('mail::' . $name);
+        $view     = $views->view('mail::' . $name);
         $markdown = $view->render($data);
 
-        $layout = $this->container->views->view('layout::mail');
+        $layout = $views->view('layout::mail');
         $layout->setSections(array_merge($view->getSections(), ['content' => (new Parsedown())->parse($markdown)]));
 
 
@@ -30,6 +35,9 @@ class MailFactory extends AbstractFactory
             $mail->setSubject($subject);
         }
         return $mail->setBody($markdown)
-            ->setHtmlBody($layout->render());
+            ->setHtmlBody(
+                $cssInliner->convert($layout->render()),
+                $environment->publicPath()
+            );
     }
 }
