@@ -47,11 +47,11 @@ BODY
             'name' => 'John Doe',
         ]);
 
-        self::assertSame(
+        self::assertContains('<title>This is a test</title>', $mail->getHtmlBody());
+        self::assertContains(
             <<<'HTMLBODY'
-<title>This is a test</title>
-<body><p>Hello John Doe,</p>
-<p><strong>Note:</strong> This is an automated message.</p></body>
+<p>Hello John Doe,</p>
+<p><strong>Note:</strong> This is an automated message.</p>
 HTMLBODY
             ,
             $mail->getHtmlBody()

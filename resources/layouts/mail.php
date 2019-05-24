@@ -12,6 +12,7 @@
           -apple-system, BlinkMacSystemFont,
           "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
           sans-serif;
+        vertical-align: top;
       }
 
       html {
@@ -25,7 +26,7 @@
         width: 100%;
       }
 
-      .body {
+      .body .background {
         background-color: #f0f0f0;
       }
 
@@ -41,33 +42,35 @@
       }
 
       @media only screen and (max-width: 620px) {
-        table[class=body] .container { width: 100% !important; }
+        .body .container { width: 100% !important; }
+        .body .background { display: none !important; }
+        img { max-width: 100%; }
       }
     </style>
   </head>
   <body>
-    <table width="100%" class="body">
+    <table class="body" cellspacing="0" cellpadding="0" border="0">
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
+        <td class="background">&nbsp;</td>
+        <td class="background">&nbsp;</td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
         <td class="container colored">
           <a href="https://riki.w00tserver.org"><img src="images/logo-horizontal.png" width="320"/></a>
         </td>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
         <td class="container">
             <?= $v->section('content') ?>
         </td>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
         <td class="container colored">
           <table>
             <tr>
@@ -81,12 +84,12 @@
             </tr>
           </table>
         </td>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td class="background">&nbsp;</td>
+        <td class="background">&nbsp;</td>
+        <td class="background">&nbsp;</td>
       </tr>
     </table>
   </body>
