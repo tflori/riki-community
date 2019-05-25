@@ -6,6 +6,8 @@ It's content is *markdown*. Parsed with **parsedown**.
 
 But it is also php so "Hello <?= $name ?>!"
 
+# [Visit ríki community](https://riki.w00tserver.org)
+
 The next steps are:
 - create email templates for sending activation codes
 - create an activation code when a user get created

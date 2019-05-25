@@ -9,9 +9,9 @@
     <style>
       body, div, td {
         font-family: "Open Sans",
-          -apple-system, BlinkMacSystemFont,
-          "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
-          sans-serif;
+        -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
+        sans-serif;
         vertical-align: top;
       }
 
@@ -37,6 +37,17 @@
       }
 
       .container.colored {
+        background-color: #00887a;
+        color: #ffffff;
+      }
+
+      h1 > a {
+        font-size: 18px;
+        font-weight: bold;
+        padding: 8px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
         background-color: #00887a;
         color: #ffffff;
       }
@@ -74,12 +85,14 @@
         <td class="container colored">
           <table>
             <tr>
-              <td>
-                <h4 style="margin: 0;">ríki community</h4>
-                <p style="margin: 0; font-size: 10px;">&copy; 2019 Thomas Flori</p>
+              <td style="vertical-align: middle;">
+                <h4 style="margin: 0; color: #ffffff;">ríki community</h4>
+                <p style="margin: 0; font-size: 10px; color: #ffffff;">&copy; 2019 Thomas Flori</p>
               </td>
-              <td align="right">
-                <a href="https://github.com/tflori/riki-community"><img src="images/github-light.png" width="32"/></a>
+              <td align="right" style="vertical-align: middle;">
+                <a href="https://github.com/tflori/riki-community">
+                  <img style="vertical-align: middle;" src="images/github-light.png" width="32"/>
+                </a>
               </td>
             </tr>
           </table>
