@@ -41,6 +41,19 @@
         color: #ffffff;
       }
 
+      .code {
+        font-size: 30px;
+        font-weight: lighter;
+        padding: 8px 25px;
+        border-radius: 5px;
+        display: inline-block;
+        font-family: monospace;
+        margin: 5px 0;
+        border: 2px solid #00887a;
+        background-color: #ffffff;
+        color: #000000;
+      }
+
       h1 > a {
         font-size: 18px;
         font-weight: bold;

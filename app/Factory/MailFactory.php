@@ -34,7 +34,7 @@ class MailFactory extends AbstractFactory
         if ($subject = $view->section('subject')) {
             $mail->setSubject($subject);
         }
-        return $mail->setBody($markdown)
+        return $mail->setBody(strip_tags($markdown))
             ->setHtmlBody(
                 $cssInliner->convert($layout->render()),
                 $environment->publicPath()
