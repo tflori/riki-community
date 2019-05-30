@@ -5,7 +5,6 @@ namespace App;
 use App\Model\Mail;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
-use Http\Response;
 use Hugga\Console;
 use Monolog\Logger;
 use ORM\EntityManager;
@@ -61,9 +60,13 @@ class Application extends \Riki\Application
         // Register a namespace for factories
         $this->registerNamespace('App\Factory', 'Factory');
 
-        // Register Whoops\Run under whoops
+        // Register shared instances / classes
         $this->share('whoops', Whoops\Run::class);
         $this->share('cssInliner', CssToInlineStyles::class);
+        $this->instance('entityManager', new EntityManager([
+            EntityManager::OPT_CONNECTION => $this->config->dbConfig,
+            'tableNameTemplate' => '%short%s',
+        ]));
     }
 
 

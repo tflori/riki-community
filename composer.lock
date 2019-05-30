@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e6b8d585ea151af9a90868f3d421d2f",
+    "content-hash": "c271f54bf457c8bc22ecb18e807a61a9",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1770,16 +1770,16 @@
         },
         {
             "name": "tflori/orm",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "1ef137565b817b9d3827e418bfd8bcc90806455d"
+                "reference": "819ed07c516ac224e3fbb8ab5215701ee33e6c0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/1ef137565b817b9d3827e418bfd8bcc90806455d",
-                "reference": "1ef137565b817b9d3827e418bfd8bcc90806455d",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/819ed07c516ac224e3fbb8ab5215701ee33e6c0c",
+                "reference": "819ed07c516ac224e3fbb8ab5215701ee33e6c0c",
                 "shasum": ""
             },
             "require": {
@@ -1807,20 +1807,20 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2019-04-06T09:19:41+00:00"
+            "time": "2019-05-29T08:02:37+00:00"
         },
         {
             "name": "tflori/riki-framework",
-            "version": "v1.0.0-rc.1",
+            "version": "v1.0.0-rc.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/riki-framework.git",
-                "reference": "664db5ed684009c14299b727c074513d602a4641"
+                "reference": "0665e07e43cf252af1eb92acd0074b7532c3f5f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/664db5ed684009c14299b727c074513d602a4641",
-                "reference": "664db5ed684009c14299b727c074513d602a4641",
+                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/0665e07e43cf252af1eb92acd0074b7532c3f5f0",
+                "reference": "0665e07e43cf252af1eb92acd0074b7532c3f5f0",
                 "shasum": ""
             },
             "require": {
@@ -1850,7 +1850,7 @@
                 }
             ],
             "description": "A minimalistic framework to connect different libraries within your application.",
-            "time": "2018-08-15T06:43:29+00:00"
+            "time": "2019-05-30T08:46:05+00:00"
         },
         {
             "name": "tflori/secure-token",
@@ -3738,7 +3738,8 @@
     "platform": {
         "php": "^7.1",
         "ext-mbstring": "*",
-        "ext-bcmath": "*"
+        "ext-bcmath": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
