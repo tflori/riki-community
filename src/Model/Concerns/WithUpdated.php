@@ -3,7 +3,6 @@
 namespace Community\Model\Concerns;
 
 use Carbon\Carbon;
-use DateTime;
 use ORM\Entity;
 
 trait WithUpdated
@@ -31,10 +30,10 @@ trait WithUpdated
     /**
      * Set created to $dt or 'now'
      *
-     * @param DateTime|null $dt
+     * @param Carbon|null $dt
      * @return $this
      */
-    public function setUpdated(DateTime $dt = null)
+    public function setUpdated(Carbon $dt = null)
     {
         if (!$this instanceof Entity) {
             return $this;
@@ -42,8 +41,8 @@ trait WithUpdated
 
         $col = static::getColumnName('updated');
 
-        $dt = $dt ?? Carbon::now('UTC');
-        $this->data[$col] = $dt->format('Y-m-d\TH:i:s.u\Z');
+        $dt = $dt ?? Carbon::now();
+        $this->data[$col] = $dt->setTimezone('UTC')->format('Y-m-d\TH:i:s.u\Z');
 
         return $this;
     }
