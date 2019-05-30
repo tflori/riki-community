@@ -8,7 +8,7 @@ use Parsedown;
 class MailFactory extends AbstractFactory
 {
     /**
-     * @param string  $name
+     * @param string $name
      * @param array $data
      *
      * @return Mail
@@ -21,11 +21,11 @@ class MailFactory extends AbstractFactory
         $cssInliner = $this->container->cssInliner;
 
         // create a mail
-        $mail   = new Mail($config->email);
+        $mail   = new Mail($config->email['headers']);
 
         // render the email body
         $view     = $views->view('mail::' . $name);
-        $markdown = $view->render($data);
+        $markdown = $view->render(array_merge($data, ['texts' => $config->email['texts']]));
 
         $layout = $views->view('layout::mail');
         $layout->setSections(array_merge($view->getSections(), ['content' => (new Parsedown())->parse($markdown)]));

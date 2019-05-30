@@ -25,7 +25,7 @@ class Environment extends \Riki\Environment
         return $this->path('storage', ...$path);
     }
 
-    public function resourcePath(string ...$path)
+    public function resourcePath(string ...$path): string
     {
         return $this->path('resources', ...$path);
     }
@@ -50,9 +50,15 @@ class Environment extends \Riki\Environment
         return $this->path('public', ...$path);
     }
 
-    public function path(string ...$path)
+    public function path(string ...$path): string
     {
         array_unshift($path, $this->getBasePath());
         return implode(DIRECTORY_SEPARATOR, $path);
+    }
+
+    public function url(string ...$path): string
+    {
+        array_unshift($path, ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') . '://' . $_SERVER['HTTP_HOST']);
+        return implode('/', $path);
     }
 }

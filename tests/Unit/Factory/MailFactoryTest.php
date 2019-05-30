@@ -68,8 +68,8 @@ HTMLBODY
             'name' => 'John Doe',
         ]);
 
-        self::assertSame($this->app->config->email['From'], $mail->getFrom());
-        self::assertSame($this->app->config->email['X-Mailer'], $mail->getHeader('X-Mailer'));
+        self::assertSame($this->app->config->email['headers']['From'], $mail->getFrom());
+        self::assertSame($this->app->config->email['headers']['X-Mailer'], $mail->getHeader('X-Mailer'));
     }
 
     /** @test */
