@@ -35,6 +35,16 @@ class UserController extends AbstractController
         $user->fill($userData);
         $user->save();
 
+        $activationCode = ActivationCode::newToken($user, '1d')->save();
+        $activationToken = ActivationToken::newToken($user, '7d')->save();
+
+        // @todo send an email for activation
+//        a::mailer()->send(a::mail('user/registration', [
+//            'user' => $user,
+//            'activationLink' => a::environment()->url('user/activate', $activationToken->token),
+//            'activationCode' => $activationCode->token,
+//        ]));
+
         return new ServerResponse(200, ['Content-Type' => 'application/json'], json_encode($user));
     }
 }

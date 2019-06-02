@@ -1,29 +1,42 @@
 <?php
 
-namespace Test\Unit\Http\Controller;
+namespace Test\Unit\Http\Controller\UserController;
 
 use App\Http\Controller\UserController;
 use Carbon\Carbon;
+use Community\Model\Token\ActivationCode;
+use Community\Model\Token\ActivationToken;
 use Community\Model\User;
+use function GuzzleHttp\Psr7\stream_for;
 use InvalidArgumentException;
 use Tal\ServerRequest;
 use Test\TestCase;
-use function GuzzleHttp\Psr7\stream_for;
 
-class UserControllerTest extends TestCase
+class RegisterTest extends TestCase
 {
     protected function setUp()
     {
         parent::setUp();
 
-        $this->initFetcher();
+        $this->ormAllowInsert(User::class, [
+            'id' => $id = rand(1000000, 2000000),
+            'created' => ($created = Carbon::now('UTC'))->format('Y-m-d H:i:s.u'),
+            'updated' => ($updated = Carbon::now('UTC'))->format('Y-m-d H:i:s.u'),
+            'account_status' => 'pending',
+        ])->byDefault();
+        $this->ormAllowInsert(ActivationCode::class, [
+            'id' => rand(1000000, 2000000),
+        ])->byDefault();
+        $this->ormAllowInsert(ActivationToken::class, [
+            'id' => rand(1000000, 2000000),
+        ])->byDefault();
     }
 
     /** @test */
-    public function registerExpectsJsonEncodedBody()
+    public function expectsJsonEncodedBody()
     {
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', ['Content-Type' => 'application/json']))
+        $request = (new ServerRequest('POST', '/register', ['Content-Type' => 'application/json']))
             ->withBody(stream_for('name=john&displayName=john'));
 
         self::expectException(InvalidArgumentException::class);
@@ -35,10 +48,10 @@ class UserControllerTest extends TestCase
     /** @dataProvider provideRequiredFields
      * @param string $field
      * @test */
-    public function registerRequires($field)
+    public function requires($field)
     {
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getIncompleteUserData($field))));
@@ -55,11 +68,11 @@ class UserControllerTest extends TestCase
     /** @dataProvider provideValidatedFields
      * @param string $field
      * @test */
-    public function registerValidates($field)
+    public function validates($field)
     {
         $validationError = $this->getExampleUserData()[$field]['validationError'];
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getInvalidUserData($field))));
@@ -74,14 +87,14 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function registerExpectsUniqueEmail()
+    public function expectsUniqueEmail()
     {
         $data = $this->getValidUserData();
         $this->addFetcherResult(User::class, [
             sprintf('/"t0"\."email" = %s/', $this->mocks['pdo']->quote($data['email'])),
         ], new User());
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
@@ -96,14 +109,14 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function registerExpectsUniqueDisplayName()
+    public function expectsUniqueDisplayName()
     {
         $data = $this->getValidUserData();
         $this->addFetcherResult(User::class, [
             sprintf('/"t0"\."display_name" = %s/', $this->mocks['pdo']->quote($data['displayName'])),
         ], new User());
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
@@ -118,10 +131,10 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
-    public function registerCreatesAUser()
+    public function createsAUser()
     {
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -137,11 +150,43 @@ class UserControllerTest extends TestCase
     }
 
     /** @test */
+    public function createAnActivationCode()
+    {
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+
+        $this->ormExpectInsert(ActivationCode::class, [
+            'id' => rand(1, 1000),
+        ]);
+
+        $controller->handle($request);
+    }
+
+    /** @test */
+    public function createAnActivationToken()
+    {
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+
+        $this->ormExpectInsert(ActivationToken::class, [
+            'id' => rand(1, 1000),
+        ]);
+
+        $controller->handle($request);
+    }
+
+    /** @test */
     public function returnsTheCreatedUser()
     {
         $controller = new UserController('register');
         $userData = $this->getValidUserData();
-        $request = (new ServerRequest('POST', '/user', [
+        $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($userData)));
@@ -165,6 +210,7 @@ class UserControllerTest extends TestCase
             'updated' => $updated->format('Y-m-d\TH:i:s.u\Z'),
         ], json_decode($response->getBody(), true));
     }
+
 
     public function provideRequiredFields()
     {
@@ -241,4 +287,5 @@ class UserControllerTest extends TestCase
             ],
         ];
     }
+
 }

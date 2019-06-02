@@ -2,9 +2,22 @@
 
 namespace Community\Model\Token;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Community\Model\User;
 use ORM\Entity;
+use ORM\EntityManager;
 
+/**
+ * Class AbstractToken
+ *
+ * @package Community\Model\Token
+ * @author Thomas Flori <thflori@gmail.com>
+ * @property int $id
+ * @property int $userId
+ * @property string $token
+ * @property Carbon $validUntil
+ */
 abstract class AbstractToken extends Entity
 {
     const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -13,6 +26,30 @@ abstract class AbstractToken extends Entity
     protected static $relations = [
         'user' => [User::class, ['user_id' => 'id']],
     ];
+
+    /**
+     * Create a new token for $user with $interval validity
+     *
+     * @param User   $user
+     * @param string $interval
+     *
+     * @return AbstractToken
+     */
+    public static function newToken(User $user, string $interval): AbstractToken
+    {
+        $em = EntityManager::getInstance(static::class);
+        do {
+            $token   = static::generateToken();
+            $fetcher = $em->fetch(static::class);
+            $fetcher->where('token', $token);
+        } while ($fetcher->count() > 0);
+
+        $entity = new static;
+        $entity->userId = $user->id;
+        $entity->token = $token;
+        $entity->validUntil = Carbon::now()->add(CarbonInterval::fromString($interval));
+        return $entity;
+    }
 
     public static function generateToken(int $length = null, string $alphabet = null): string
     {
@@ -51,4 +88,10 @@ abstract class AbstractToken extends Entity
             return $result;
         }
     }
+
+//    public function setValidUntil(Carbon $dt)
+//    {
+//        $this->data['valid_until'] = $dt->setTimezone('UTC')->format('Y-m-d\TH:i:s.u\Z');
+//        return $this;
+//    }
 }
