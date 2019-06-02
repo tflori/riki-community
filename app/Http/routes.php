@@ -20,7 +20,7 @@ $r = $router;
 $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
 
-$r->post('/user', 'createUser@UserController');
+$r->post('/registration', 'register@UserController');
 //$r->post('/user/activate', Authenticated::class, 'activate@UserController');
 //$r->get('/user/activate/{token}', 'activateByToken@UserController');
 //

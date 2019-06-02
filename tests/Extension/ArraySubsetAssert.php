@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\PhpUnit;
+namespace Test\Extension;
 
 use ArrayAccess;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Util\InvalidArgumentHelper;
-use Test\PhpUnit\Constraint\ArraySubset;
+use Test\Extension\Constraint\ArraySubset;
 
 trait ArraySubsetAssert
 {

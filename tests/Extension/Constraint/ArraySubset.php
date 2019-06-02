@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\PhpUnit\Constraint;
+namespace Test\Extension\Constraint;
 
 use ArrayAccess;
 use InvalidArgumentException;

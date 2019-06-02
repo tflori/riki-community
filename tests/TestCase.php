@@ -15,12 +15,13 @@ use Nette\Mail\Message;
 use ORM\EntityManager;
 use ORM\MockTrait;
 use ReflectionClass;
-use Test\PhpUnit\ArraySubsetAssert;
+use Test\Extension\ArraySubsetAssert;
+use Test\Extension\OrmFetcher;
 use Whoops;
 
 abstract class TestCase extends MockeryTestCase
 {
-    use MockTrait, ArraySubsetAssert;
+    use MockTrait, ArraySubsetAssert, OrmFetcher;
 
     /** @var Application|m\Mock */
     protected $app;
@@ -38,6 +39,7 @@ abstract class TestCase extends MockeryTestCase
     {
         parent::setUp();
         $this->initApplication(realpath(__DIR__ . '/..'));
+        $this->initFetcher();
     }
 
     protected function tearDown()
