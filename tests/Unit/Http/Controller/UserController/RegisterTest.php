@@ -87,6 +87,26 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
+    public function requiresPasswordConfirmation()
+    {
+        $controller = new UserController('register');
+        $userData = $this->getValidUserData();
+        $userData['passwordConfirmation'] = 'different';
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ]))->withBody(stream_for(json_encode($userData)));
+
+        $response = $controller->handle($request);
+
+        self::assertJson($response->getBody());
+        self::assertArraySubset(
+            ['errors' => ['password' => [['key' => 'NOT_EQUAL']]]],
+            json_decode($response->getBody(), true)
+        );
+    }
+
+    /** @test */
     public function expectsUniqueEmail()
     {
         $data = $this->getValidUserData();
@@ -272,8 +292,6 @@ class RegisterTest extends TestCase
             ],
             'passwordConfirmation' => [
                 'valid' => 'S4cr3d F4rt',
-                'invalid' => 'differs',
-                'validationError' => 'NOT_EQUAL'
             ],
             'displayName' => [
                 'valid' => 'J. D.',
@@ -287,5 +305,4 @@ class RegisterTest extends TestCase
             ],
         ];
     }
-
 }
