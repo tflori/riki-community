@@ -103,6 +103,7 @@ abstract class TestCase extends MockeryTestCase
         /** @var Mailer|m\Mock $mailer */
         $mailer = $this->mocks['mailer'] = m::mock(Mailer::class, []);
         $mailer->shouldReceive('send')->with(m::type(Message::class))->byDefault();
+        $this->app->instance('mailer', $mailer);
     }
 
     /**

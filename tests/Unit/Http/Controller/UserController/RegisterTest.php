@@ -2,13 +2,16 @@
 
 namespace Test\Unit\Http\Controller\UserController;
 
+use App\Factory\MailFactory;
 use App\Http\Controller\UserController;
+use App\Model\Mail;
 use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\User;
 use function GuzzleHttp\Psr7\stream_for;
 use InvalidArgumentException;
+use Mockery as m;
 use Tal\ServerRequest;
 use Test\TestCase;
 
@@ -35,13 +38,12 @@ class RegisterTest extends TestCase
     /** @test */
     public function expectsJsonEncodedBody()
     {
-        $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', ['Content-Type' => 'application/json']))
-            ->withBody(stream_for('name=john&displayName=john'));
-
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Invalid json provided in body');
 
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for('name=john&displayName=john'));
         $controller->handle($request);
     }
 
@@ -55,7 +57,6 @@ class RegisterTest extends TestCase
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getIncompleteUserData($field))));
-
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());
@@ -71,12 +72,12 @@ class RegisterTest extends TestCase
     public function validates($field)
     {
         $validationError = $this->getExampleUserData()[$field]['validationError'];
+
         $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getInvalidUserData($field))));
-
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());
@@ -89,14 +90,14 @@ class RegisterTest extends TestCase
     /** @test */
     public function requiresPasswordConfirmation()
     {
-        $controller = new UserController('register');
         $userData = $this->getValidUserData();
         $userData['passwordConfirmation'] = 'different';
+
+        $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($userData)));
-
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());
@@ -113,12 +114,12 @@ class RegisterTest extends TestCase
         $this->addFetcherResult(User::class, [
             sprintf('/"t0"\."email" = %s/', $this->mocks['pdo']->quote($data['email'])),
         ], new User());
+
         $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
-
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());
@@ -135,12 +136,12 @@ class RegisterTest extends TestCase
         $this->addFetcherResult(User::class, [
             sprintf('/"t0"\."display_name" = %s/', $this->mocks['pdo']->quote($data['displayName'])),
         ], new User());
+
         $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
-
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());
@@ -153,12 +154,6 @@ class RegisterTest extends TestCase
     /** @test */
     public function createsAUser()
     {
-        $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
-
         $this->ormExpectInsert(User::class, [
             'id' => rand(1, 1000),
             'created' => Carbon::now('UTC')->format('Y-m-d H:i:s.u'),
@@ -166,50 +161,87 @@ class RegisterTest extends TestCase
             'account_status' => 'pending',
         ]);
 
-        $controller->handle($request);
-    }
-
-    /** @test */
-    public function createAnActivationCode()
-    {
         $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+        $controller->handle($request);
+    }
 
+    /** @test */
+    public function createsAnActivationCode()
+    {
         $this->ormExpectInsert(ActivationCode::class, [
             'id' => rand(1, 1000),
         ]);
 
-        $controller->handle($request);
-    }
-
-    /** @test */
-    public function createAnActivationToken()
-    {
         $controller = new UserController('register');
         $request = (new ServerRequest('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+        $controller->handle($request);
+    }
 
+    /** @test */
+    public function createsAnActivationToken()
+    {
         $this->ormExpectInsert(ActivationToken::class, [
             'id' => rand(1, 1000),
         ]);
 
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+        $controller->handle($request);
+    }
+
+    /** @test */
+    public function buildsARegistrationMail()
+    {
+        $factory = m::mock(MailFactory::class);
+        $this->app->add('mail', $factory);
+
+        $factory->shouldReceive('getInstance')->with('user/registration', m::type('array'))
+            ->once()->andReturnUsing(function ($name, $data) {
+                self::assertInstanceOf(User::class, $data['user']);
+                self::assertNotEmpty($data['activationLink']);
+                self::assertNotEmpty($data['activationCode']);
+                return new Mail();
+            });
+
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+        $controller->handle($request);
+    }
+
+    /** @test */
+    public function sendsAnEmailForActivation()
+    {
+        $mail = new Mail();
+        $this->app->instance('mail', $mail);
+
+        $this->mocks['mailer']->shouldReceive('send')->with($mail)
+            ->once();
+
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
         $controller->handle($request);
     }
 
     /** @test */
     public function returnsTheCreatedUser()
     {
-        $controller = new UserController('register');
         $userData = $this->getValidUserData();
-        $request = (new ServerRequest('POST', '/register', [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-        ]))->withBody(stream_for(json_encode($userData)));
 
         $this->ormExpectInsert(User::class, [
             'id' => $id = rand(1, 1000),
@@ -218,6 +250,11 @@ class RegisterTest extends TestCase
             'account_status' => 'pending',
         ]);
 
+        $controller = new UserController('register');
+        $request = (new ServerRequest('POST', '/register', [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ]))->withBody(stream_for(json_encode($userData)));
         $response = $controller->handle($request);
 
         self::assertJson($response->getBody());

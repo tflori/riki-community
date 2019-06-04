@@ -58,7 +58,11 @@ class Environment extends \Riki\Environment
 
     public function url(string ...$path): string
     {
-        array_unshift($path, ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') . '://' . $_SERVER['HTTP_HOST']);
+        array_unshift(
+            $path,
+            ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') . '://' .
+            ($_SERVER['HTTP_HOST'] ?? 'localhost')
+        );
         return implode('/', $path);
     }
 }

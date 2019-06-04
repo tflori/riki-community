@@ -3,7 +3,6 @@
 namespace App\Http\Controller;
 
 use App\Application as a;
-use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\User;
@@ -38,12 +37,11 @@ class UserController extends AbstractController
         $activationCode = ActivationCode::newToken($user, '1d')->save();
         $activationToken = ActivationToken::newToken($user, '7d')->save();
 
-        // @todo send an email for activation
-//        a::mailer()->send(a::mail('user/registration', [
-//            'user' => $user,
-//            'activationLink' => a::environment()->url('user/activate', $activationToken->token),
-//            'activationCode' => $activationCode->token,
-//        ]));
+        a::mailer()->send(a::mail('user/registration', [
+            'user' => $user,
+            'activationLink' => a::environment()->url('user/activate', $activationToken->token),
+            'activationCode' => $activationCode->token,
+        ]));
 
         return new ServerResponse(200, ['Content-Type' => 'application/json'], json_encode($user));
     }
