@@ -31,7 +31,7 @@ class CliKernelTest extends TestCase
     }
 
     /** @test */
-    public function definesAPlainTextHandler()
+    public function definesAConsoleHandler()
     {
         $result = $this->kernel->getErrorHandlers($this->app);
 
