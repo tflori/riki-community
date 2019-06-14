@@ -32,7 +32,7 @@ class ApplicationTest extends TestCase
     public function prependsAndRemovesHandlerFromKernel()
     {
         $handlersBefore = $this->app->whoops->getHandlers();
-        $kernelHandlers = [new ConsoleHandler()];
+        $kernelHandlers = [new ConsoleHandler($this->app)];
         $kernel = m::mock(Kernel::class);
         $kernel->shouldReceive('getBootstrappers')->andReturn([]);
         $kernel->shouldReceive('getErrorHandlers')->with($this->app)

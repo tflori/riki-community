@@ -59,20 +59,19 @@ class Request extends ServerRequest
      *
      * Usage:
      * ```php
-     *   if (!$this->validate(['name' => ['required']], 'post', $data, $errors)) {
-     *     // fail and show $errors
+     *   list($valid, $data) = $this->validate(['name' => ['required']], 'post');
+     *   if (!$valid) {
+     *     // fail show validation messages from $data
      *   }
      *   // use $data
      * ```
      *
      * @param array        $fields
      * @param string|array $source
-     * @param array        $data
-     * @param array        $errors
-     * @return bool
-     * @throws InvalidArgumentException
+     * @param array        $messages
+     * @return array
      */
-    public function validate(array $fields, $source = 'query', &$data = [], &$errors = [])
+    public function validate(array $fields, $source = 'query', array $messages = []): array
     {
         if (!is_array($source)) {
             if (!method_exists($this, 'get' . ucfirst($source))) {
@@ -86,12 +85,11 @@ class Request extends ServerRequest
         $gate->accepts($fields);
 
         if ($gate->validate($source)) {
-            $data = $gate->getData();
-            return true;
+            return [true, $gate->getData()];
         }
 
-        $errors = $gate->getErrors();
-        return false;
+        $messages = Application::app()->make(ValidatorMessages::class, $gate->getErrors(), $messages);
+        return [false, $messages->getMessages()];
     }
 
     /**

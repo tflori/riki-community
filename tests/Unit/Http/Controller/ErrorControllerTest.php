@@ -13,19 +13,19 @@ class ErrorControllerTest extends TestCase
     /** @test */
     public function returns500Response()
     {
-        $errorController = new ErrorController('unexpectedError');
-        $request = new Request('GET', '/any/path');
+        $request = new Request('POST', '/any/path');
+        $errorController = new ErrorController($this->app);
 
-        self::assertSame(500, $errorController->handle($request)->getStatusCode());
+        self::assertSame(500, $errorController->unexpectedError($request)->getStatusCode());
     }
 
     /** @test */
     public function rendersUnexpectedError()
     {
-        $errorController = new ErrorController('unexpectedError');
-        $request = new Request('GET', '/any/path');
+        $request = new Request('POST', '/any/path');
+        $errorController = new ErrorController($this->app);
 
-        $body = $errorController->handle($request)->getBody()->getContents();
+        $body = $errorController->unexpectedError($request)->getBody()->getContents();
 
         self::assertContains('Unexpected Error', $body);
     }
@@ -33,12 +33,12 @@ class ErrorControllerTest extends TestCase
     /** @test */
     public function returnsJsonWhenPreferred()
     {
-        $errorController = new ErrorController('unexpectedError');
+        $errorController = new ErrorController($this->app);
         $request = new Request('GET', '/any/path', [
             'accept' => 'application/json',
         ]);
 
-        $body = $errorController->handle($request)->getBody()->getContents();
+        $body = $errorController->unexpectedError($request)->getBody()->getContents();
 
         self::assertNotSame('null', $body);
         self::assertNotNull(json_decode($body));
@@ -47,12 +47,13 @@ class ErrorControllerTest extends TestCase
     /** @test */
     public function jsonContainsTheExceptionWhenAvailable()
     {
-        $errorController = new ErrorController('unexpectedError');
+        $errorController = new ErrorController($this->app);
         $request = (new Request('GET', '/any/path', [
             'accept' => 'application/json',
-        ]))->withAttribute('arguments', [new InvalidArgumentException('This was expected')]);
+        ]));
 
-        $body = $errorController->handle($request)->getBody()->getContents();
+        $body = $errorController->unexpectedError($request, new InvalidArgumentException('This was expected'))
+            ->getBody()->getContents();
         $json = json_decode($body, true);
 
         self::assertArraySubset([
@@ -66,19 +67,19 @@ class ErrorControllerTest extends TestCase
     /** @test */
     public function returns404Response()
     {
-        $errorController = new ErrorController('notFound');
+        $errorController = new ErrorController($this->app);
         $request = new Request('GET', '/any/path');
 
-        self::assertSame(404, $errorController->handle($request)->getStatusCode());
+        self::assertSame(404, $errorController->notFound($request)->getStatusCode());
     }
 
     /** @test */
     public function rendersNotFoundError()
     {
-        $errorController = new ErrorController('notFound');
+        $errorController = new ErrorController($this->app);
         $request = new Request('GET', '/any/path');
 
-        $body = $errorController->handle($request)->getBody()->getContents();
+        $body = $errorController->notFound($request)->getBody()->getContents();
 
         self::assertContains('File Not Found', $body);
         self::assertContains('/any/path', $body);
@@ -87,21 +88,19 @@ class ErrorControllerTest extends TestCase
     /** @test */
     public function returns405Response()
     {
-        $errorController = new ErrorController('methodNotAllowed');
-        $request = (new Request('POST', '/any/path'))
-            ->withAttribute('arguments', ['allowedMethods' => ['GET']]);
+        $errorController = new ErrorController($this->app);
+        $request = (new Request('POST', '/any/path'));
 
-        self::assertSame(405, $errorController->handle($request)->getStatusCode());
+        self::assertSame(405, $errorController->methodNotAllowed($request, ['GET'])->getStatusCode());
     }
 
     /** @test */
     public function rendersMethodNotAllowed()
     {
-        $errorController = new ErrorController('methodNotAllowed');
-        $request = (new Request('POST', '/any/path'))
-            ->withAttribute('arguments', ['allowedMethods' => ['GET']]);
+        $errorController = new ErrorController($this->app);
+        $request = (new Request('POST', '/any/path'));
 
-        $body = $errorController->handle($request)->getBody()->getContents();
+        $body = $errorController->methodNotAllowed($request, ['GET'])->getBody()->getContents();
 
         self::assertContains('Method Not Allowed', $body);
         self::assertContains('/any/path', $body);

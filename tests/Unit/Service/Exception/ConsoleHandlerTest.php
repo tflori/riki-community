@@ -17,7 +17,7 @@ class ConsoleHandlerTest extends TestCase
     {
         $exception = $exception ?? new RuntimeException('Test Exception');
 
-        $handler = new ConsoleHandler();
+        $handler = new ConsoleHandler($this->app);
         $handler->setException($exception);
         $handler->setInspector(new Inspector($exception));
 

@@ -132,39 +132,37 @@ class RequestTest extends TestCase
     }
 
     /** @test */
-    public function validateSetsDataOnSuccess()
+    public function validateReturnsDataOnSuccess()
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('getData')->with()->once()->andReturn(['foo' => 42]);
         $this->app->instance('verja', $gate);
 
-        /** @var Request|m\Mock $request */
         $request = m::mock(Request::class)->makePartial();
 
-        $valid = $request->validate(['foo'], [], $data);
+        list($valid, $data) = $request->validate(['foo'], []);
 
         self::assertSame(42, $data['foo']);
     }
 
     /** @test */
-    public function validateSetsErrorsOnFailure()
+    public function validateReturnsErrorsOnFailure()
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('validate')->once()->andReturn(false);
         $gate->shouldReceive('getErrors')->with()->once()->andReturn($errors = ['foo' => [new Error('WHAT_EVER', '')]]);
         $this->app->instance('verja', $gate);
-//        $messages = m::mock(ValidatorMessages::class);
-//        $this->app->shouldReceive('make')->with(ValidatorMessages::class, $errors, [])
-//            ->once()->andReturn($messages);
-//        $messages->shouldReceive('getMessages')->with()
-//            ->once()->andReturn(['foo' => ['What ever...']]);
+        $messages = m::mock(ValidatorMessages::class);
+        $this->app->shouldReceive('make')->with(ValidatorMessages::class, $errors, [])
+            ->once()->andReturn($messages);
+        $messages->shouldReceive('getMessages')->with()
+            ->once()->andReturn(['foo' => ['What ever...']]);
 
-        /** @var Request|m\Mock $request */
         $request = m::mock(Request::class)->makePartial();
 
-        $valid = $request->validate(['foo'], [], $data, $errors);
+        list($valid, $errors) = $request->validate(['foo'], []);
 
-        self::assertSame('WHAT_EVER', $errors['foo'][0]->key);
+        self::assertSame('What ever...', $errors['foo'][0]);
     }
 
     /** @test */

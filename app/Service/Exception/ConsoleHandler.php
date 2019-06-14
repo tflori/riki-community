@@ -9,12 +9,25 @@ use Whoops\Handler\Handler;
 
 class ConsoleHandler extends Handler
 {
+    /** @var Application */
+    protected $app;
+
+    /**
+     * ConsoleHandler constructor.
+     *
+     * @param Application $app
+     */
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      * @return int|null A handler may return nothing, or a Handler::HANDLE_* constant
      */
     public function handle()
     {
-        $console = Application::console();
+        $console = $this->app->console;
 
         /** @var ConsoleFormatter $formatter */
         $formatter = Application::app()->make(ConsoleFormatter::class, $this->getInspector());

@@ -5,44 +5,23 @@ namespace App\Http\Controller;
 use App\Application;
 use App\Model\Request;
 use Exception;
-use function GuzzleHttp\Psr7\stream_for;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Tal\ServerResponse;
 use Throwable;
 
-abstract class AbstractController implements RequestHandlerInterface
+abstract class AbstractController
 {
-    /** @var Request */
-    protected $request;
+    /** @var Application */
+    protected $app;
 
-    /** @var string */
-    protected $action;
-
-    public function __construct($action = 'getIndex')
+    public function __construct(Application $app)
     {
-        $this->action = $action;
-    }
-
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
-        $this->request = $request;
-        $action = $this->action;
-
-        if (!method_exists($this, $action)) {
-            throw new Exception(sprintf('Action %s is unknown in %s', $action, static::class));
-        }
-
-        $arguments = $request->getAttribute('arguments') ?? [];
-        $response = call_user_func([$this, $action], ...array_values($arguments));
-
-        return $response instanceof ResponseInterface ? $response : new ServerResponse(200, [], $response);
+        $this->app = $app;
     }
 
     /**
      * Returns a error response
      *
+     * @param Request   $request
      * @param int       $status
      * @param string    $reason
      * @param string    $message
@@ -52,13 +31,14 @@ abstract class AbstractController implements RequestHandlerInterface
      * @return ServerResponse
      */
     protected function error(
+        Request $request,
         int $status,
         string $reason,
         string $message,
         array $errors = [],
         Throwable $exception = null
     ): ServerResponse {
-        switch ($this->request->getPreferredContentType(['text/html', 'application/json'])) {
+        switch ($request->getPreferredContentType(['text/html', 'application/json'])) {
             case 'application/json':
                 $data = compact('reason', 'message');
                 if (!empty($errors)) {
