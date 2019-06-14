@@ -25,11 +25,10 @@ class HttpKernel extends \App\Kernel
     /** @var MiddlewareRouter */
     protected $router;
 
-    public function __construct()
+    public function __construct(Application $app)
     {
-        $this->addBootstrappers(
-            [$this, 'loadRoutes']
-        );
+        parent::__construct($app);
+        // bootstrap the kernel
     }
 
     /**
@@ -105,7 +104,7 @@ class HttpKernel extends \App\Kernel
 
         $handlers = [];
         $arguments = [];
-        $result = $this->router->dispatch($request->getMethod(), $request->getRelativePath());
+        $result = $this->getRouter()->dispatch($request->getMethod(), $request->getRelativePath());
         switch ($result[0]) {
             case FastRoute\Dispatcher::FOUND:
                 list(, $handlers, $arguments) = $result;
@@ -132,20 +131,20 @@ class HttpKernel extends \App\Kernel
             ->handle($request);
     }
 
-    public function getErrorHandlers(Application $app): array
+    public function getErrorHandlers(): array
     {
-        if ($app->environment->canShowErrors()) {
+        if ($this->app->environment->canShowErrors()) {
             $handler = new PrettyPageHandler();
-            if ($app->config->env('PROJECT_PATH')) {
+            if ($this->app->config->env('PROJECT_PATH')) {
                 /** @codeCoverageIgnore no way to test opening files in editor in ci */
-                $handler->setEditor(function (string $file, int $line) use ($app) {
+                $handler->setEditor(function (string $file, int $line) {
                     $file =preg_replace(
-                        '~^' . $app->getBasePath() . '~',
-                        $app->config->env('PROJECT_PATH'),
+                        '~^' . $this->app->getBasePath() . '~',
+                        $this->app->config->env('PROJECT_PATH'),
                         $file
                     );
                     $url = sprintf(
-                        $app->config->env('EDITOR_URL', 'http://localhost:63342/api/file/?file=%s&line=%d'),
+                        $this->app->config->env('EDITOR_URL', 'http://localhost:63342/api/file/?file=%s&line=%d'),
                         $file,
                         $line
                     );
@@ -165,18 +164,18 @@ class HttpKernel extends \App\Kernel
         }
     }
 
-    public function loadRoutes(Application $app): bool
+    public function getRouter(): MiddlewareRouter
     {
         if (!$this->router) {
             // @todo implement caching for $routeCollector->getData()
-            $dataGenerator = $app->make(MiddlewareDataGenerator::class);
-            $routeParser = $app->make(FastRoute\RouteParser\Std::class);
-            $routeCollector = $app->make(MiddlewareRouteCollector::class, $routeParser, $dataGenerator);
+            $dataGenerator = $this->app->make(MiddlewareDataGenerator::class);
+            $routeParser = $this->app->make(FastRoute\RouteParser\Std::class);
+            $routeCollector = $this->app->make(MiddlewareRouteCollector::class, $routeParser, $dataGenerator);
             self::collectRoutes($routeCollector);
-            $this->router = $app->make(MiddlewareRouter::class, $routeCollector->getData());
+            $this->router = $this->app->make(MiddlewareRouter::class, $routeCollector->getData());
         }
 
-        return true;
+        return $this->router;
     }
 
     protected static function collectRoutes(MiddlewareRouteCollector $router)

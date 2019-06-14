@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c271f54bf457c8bc22ecb18e807a61a9",
+    "content-hash": "1b3988f05d07788e750c9538dcc7c874",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1811,16 +1811,16 @@
         },
         {
             "name": "tflori/riki-framework",
-            "version": "v1.0.0-rc.2",
+            "version": "v1.0.0-rc.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/riki-framework.git",
-                "reference": "0665e07e43cf252af1eb92acd0074b7532c3f5f0"
+                "reference": "7cfd045f4146cd0701fd67521d12d96186aeb428"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/0665e07e43cf252af1eb92acd0074b7532c3f5f0",
-                "reference": "0665e07e43cf252af1eb92acd0074b7532c3f5f0",
+                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/7cfd045f4146cd0701fd67521d12d96186aeb428",
+                "reference": "7cfd045f4146cd0701fd67521d12d96186aeb428",
                 "shasum": ""
             },
             "require": {
@@ -1850,7 +1850,7 @@
                 }
             ],
             "description": "A minimalistic framework to connect different libraries within your application.",
-            "time": "2019-05-30T08:46:05+00:00"
+            "time": "2019-06-10T06:15:50+00:00"
         },
         {
             "name": "tflori/secure-token",

@@ -17,7 +17,7 @@ abstract class TestCase extends \Test\TestCase
             $request = $request->withHeader($header, $value);
         }
 
-        $kernel = new HttpKernel();
+        $kernel = new HttpKernel($this->app);
         return $this->app->run($kernel, $request);
     }
 }

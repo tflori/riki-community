@@ -28,11 +28,10 @@ class CliKernel extends \App\Kernel
     /** @var GetOpt */
     protected $getOpt;
 
-    public function __construct()
+    public function __construct(Application $app)
     {
-        $this->addBootstrappers(
-            [$this, 'loadCommands']
-        );
+        parent::__construct($app);
+        // bootstrap the kernel
     }
 
     /**
@@ -42,7 +41,7 @@ class CliKernel extends \App\Kernel
     public function handle($arguments = null): int
     {
         $app = Application::app();
-        $getOpt = $this->getOpt;
+        $getOpt = $this->getGetOpt();
         $console = $app->console;
 
         // process arguments and catch user errors
@@ -83,22 +82,21 @@ class CliKernel extends \App\Kernel
         return call_user_func($command->getHandler(), $getOpt);
     }
 
-    public function getErrorHandlers(Application $app): array
+    public function getErrorHandlers(): array
     {
-        return [new ConsoleHandler()];
+        return [new ConsoleHandler($this->app)];
     }
 
     /**
      * Create a getOpt instance for this kernel, add default options and load registered commands.
      *
-     * @param Application $app
-     * @return bool
+     * @return GetOpt
      */
-    public function loadCommands(Application $app): bool
+    public function getGetOpt(): GetOpt
     {
         if (!$this->getOpt) {
             /** @var GetOpt $getOpt */
-            $this->getOpt = $getOpt = $app->make(GetOpt::class);
+            $this->getOpt = $getOpt = $this->app->make(GetOpt::class);
 
             $getOpt->addOptions([
                 Option::create('h', 'help')
@@ -110,10 +108,15 @@ class CliKernel extends \App\Kernel
             ]);
 
             foreach (static::$commands as $class) {
-                $getOpt->addCommand($app->make($class, $app, $app->console));
+                if (!class_exists($class)) {
+                    // @codeCoverageIgnoreStart
+                    continue; // avoid errors for deleted commands
+                    // @codeCoverageIgnoreEnd
+                }
+                $getOpt->addCommand($this->app->make($class, $this->app, $this->app->console));
             }
         }
 
-        return true;
+        return $this->getOpt;
     }
 }

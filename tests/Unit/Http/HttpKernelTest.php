@@ -23,10 +23,10 @@ class HttpKernelTest extends TestCase
     /** @test */
     public function definesACustomErrorHandler()
     {
-        $kernel = new HttpKernel();
+        $kernel = new HttpKernel($this->app);
         $this->app->environment->shouldReceive('canShowErrors')->andReturn(false);
 
-        $result = $kernel->getErrorHandlers($this->app);
+        $result = $kernel->getErrorHandlers();
 
         self::assertInstanceOf(\Closure::class, $result[0]);
     }
@@ -34,10 +34,10 @@ class HttpKernelTest extends TestCase
     /** @test */
     public function definesAPrettyPageHandler()
     {
-        $kernel = new HttpKernel();
+        $kernel = new HttpKernel($this->app);
         $this->app->environment->shouldReceive('canShowErrors')->andReturn(true);
 
-        $result = $kernel->getErrorHandlers($this->app);
+        $result = $kernel->getErrorHandlers();
 
         self::assertInstanceOf(PrettyPageHandler::class, $result[0]);
     }
@@ -54,9 +54,9 @@ class HttpKernelTest extends TestCase
         $response->shouldReceive('send')->with()
             ->once();
 
-        $kernel = new HttpKernel();
+        $kernel = new HttpKernel($this->app);
         $this->app->environment->shouldReceive('canShowErrors')->andReturn(false);
-        $handler = $kernel->getErrorHandlers($this->app)[0];
+        $handler = $kernel->getErrorHandlers()[0];
 
         $result = $handler($exception);
 
@@ -195,7 +195,7 @@ class HttpKernelTest extends TestCase
 
         /** @var HttpKernel|m\Mock $kernel */
         $kernel = $this->mocks['kernel'] = m::mock(HttpKernel::class)->makePartial();
-        $kernel->loadRoutes($this->app);
+        $kernel->__construct($this->app);
 
         /** @var Dispatcher|m\Mock $dispatcher */
         $dispatcher = $this->mocks['dispatcher'] = m::mock(Dispatcher::class);

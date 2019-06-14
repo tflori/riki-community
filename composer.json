@@ -11,7 +11,7 @@
     "ext-mbstring":                      "*",
     "ext-bcmath":                        "*",
     "ext-json":                          "*",
-    "tflori/riki-framework":             "1.0.0-rc.2",
+    "tflori/riki-framework":             "1.0.0-rc.3",
     "filp/whoops":                       "^2.2",
     "monolog/monolog":                   "^1.9",
     "ulrichsg/getopt-php":               "^3.2",

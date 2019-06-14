@@ -1,11 +1,14 @@
 <?php
 
+use App\Application;
+use App\Http\HttpKernel;
+use Tal\Psr7Extended\ServerResponseInterface;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$app = new \App\Application(realPath(__DIR__ . '/..'));
-$kernel = new \App\Http\HttpKernel();
-/** @var \Tal\Psr7Extended\ServerResponseInterface $response */
+$app = new Application(realPath(__DIR__ . '/..'));
+$kernel = new HttpKernel($app);
+
+/** @var ServerResponseInterface $response */
 $response = $app->run($kernel);
-
-
 $response->send();

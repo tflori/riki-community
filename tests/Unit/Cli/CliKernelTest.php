@@ -19,8 +19,7 @@ class CliKernelTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->kernel = new CliKernel();
-        $this->kernel->loadCommands($this->app);
+        $this->kernel = new CliKernel($this->app);
     }
 
     protected function initDependencies()
@@ -54,10 +53,7 @@ class CliKernelTest extends TestCase
      * @test */
     public function registersDefaultOptions($short, $long)
     {
-        /** @var GetOpt|m\Mock $getOpt */
-        $getOpt = $this->mocks['getOpt'];
-
-        $this->kernel->loadCommands($this->app);
+        $getOpt = $this->kernel->getGetOpt();
 
         self::assertSame($short, $getOpt->getOptionObject($long)->getShort());
     }
