@@ -12,7 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * The queue dispatcher is a simple one class middleware dispatcher.
  *
- * A handler in queue can either be a string in form of 'Controller@method', a class name of a middleware or request
+ * A handler in queue can either be a string in form of 'method@Controller', a class name of a middleware or request
  * handler or a callable that may act as request handler or middleware.
  *
  * A callable will get two parameters: a ServerRequestInterface and a callable for next. An example could be:

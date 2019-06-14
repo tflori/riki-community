@@ -7,11 +7,11 @@ use App\Http\Controller\ErrorController;
 use App\Http\Router\MiddlewareDataGenerator;
 use App\Http\Router\MiddlewareRouteCollector;
 use App\Http\Router\MiddlewareRouter;
+use App\Model\Request;
 use FastRoute;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Tal\ServerRequest;
 use Whoops\Handler\Handler;
 use Whoops\Handler\PrettyPageHandler;
 
@@ -19,7 +19,7 @@ class HttpKernel extends \App\Kernel
 {
     const CONTROLLER_NAMESPACE = 'App\Http\Controller';
 
-    /** @var ServerRequest */
+    /** @var Request */
     protected static $lastRequest;
 
     /** @var MiddlewareRouter */
@@ -91,12 +91,12 @@ class HttpKernel extends \App\Kernel
         return Application::app()->make($class, ...$args);
     }
 
-    public function handle(ServerRequest $request = null): ResponseInterface
+    public function handle(Request $request = null): ResponseInterface
     {
         if (!$request) {
             // During tests we don't create a request object from super globals
             // @codeCoverageIgnoreStart
-            $request = ServerRequest::fromGlobals();
+            $request = Request::fromGlobals($this->app);
             // @codeCoverageIgnoreEnd
         }
 
@@ -154,7 +154,7 @@ class HttpKernel extends \App\Kernel
             return [$handler];
         } else {
             return [function ($exception = null) {
-                $request = (self::$lastRequest ?? ServerRequest::fromGlobals())
+                $request = (self::$lastRequest ?? Request::fromGlobals())
                     ->withAttribute('arguments', ['exception' => $exception]);
                 /** @var ErrorController $errorController */
                 $errorController = self::getHandler([ErrorController::class, 'unexpectedError']);

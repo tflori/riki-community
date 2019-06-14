@@ -8,10 +8,10 @@ use App\Http\HttpKernel;
 use App\Http\Router\MiddlewareDataGenerator;
 use App\Http\Router\MiddlewareRouteCollector;
 use App\Http\Router\MiddlewareRouter;
+use App\Model\Request;
 use FastRoute\Dispatcher as RouteDispatcher;
 use FastRoute\RouteParser\Std;
 use Tal\Psr7Extended\ServerRequestInterface;
-use Tal\ServerRequest;
 use Tal\ServerResponse;
 use Test\TestCase;
 use Whoops\Handler\Handler;
@@ -49,7 +49,7 @@ class HttpKernelTest extends TestCase
         $errorController = m::mock(ErrorController::class);
         $response = m::mock(ServerResponse::class);
         $this->app->instance(ErrorController::class, $errorController);
-        $errorController->shouldReceive('handle')->with(m::type(ServerRequest::class))
+        $errorController->shouldReceive('handle')->with(m::type(Request::class))
             ->once()->andReturn($response);
         $response->shouldReceive('send')->with()
             ->once();
@@ -187,7 +187,7 @@ class HttpKernelTest extends TestCase
         array $expectedHandlers,
         array $expectedArguments = null
     ) {
-        $request = new ServerRequest($method, $uri);
+        $request = new Request($method, $uri);
 
         /** @var MiddlewareRouter|m\Mock $kernel */
         $router = $this->mocks['router'] = m::mock(MiddlewareRouter::class);
@@ -210,7 +210,7 @@ class HttpKernelTest extends TestCase
             ->once()->andReturn($dispatcher)->ordered();
 
         // third: dispatches the request to dispatcher
-        $dispatcher->shouldReceive('handle')->with(m::type(ServerRequest::class))
+        $dispatcher->shouldReceive('handle')->with(m::type(Request::class))
             ->once()->andReturnUsing(function (ServerRequestInterface $dispatched) use (&$request) {
                 // we store the request that got dispatched
                 $request = $dispatched;

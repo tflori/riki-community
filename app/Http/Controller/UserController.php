@@ -15,7 +15,7 @@ class UserController extends AbstractController
     {
         $em = a::entityManager();
 
-        if (!$this->validate([
+        if (!$this->request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
                 return $em->fetch(User::class)->where('email', $value)->count() === 0 ? true :
                     new Error('EMAIL_TAKEN', $value, 'Email address already taken');

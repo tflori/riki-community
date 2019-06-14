@@ -5,10 +5,10 @@ namespace Test\Unit\Http;
 use App\Http\Controller\ErrorController;
 use App\Http\Dispatcher;
 use App\Http\HttpKernel;
+use App\Model\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Tal\ServerRequest;
 use Tal\ServerResponse;
 use Test\TestCase;
 use Mockery as m;
@@ -23,7 +23,7 @@ class DispatcherTest extends TestCase
         self::expectException(\LogicException::class);
         self::expectExceptionMessage('Queue is empty');
 
-        $dispatcher->handle(new ServerRequest('GET', '/'));
+        $dispatcher->handle(new Request('GET', '/'));
     }
 
     /** @test */
@@ -32,7 +32,7 @@ class DispatcherTest extends TestCase
         $middleware = m::mock(MiddlewareInterface::class);
         $requestHandler = m::mock(RequestHandlerInterface::class);
         $httpKernel = m::mock(HttpKernel::class);
-        $request = new ServerRequest('GET', '/');
+        $request = new Request('GET', '/');
         $response = new ServerResponse();
 
         $dispatcher = new Dispatcher([
@@ -66,7 +66,7 @@ class DispatcherTest extends TestCase
         $httpKernel->shouldReceive('getHandler')->with('unexpectedError@ErrorController')
             ->once()->andReturn($errorController);
 
-        $dispatcher->handle(new ServerRequest('GET', '/'));
+        $dispatcher->handle(new Request('GET', '/'));
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class DispatcherTest extends TestCase
 
         $dispatcher = new Dispatcher([$spy], [HttpKernel::class, 'getHandler']);
 
-        $dispatcher->handle($request = new ServerRequest('GET', '/'));
+        $dispatcher->handle($request = new Request('GET', '/'));
 
         $spy->shouldHaveBeenCalled()->with($request, $dispatcher)->once();
     }

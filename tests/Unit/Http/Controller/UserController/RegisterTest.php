@@ -5,6 +5,7 @@ namespace Test\Unit\Http\Controller\UserController;
 use App\Factory\MailFactory;
 use App\Http\Controller\UserController;
 use App\Model\Mail;
+use App\Model\Request;
 use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
@@ -12,7 +13,6 @@ use Community\Model\User;
 use function GuzzleHttp\Psr7\stream_for;
 use InvalidArgumentException;
 use Mockery as m;
-use Tal\ServerRequest;
 use Test\TestCase;
 
 class RegisterTest extends TestCase
@@ -42,7 +42,7 @@ class RegisterTest extends TestCase
         self::expectExceptionMessage('Invalid json provided in body');
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', ['Content-Type' => 'application/json']))
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
             ->withBody(stream_for('name=john&displayName=john'));
         $controller->handle($request);
     }
@@ -53,7 +53,7 @@ class RegisterTest extends TestCase
     public function requires($field)
     {
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getIncompleteUserData($field))));
@@ -74,7 +74,7 @@ class RegisterTest extends TestCase
         $validationError = $this->getExampleUserData()[$field]['validationError'];
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($this->getInvalidUserData($field))));
@@ -94,7 +94,7 @@ class RegisterTest extends TestCase
         $userData['passwordConfirmation'] = 'different';
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($userData)));
@@ -116,7 +116,7 @@ class RegisterTest extends TestCase
         ], new User());
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
@@ -138,7 +138,7 @@ class RegisterTest extends TestCase
         ], new User());
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ]))->withBody(stream_for(json_encode($data)));
@@ -162,7 +162,7 @@ class RegisterTest extends TestCase
         ]);
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -177,7 +177,7 @@ class RegisterTest extends TestCase
         ]);
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -192,7 +192,7 @@ class RegisterTest extends TestCase
         ]);
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -214,7 +214,7 @@ class RegisterTest extends TestCase
             });
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -231,7 +231,7 @@ class RegisterTest extends TestCase
             ->once();
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
@@ -251,7 +251,7 @@ class RegisterTest extends TestCase
         ]);
 
         $controller = new UserController('register');
-        $request = (new ServerRequest('POST', '/register', [
+        $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ]))->withBody(stream_for(json_encode($userData)));

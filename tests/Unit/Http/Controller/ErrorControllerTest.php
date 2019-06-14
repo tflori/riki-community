@@ -3,8 +3,8 @@
 namespace Test\Unit\Http\Controller;
 
 use App\Http\Controller\ErrorController;
+use App\Model\Request;
 use InvalidArgumentException;
-use Tal\ServerRequest;
 use Test\TestCase;
 use Mockery as m;
 
@@ -14,7 +14,7 @@ class ErrorControllerTest extends TestCase
     public function returns500Response()
     {
         $errorController = new ErrorController('unexpectedError');
-        $request = new ServerRequest('GET', '/any/path');
+        $request = new Request('GET', '/any/path');
 
         self::assertSame(500, $errorController->handle($request)->getStatusCode());
     }
@@ -23,7 +23,7 @@ class ErrorControllerTest extends TestCase
     public function rendersUnexpectedError()
     {
         $errorController = new ErrorController('unexpectedError');
-        $request = new ServerRequest('GET', '/any/path');
+        $request = new Request('GET', '/any/path');
 
         $body = $errorController->handle($request)->getBody()->getContents();
 
@@ -34,7 +34,7 @@ class ErrorControllerTest extends TestCase
     public function returnsJsonWhenPreferred()
     {
         $errorController = new ErrorController('unexpectedError');
-        $request = new ServerRequest('GET', '/any/path', [
+        $request = new Request('GET', '/any/path', [
             'accept' => 'application/json',
         ]);
 
@@ -48,7 +48,7 @@ class ErrorControllerTest extends TestCase
     public function jsonContainsTheExceptionWhenAvailable()
     {
         $errorController = new ErrorController('unexpectedError');
-        $request = (new ServerRequest('GET', '/any/path', [
+        $request = (new Request('GET', '/any/path', [
             'accept' => 'application/json',
         ]))->withAttribute('arguments', [new InvalidArgumentException('This was expected')]);
 
@@ -67,7 +67,7 @@ class ErrorControllerTest extends TestCase
     public function returns404Response()
     {
         $errorController = new ErrorController('notFound');
-        $request = new ServerRequest('GET', '/any/path');
+        $request = new Request('GET', '/any/path');
 
         self::assertSame(404, $errorController->handle($request)->getStatusCode());
     }
@@ -76,7 +76,7 @@ class ErrorControllerTest extends TestCase
     public function rendersNotFoundError()
     {
         $errorController = new ErrorController('notFound');
-        $request = new ServerRequest('GET', '/any/path');
+        $request = new Request('GET', '/any/path');
 
         $body = $errorController->handle($request)->getBody()->getContents();
 
@@ -88,7 +88,7 @@ class ErrorControllerTest extends TestCase
     public function returns405Response()
     {
         $errorController = new ErrorController('methodNotAllowed');
-        $request = (new ServerRequest('POST', '/any/path'))
+        $request = (new Request('POST', '/any/path'))
             ->withAttribute('arguments', ['allowedMethods' => ['GET']]);
 
         self::assertSame(405, $errorController->handle($request)->getStatusCode());
@@ -98,7 +98,7 @@ class ErrorControllerTest extends TestCase
     public function rendersMethodNotAllowed()
     {
         $errorController = new ErrorController('methodNotAllowed');
-        $request = (new ServerRequest('POST', '/any/path'))
+        $request = (new Request('POST', '/any/path'))
             ->withAttribute('arguments', ['allowedMethods' => ['GET']]);
 
         $body = $errorController->handle($request)->getBody()->getContents();
