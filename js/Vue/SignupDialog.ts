@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import axios from 'axios';
 import Component from 'vue-class-component';
 import M from 'materialize-css';
 import Vue from 'vue';
@@ -14,6 +15,7 @@ export default class SignupDialog extends Vue {
     protected passwordConfirmation: string = '';
     protected displayName: string = '';
     protected name: string = '';
+    protected errors: any = {};
 
     protected _modalInstance: M.Modal|undefined;
 
@@ -44,6 +46,7 @@ export default class SignupDialog extends Vue {
         this.passwordConfirmation = '';
         this.displayName = '';
         this.name = '';
+        this.errors = {};
         this.$nextTick(M.updateTextFields);
     }
 
@@ -53,6 +56,37 @@ export default class SignupDialog extends Vue {
     }
 
     public register() {
-        console.log(this.email, this.password, this.passwordConfirmation);
+        let user = {
+            email: this.email,
+            password: this.password,
+            passwordConfirmation: this.passwordConfirmation,
+            displayName: this.displayName,
+            name: this.name,
+        };
+
+        axios({
+            method: 'post',
+            url: '/registration',
+            data: user,
+        }).then(console.log).catch((error) => {
+            if (error.response.status === 400 && error.response.data.message === 'Invalid user data') {
+                this.errors = error.response.data.errors;
+
+                // reset the password if it has errors
+                if (this.errors.password) {
+                    this.password = '';
+                    this.passwordConfirmation = '';
+                    this.$nextTick(M.updateTextFields);
+                }
+
+                // focus the first field with errors
+                for (let field of ['email', 'password', 'displayName', 'name']) {
+                    if (this.errors[field]) {
+                        (<HTMLElement>this.$refs[field]).focus();
+                        break;
+                    }
+                }
+            }
+        });
     }
 }

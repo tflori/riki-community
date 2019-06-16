@@ -37,7 +37,7 @@ class PasswordStrength extends Validator
         $this->error = new Error(
             'PASSWORD_TO_WEAK',
             $value,
-            sprintf('password strength score should be at least %d - reached %d', $this->minimalScore, $score),
+            sprintf('password strength %d; %d needed', $score, $this->minimalScore),
             [
                 'minimalScore' => $this->minimalScore,
                 'score' => $score

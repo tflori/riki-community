@@ -7,24 +7,37 @@
     <form class="col s12 l8 offset-l2" @submit.prevent="register" action="/any_url">
       <div class="row">
         <div class="input-field col s12">
-          <input class="validate" id="signup-email" ref="email" type="email" v-model="email"/>
+          <input id="signup-email" ref="email" type="email"
+                 v-model="email" v-bind:class="{invalid: errors.email}"/>
           <label for="signup-email">eMail Address</label>
+          <span v-for="error in errors.email" class="helper-text red-text">{{error}}</span>
         </div>
+      </div>
+      <div class="row">
         <div class="input-field col s12 m6">
-          <input id="signup-password" type="password" v-model="password"/>
+          <input id="signup-password" ref="password" type="password"
+                 v-model="password" v-bind:class="{invalid: errors.password}"/>
           <label for="signup-password">Password</label>
+          <span v-for="error in errors.password" class="helper-text red-text">{{error}}</span>
         </div>
         <div class="input-field col s12 m6">
-          <input id="signup-password-confirmation" type="password" v-model="passwordConfirmation"/>
+          <input id="signup-password-confirmation" type="password"
+                 v-model="passwordConfirmation"/>
           <label for="signup-password-confirmation">Confirmation</label>
         </div>
+      </div>
+      <div class="row">
         <div class="input-field col s12 m6">
-          <input id="signup-displayName" type="text" v-model="displayName"/>
+          <input id="signup-displayName" ref="displayName" type="text"
+                 v-model="displayName" v-bind:class="{invalid: errors.displayName}"/>
           <label for="signup-displayName">Pseudonym</label>
+          <span v-for="error in errors.displayName" class="helper-text red-text">{{error}}</span>
         </div>
         <div class="input-field col s12 m6">
-          <input id="signup-name" type="text" v-model="name"/>
+          <input id="signup-name" ref="name" type="text"
+                 v-model="name" v-bind:class="{invalid: errors.name}"/>
           <label for="signup-name">Name</label>
+          <span v-for="error in errors.name" class="helper-text red-text">{{error}}</span>
         </div>
       </div>
       <button class="btn waves-effect waves-light" type="submit">
