@@ -31,66 +31,6 @@ class HttpKernel extends \App\Kernel
         // bootstrap the kernel
     }
 
-    /**
-     * Get a RequestHandler or Middleware for $handler
-     *
-     * @param string|array|callable $handler
-     * @return RequestHandlerInterface|MiddlewareInterface|callable
-     */
-    public static function getHandler($handler)
-    {
-        if (is_callable($handler)) {
-            switch (gettype($handler)) {
-                case 'string':
-                    if (strpos($handler, '::') === false) {
-                        return $handler;
-                    }
-                    list($class, $method) = explode('::', $handler);
-                    break;
-
-                case 'array':
-                    if (is_object($handler[0])) {
-                        return $handler;
-                    }
-                    list($class, $method) = $handler;
-                    break;
-
-                default:
-                case 'object':
-                    return $handler;
-            }
-            // for static calls we have to check more... because is callable returns true for non static methods
-            if (class_exists($class)) {
-                $class = new \ReflectionClass($class);
-                $method = $class->getMethod($method);
-                if (!$class->isAbstract() && $method->isStatic() && $method->isPublic() && !$method->isAbstract()) {
-                    return $handler;
-                }
-            }
-        }
-
-        if (is_array($handler)) {
-            $class = array_shift($handler);
-            $args = $handler;
-        } elseif (is_string($handler)) {
-            $class = $handler;
-            $args = [];
-            if (1 < $pos = strpos($handler, '@')) {
-                $class = substr($handler, $pos + 1);
-                $args[] = substr($handler, 0, $pos);
-            }
-        }
-
-        if (!class_exists($class)) {
-            if (!class_exists(self::CONTROLLER_NAMESPACE . '\\' . $class)) {
-                throw new \InvalidArgumentException(sprintf('Class %s not found', $class));
-            }
-            $class = self::CONTROLLER_NAMESPACE . '\\' . $class;
-        }
-
-        return Application::app()->make($class, ...$args);
-    }
-
     public function handle(Request $request = null): ResponseInterface
     {
         if (!$request) {
@@ -127,8 +67,56 @@ class HttpKernel extends \App\Kernel
         }
 
         return Application::app()
-            ->make(Dispatcher::class, $handlers, [self::class, 'getHandler'])
+            ->make(Dispatcher::class, $handlers, [$this, 'getHandler'])
             ->handle($request);
+    }
+
+    /**
+     * Get a RequestHandler or Middleware for $handler
+     *
+     * @param string|array|callable $handler
+     * @return RequestHandlerInterface|MiddlewareInterface|callable
+     */
+    public function getHandler($handler)
+    {
+        if (!is_string($handler) && !is_callable($handler)) {
+            throw new \InvalidArgumentException(
+                '$handler has to be a callable, a string in form "method@Controller" or a class name'
+            );
+        }
+
+        if (is_string($handler)) {
+            if (is_callable($handler) && $this->isStatic($handler)) {
+                return $handler;
+            }
+
+            $class = $handler;
+            if (($pos = strpos($handler, '@')) >= 1) {
+                $class = substr($handler, $pos + 1);
+                $method = substr($handler, 0, $pos);
+            }
+        } elseif (is_array($handler)) {
+            if (is_object($handler[0]) || $this->isStatic($handler)) {
+                return $handler;
+            }
+
+            list($class, $method) = $handler;
+        } else {
+            return $handler;
+        }
+
+        if (!class_exists($class)) {
+            if (!class_exists(self::CONTROLLER_NAMESPACE . '\\' . $class)) {
+                throw new \InvalidArgumentException(sprintf('Class %s not found', $class));
+            }
+            $class = self::CONTROLLER_NAMESPACE . '\\' . $class;
+        }
+
+        if (!isset($method)) {
+            return $this->app->make($class);
+        }
+
+        return new RequestHandler($this->app, $class, $method);
     }
 
     public function getErrorHandlers(): array
@@ -157,7 +145,7 @@ class HttpKernel extends \App\Kernel
                 $request = (self::$lastRequest ?? Request::fromGlobals())
                     ->withAttribute('arguments', ['exception' => $exception]);
                 /** @var ErrorController $errorController */
-                $errorController = self::getHandler([ErrorController::class, 'unexpectedError']);
+                $errorController = $this->getHandler([ErrorController::class, 'unexpectedError']);
                 $errorController->handle($request)->send();
                 return Handler::QUIT;
             }];
@@ -185,5 +173,39 @@ class HttpKernel extends \App\Kernel
         $router->addGroup('/', function () {
             // this ensures that the handler on root level are loaded for non matching routes
         });
+    }
+
+    /**
+     * Check if $callable is static
+     *
+     * A non static method will result in is_callable($callable) === true even when it is protected. This method
+     * checks if the callable is really static and callable.
+     *
+     * @param callable $callable
+     * @return bool
+     */
+    protected function isStatic($callable): bool
+    {
+        if (is_array($callable)) {
+            list($class, $method) = $callable;
+        } elseif (is_string($callable) && strpos($callable, '::', 1) !== false) {
+            list($class, $method) = explode('::', $callable);
+        } else {
+            return true;
+        }
+
+        if (class_exists($class)) {
+            $classReflection = new \ReflectionClass($class);
+            $methodReflection = $classReflection->getMethod($method);
+            if (!$classReflection->isAbstract() &&
+                $methodReflection->isStatic() &&
+                $methodReflection->isPublic() &&
+                !$methodReflection->isAbstract()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

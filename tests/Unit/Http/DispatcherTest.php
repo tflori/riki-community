@@ -5,6 +5,7 @@ namespace Test\Unit\Http;
 use App\Http\Controller\ErrorController;
 use App\Http\Dispatcher;
 use App\Http\HttpKernel;
+use App\Http\RequestHandler;
 use App\Model\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -57,14 +58,13 @@ class DispatcherTest extends TestCase
     public function resolvesHandlerWithResolver()
     {
         $httpKernel = m::mock(HttpKernel::class);
-        $errorController = new ErrorController('unexpectedError');
 
         $dispatcher = new Dispatcher([
             'unexpectedError@ErrorController',
         ], [$httpKernel, 'getHandler']);
 
         $httpKernel->shouldReceive('getHandler')->with('unexpectedError@ErrorController')
-            ->once()->andReturn($errorController);
+            ->once()->andReturn(new RequestHandler($this->app, ErrorController::class, 'unexpectedError'));
 
         $dispatcher->handle(new Request('GET', '/'));
     }

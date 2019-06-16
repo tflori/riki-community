@@ -5,39 +5,27 @@ namespace App\Http\Controller;
 use App\Application;
 use App\Model\Request;
 use Exception;
-use function GuzzleHttp\Psr7\stream_for;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Tal\ServerResponse;
 use Throwable;
 
-abstract class AbstractController implements RequestHandlerInterface
+abstract class AbstractController
 {
+    /** @var Application */
+    protected $app;
+
     /** @var Request */
     protected $request;
 
-    /** @var string */
-    protected $action;
-
-    public function __construct($action = 'getIndex')
+    /**
+     * AbstractController constructor.
+     *
+     * @param Application $app
+     * @param Request     $request
+     */
+    public function __construct(Application $app, Request $request)
     {
-        $this->action = $action;
-    }
-
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
+        $this->app     = $app;
         $this->request = $request;
-        $action = $this->action;
-
-        if (!method_exists($this, $action)) {
-            throw new Exception(sprintf('Action %s is unknown in %s', $action, static::class));
-        }
-
-        $arguments = $request->getAttribute('arguments') ?? [];
-        $response = call_user_func([$this, $action], ...array_values($arguments));
-
-        return $response instanceof ResponseInterface ? $response : new ServerResponse(200, [], $response);
     }
 
     /**

@@ -75,4 +75,10 @@ class Dispatcher implements RequestHandlerInterface
 
         return $handler($request, $this);
     }
+
+    /** @codeCoverageIgnore  */
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->handle($request);
+    }
 }
