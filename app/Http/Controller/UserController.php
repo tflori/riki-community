@@ -15,7 +15,7 @@ class UserController extends AbstractController
     {
         $em = a::entityManager();
 
-        if (!$this->request->validate([
+        list($valid, $userData, $errors) = $this->request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
                 return $em->fetch(User::class)->where('email', $value)->count() === 0 ? true :
                     new Error('EMAIL_TAKEN', $value, 'Email address already taken');
@@ -26,7 +26,12 @@ class UserController extends AbstractController
                     new Error('DISPLAY_NAME_TAKEN', $value, 'Display name already taken');
             }],
             'name' => ['pregMatch:/^[\p{L}\p{N} .-]+$/u']
-        ], 'json', $userData, $errors)) {
+        ], 'json', [
+            'password.NOT_EQUAL' => 'Passwords don\'t match',
+            'displayName.NO_MATCH' => 'Only word characters, spaces, dots, dashes and at signs are allowed',
+            'name.NO_MATCH' => 'Only letters, numbers, spaces, dots and dashes are allowed',
+        ]);
+        if (!$valid) {
             return $this->error(400, 'Bad Request', 'Invalid userdata', $errors);
         }
 

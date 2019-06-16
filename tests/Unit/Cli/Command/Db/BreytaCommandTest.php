@@ -17,9 +17,9 @@ class BreytaCommandTest extends TestCase
 
         $this->mocks['console']->shouldReceive('addDrawing')->with(m::type(ProgressBar::class))
             ->once()->andReturnUsing(function (ProgressBar $progressBar) {
-                self::assertSame('Applying', $this->getProtectedVar($progressBar, 'title'));
-                self::assertSame(23, $this->getProtectedVar($progressBar, 'max'));
-                self::assertSame('migrations', $this->getProtectedVar($progressBar, 'type'));
+                self::assertSame('Applying', $this->getProtectedProperty($progressBar, 'title'));
+                self::assertSame(23, $this->getProtectedProperty($progressBar, 'max'));
+                self::assertSame('migrations', $this->getProtectedProperty($progressBar, 'type'));
                 return true;
             });
 
@@ -36,9 +36,9 @@ class BreytaCommandTest extends TestCase
 
         $this->mocks['console']->shouldReceive('addDrawing')->with(m::type(ProgressBar::class))
             ->once()->andReturnUsing(function (ProgressBar $progressBar) {
-                self::assertSame('Reverting', $this->getProtectedVar($progressBar, 'title'));
-                self::assertSame(3, $this->getProtectedVar($progressBar, 'max'));
-                self::assertSame('migrations', $this->getProtectedVar($progressBar, 'type'));
+                self::assertSame('Reverting', $this->getProtectedProperty($progressBar, 'title'));
+                self::assertSame(3, $this->getProtectedProperty($progressBar, 'max'));
+                self::assertSame('migrations', $this->getProtectedProperty($progressBar, 'type'));
                 return true;
             });
 
@@ -96,7 +96,7 @@ class BreytaCommandTest extends TestCase
                     'DOING SOMETHING ON DATABASE...',
                     $this->mocks['console']->format($progressBar->getText()) // remove formatting
                 );
-                self::assertSame(null, $this->getProtectedVar($progressBar, 'max'));
+                self::assertSame(null, $this->getProtectedProperty($progressBar, 'max'));
                 return true;
             });
 
@@ -117,7 +117,7 @@ class BreytaCommandTest extends TestCase
                     'CREATE TABLE any_name',
                     $this->mocks['console']->format($progressBar->getText()) // remove formatting
                 );
-                self::assertSame(null, $this->getProtectedVar($progressBar, 'max'));
+                self::assertSame(null, $this->getProtectedProperty($progressBar, 'max'));
                 return true;
             });
 

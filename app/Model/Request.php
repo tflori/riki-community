@@ -67,12 +67,10 @@ class Request extends ServerRequest
      *
      * @param array        $fields
      * @param string|array $source
-     * @param array        $data
-     * @param array        $errors
-     * @return bool
+     * @return array
      * @throws InvalidArgumentException
      */
-    public function validate(array $fields, $source = 'query', &$data = [], &$errors = [])
+    public function validate(array $fields, $source = 'query', array $messages = [])
     {
         if (!is_array($source)) {
             if (!method_exists($this, 'get' . ucfirst($source))) {
@@ -82,16 +80,12 @@ class Request extends ServerRequest
             }
             $source = call_user_func([$this, 'get' . ucfirst($source)]);
         }
-        $gate = Application::verja();
-        $gate->accepts($fields);
+        $gate = Application::gate($fields, $messages);
+        $valid = $gate->validate($source);
 
-        if ($gate->validate($source)) {
-            $data = $gate->getData();
-            return true;
-        }
-
-        $errors = $gate->getErrors();
-        return false;
+        $data = $valid ? $gate->getData() : [];
+        $errors = !$valid ? $gate->getErrorMessages() : [];
+        return [$valid, $data, $errors];
     }
 
     /**

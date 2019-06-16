@@ -129,7 +129,7 @@ abstract class TestCase extends MockeryTestCase
      * @param string $string
      * @return mixed
      */
-    protected function getProtectedVar($object, string $string)
+    protected function getProtectedProperty($object, string $string)
     {
         $class = new \ReflectionClass($object);
         $property = $class->getProperty($string);

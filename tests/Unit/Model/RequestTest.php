@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Model;
 
+use App\Model\Gate;
 use App\Model\Request;
 use App\Service\ValidatorMessages;
 use InvalidArgumentException;
@@ -10,7 +11,6 @@ use Tal\ServerRequest;
 use Test\Example\CustomController;
 use Test\TestCase;
 use Verja\Error;
-use Verja\Gate;
 use function GuzzleHttp\Psr7\stream_for;
 
 class RequestTest extends TestCase
@@ -81,15 +81,13 @@ class RequestTest extends TestCase
     }
 
     /** @test */
-    public function validateCreatesAGateForAcceptedFields()
+    public function validateCreatesAGateForAcceptedFieldsWithMessages()
     {
-        $gate = m::mock(Gate::class)->makePartial();
-        $gate->shouldReceive('accepts')->with(['foo', 'bar'])->once();
-        $this->app->instance('verja', $gate);
+        $this->app->shouldReceive('get')->with('gate', ['foo', 'bar'], ['foo' => 'bar'])->once()->passthru();
 
         $request = new Request('GET', '/any/path');
 
-        $request->validate(['foo', 'bar']);
+        $request->validate(['foo', 'bar'], 'query', ['foo' => 'bar']);
     }
 
     /** @test */
@@ -97,7 +95,7 @@ class RequestTest extends TestCase
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('validate')->with(['foo' => 42])->once();
-        $this->app->instance('verja', $gate);
+        $this->app->instance('gate', $gate);
 
         $request = m::mock(Request::class)->makePartial();
         $request->shouldReceive('getQuery')->with()->once()->andReturn(['foo' => 42]);
@@ -110,7 +108,7 @@ class RequestTest extends TestCase
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('validate')->with(['foo' => 42])->once();
-        $this->app->instance('verja', $gate);
+        $this->app->instance('gate', $gate);
 
         $request = m::mock(Request::class)->makePartial();
         $request->shouldReceive('getPost')->with()->once()->andReturn(['foo' => 42]);
@@ -123,7 +121,7 @@ class RequestTest extends TestCase
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('validate')->with(['foo' => 42])->once();
-        $this->app->instance('verja', $gate);
+        $this->app->instance('gate', $gate);
 
         $request = m::mock(Request::class)->makePartial();
         $request->shouldNotReceive('getQuery');
@@ -136,12 +134,12 @@ class RequestTest extends TestCase
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('getData')->with()->once()->andReturn(['foo' => 42]);
-        $this->app->instance('verja', $gate);
+        $this->app->instance('gate', $gate);
 
         /** @var Request|m\Mock $request */
         $request = m::mock(Request::class)->makePartial();
 
-        $valid = $request->validate(['foo'], [], $data);
+        list($valid, $data) = $request->validate(['foo'], [], []);
 
         self::assertSame(42, $data['foo']);
     }
@@ -151,20 +149,15 @@ class RequestTest extends TestCase
     {
         $gate = m::mock(Gate::class)->makePartial();
         $gate->shouldReceive('validate')->once()->andReturn(false);
-        $gate->shouldReceive('getErrors')->with()->once()->andReturn($errors = ['foo' => [new Error('WHAT_EVER', '')]]);
-        $this->app->instance('verja', $gate);
-//        $messages = m::mock(ValidatorMessages::class);
-//        $this->app->shouldReceive('make')->with(ValidatorMessages::class, $errors, [])
-//            ->once()->andReturn($messages);
-//        $messages->shouldReceive('getMessages')->with()
-//            ->once()->andReturn(['foo' => ['What ever...']]);
+        $gate->shouldReceive('getErrorMessages')->with()->once()->andReturn(['foo' => ['What ever...']]);
+        $this->app->instance('gate', $gate);
 
         /** @var Request|m\Mock $request */
         $request = m::mock(Request::class)->makePartial();
 
-        $valid = $request->validate(['foo'], [], $data, $errors);
+        list($valid, $data, $errors) = $request->validate(['foo'], [], []);
 
-        self::assertSame('WHAT_EVER', $errors['foo'][0]->key);
+        self::assertSame('What ever...', $errors['foo'][0]);
     }
 
     /** @test */

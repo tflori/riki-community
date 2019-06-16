@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\Gate;
 use App\Model\Mail;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
@@ -10,7 +11,6 @@ use Monolog\Logger;
 use ORM\EntityManager;
 use Syna\Factory;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use Verja\Gate;
 use Whoops;
 
 /**
@@ -25,7 +25,7 @@ use Whoops;
  * @method static Environment environment()
  * @method static Factory views()
  * @method static Logger logger()
- * @method static Gate verja()
+ * @method static Gate gate(array $fields = [], array $messages = [])
  * @method static Mailer mailer()
  * @method static Mail mail(string $name, array $data = [])
  * @method static CssToInlineStyles cssInliner()
@@ -36,7 +36,7 @@ use Whoops;
  * @property-read Environment $environment
  * @property-read Factory $views
  * @property-read Logger $logger
- * @property-read Gate $verja
+ * @property-read Gate $gate
  * @property-read Mailer $mailer
  * @property-read CssToInlineStyles $cssInliner
  */

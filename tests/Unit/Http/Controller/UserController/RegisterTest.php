@@ -38,11 +38,10 @@ class RegisterTest extends TestCase
     /** @test */
     public function expectsJsonEncodedBody()
     {
-        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
-            ->withBody(stream_for('name=john&displayName=john'));
-
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Invalid json provided in body');
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for('name=john&displayName=john'));
 
         $controller = new UserController($this->app, $request);
         $controller->register();
@@ -63,7 +62,7 @@ class RegisterTest extends TestCase
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
-            ['errors' => [$field => [['key' => 'IS_EMPTY']]]],
+            ['errors' => [$field => ['Value should not be empty']]],
             json_decode($response->getBody(), true)
         );
     }
@@ -84,7 +83,7 @@ class RegisterTest extends TestCase
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
-            ['errors' => [$field => [['key' => $validationError]]]],
+            ['errors' => [$field => [$validationError]]],
             json_decode($response->getBody(), true)
         );
     }
@@ -104,7 +103,7 @@ class RegisterTest extends TestCase
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
-            ['errors' => ['password' => [['key' => 'NOT_EQUAL']]]],
+            ['errors' => ['password' => ['Passwords don\'t match']]],
             json_decode($response->getBody(), true)
         );
     }
@@ -126,7 +125,7 @@ class RegisterTest extends TestCase
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
-            ['errors' => ['email' => [['key' => 'EMAIL_TAKEN']]]],
+            ['errors' => ['email' => ['Email address already taken']]],
             json_decode($response->getBody(), true)
         );
     }
@@ -148,7 +147,7 @@ class RegisterTest extends TestCase
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
-            ['errors' => ['displayName' => [['key' => 'DISPLAY_NAME_TAKEN']]]],
+            ['errors' => ['displayName' => ['Display name already taken']]],
             json_decode($response->getBody(), true)
         );
     }
@@ -322,12 +321,12 @@ class RegisterTest extends TestCase
             'email' => [
                 'valid' => 'john.doe@example.com',
                 'invalid' => 'john.doe',
-                'validationError' => 'NO_EMAIL_ADDRESS'
+                'validationError' => 'Value should be a valid email address'
             ],
             'password' => [
                 'valid' => 'S4cr3d F4rt',
                 'invalid' => 'too simple',
-                'validationError' => 'PASSWORD_TO_WEAK'
+                'validationError' => 'Password strength score should be at least 50 - reached 35'
             ],
             'passwordConfirmation' => [
                 'valid' => 'S4cr3d F4rt',
@@ -335,12 +334,12 @@ class RegisterTest extends TestCase
             'displayName' => [
                 'valid' => 'J. D.',
                 'invalid' => 'char < or "',
-                'validationError' => 'NO_MATCH'
+                'validationError' => 'Only word characters, spaces, dots, dashes and at signs are allowed'
             ],
             'name' => [
                 'valid' => 'Çıplak-Koyun',
                 'invalid' => 'two_of_two',
-                'validationError' => 'NO_MATCH'
+                'validationError' => 'Only letters, numbers, spaces, dots and dashes are allowed'
             ],
         ];
     }
