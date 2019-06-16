@@ -326,7 +326,7 @@ class RegisterTest extends TestCase
             'password' => [
                 'valid' => 'S4cr3d F4rt',
                 'invalid' => 'too simple',
-                'validationError' => 'Password strength score should be at least 50 - reached 35'
+                'validationError' => 'Password strength 35; 50 needed'
             ],
             'passwordConfirmation' => [
                 'valid' => 'S4cr3d F4rt',
