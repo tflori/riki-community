@@ -8,6 +8,7 @@ use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
 use Hugga\Console;
 use Monolog\Logger;
+use NbSessions\SessionInstance;
 use ORM\EntityManager;
 use Syna\Factory;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -21,24 +22,26 @@ use Whoops;
  * @method static Application app()
  * @method static Config config()
  * @method static Console console()
+ * @method static CssToInlineStyles cssInliner()
  * @method static EntityManager entityManager()
  * @method static Environment environment()
  * @method static Factory views()
- * @method static Logger logger()
  * @method static Gate gate(array $fields = [], array $messages = [])
- * @method static Mailer mailer()
+ * @method static Logger logger()
  * @method static Mail mail(string $name, array $data = [])
- * @method static CssToInlineStyles cssInliner()
+ * @method static Mailer mailer()
+ * @method Static SessionInstance session()
  * @property-read Application $app
  * @property-read Config $config
  * @property-read Console $console
+ * @property-read CssToInlineStyles $cssInliner
  * @property-read EntityManager $entityManager
  * @property-read Environment $environment
  * @property-read Factory $views
- * @property-read Logger $logger
  * @property-read Gate $gate
+ * @property-read Logger $logger
  * @property-read Mailer $mailer
- * @property-read CssToInlineStyles $cssInliner
+ * @property-read SessionInstance $session
  */
 class Application extends \Riki\Application
 {

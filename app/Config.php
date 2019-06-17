@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Config\SessionConfig;
 use App\Config\SmtpConfig;
 use Monolog\Logger;
 use ORM\DbConfig;
@@ -16,6 +17,9 @@ class Config extends \Riki\Config
 
     /** @var SmtpConfig */
     public $smtpConfig;
+
+    /** @var SessionConfig */
+    public $sessionConfig;
 
     public $email = [
         'headers' => [
@@ -50,6 +54,13 @@ class Config extends \Riki\Config
             $this->env('SMTP_USERNAME'),
             $this->env('SMTP_PASSWORD'),
             $this->env('SMTP_SECURITY', '')
+        );
+
+        $this->sessionConfig = new SessionConfig(
+            $this->env('SESSION_NAME', 'riki_session'),
+            $this->env('SESSION_HOST', 'redis'),
+            $this->env('SESSION_PORT', 6379),
+            $this->env('SESSION_DB', 0)
         );
     }
 }
