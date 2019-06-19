@@ -71,6 +71,8 @@ class User extends Entity implements JsonSerializable
         'account_status' => self::PENDING,
     ];
 
+    public static $bcryptCost = 10;
+
     public function setAccountStatus(string $newStatus)
     {
         $currentStatus = $this->accountStatus;
@@ -87,7 +89,7 @@ class User extends Entity implements JsonSerializable
 
     public function setPassword(string $password)
     {
-        $this->data['password'] = password_hash($password, PASSWORD_BCRYPT);
+        $this->data['password'] = password_hash($password, PASSWORD_BCRYPT, ['cost' => self::$bcryptCost]);
     }
 
     public function activate()

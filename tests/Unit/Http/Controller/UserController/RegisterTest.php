@@ -21,6 +21,7 @@ class RegisterTest extends TestCase
     {
         parent::setUp();
 
+        User::$bcryptCost = 4;
         $this->ormAllowInsert(User::class, [
             'id' => $id = rand(1000000, 2000000),
             'created' => ($created = Carbon::now('UTC'))->format('Y-m-d H:i:s.u'),
@@ -264,6 +265,7 @@ class RegisterTest extends TestCase
             'name' => $userData['name'],
             'displayName' => $userData['displayName'],
             'email' => $userData['email'],
+            'accountStatus' => 'pending',
             'created' => $created->format('Y-m-d\TH:i:s.u\Z'),
             'updated' => $updated->format('Y-m-d\TH:i:s.u\Z'),
         ], json_decode($response->getBody(), true));
