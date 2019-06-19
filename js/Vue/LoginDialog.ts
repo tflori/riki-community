@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Component from 'vue-class-component';
 import M from 'materialize-css';
 import Vue from 'vue';
@@ -34,6 +35,14 @@ export default class LoginDialog extends Vue {
     }
 
     protected authenticate() {
+        axios({
+            method: 'post',
+            url: '/auth',
+            data: {
+                email: this.email,
+                password: this.password,
+            },
+        });
         // for now lets assume it works - so we store a user object in $root.$data.user
         /* istanbul ignore next */
         this.$root.$data.user = {
