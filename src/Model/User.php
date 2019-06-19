@@ -85,6 +85,11 @@ class User extends Entity implements JsonSerializable
         $this->data['account_status'] = $newStatus;
     }
 
+    public function setPassword(string $password)
+    {
+        $this->data['password'] = password_hash($password, PASSWORD_BCRYPT);
+    }
+
     public function activate()
     {
         $this->transition('activate');
@@ -145,6 +150,7 @@ class User extends Entity implements JsonSerializable
             'name' => $this->name,
             'displayName' => $this->displayName,
             'email' => $this->email,
+            'accountStatus' => $this->accountStatus,
             'created' => $this->created->format('Y-m-d\TH:i:s.u\Z'),
             'updated' => $this->updated->format('Y-m-d\TH:i:s.u\Z'),
         ];

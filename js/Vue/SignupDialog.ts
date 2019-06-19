@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import axios from 'axios';
 import Component from 'vue-class-component';
 import M from 'materialize-css';

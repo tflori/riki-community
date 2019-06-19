@@ -17,11 +17,17 @@ class UserController extends AbstractController
 
         list($valid, $userData, $errors) = $this->request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
+                if (!$value) {
+                    return true;
+                }
                 return $em->fetch(User::class)->where('email', $value)->count() === 0 ? true :
                     new Error('EMAIL_TAKEN', $value, 'Email address already taken');
             }],
             'password' => ['required', 'notEmpty', 'passwordStrength:50', 'equals:passwordConfirmation'],
             'displayName' => ['required', 'notEmpty', 'pregMatch:/^[\w @._-]+$/', function ($value) use ($em) {
+                if (!$value) {
+                    return true;
+                }
                 return $em->fetch(User::class)->where('displayName', $value)->count() === 0 ? true :
                     new Error('DISPLAY_NAME_TAKEN', $value, 'Display name already taken');
             }],
@@ -46,8 +52,9 @@ class UserController extends AbstractController
             'user' => $user,
             'activationLink' => a::environment()->url('user/activate', $activationToken->token),
             'activationCode' => $activationCode->token,
-        ]));
+        ])->addTo($user->email));
 
+        $this->app->session->set('user', $user);
         return new ServerResponse(200, ['Content-Type' => 'application/json'], json_encode($user));
     }
 }
