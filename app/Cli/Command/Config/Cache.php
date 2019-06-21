@@ -42,7 +42,7 @@ class Cache extends AbstractCommand
             // remove the configuration cache
             if (file_exists($cachePath) && !@unlink($cachePath)) {
                 // when the file exists we usually can unlink
-                //   except the directory is not writeable but this is fetched earlier
+                //   except the directory is not writable but this is fetched earlier
                 // @codeCoverageIgnoreStart
                 $this->console->error('Failed to clear the configuration cache!');
                 return 4;

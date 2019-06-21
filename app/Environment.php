@@ -3,9 +3,13 @@
 namespace App;
 
 /**
- * Class Environment
+ * Fallback and default environment
  *
- * @package App
+ * Typically that contains information about the environment (development, production etc.) like paths, if errors can
+ * be shown or the base url to this environment.
+ *
+ * The App\Environment\* classes inherit this class and are automatically chosen by the APP_ENV environment variable.
+ *
  * @codeCoverageIgnore trivial code
  */
 class Environment extends \Riki\Environment
@@ -60,9 +64,24 @@ class Environment extends \Riki\Environment
     {
         array_unshift(
             $path,
-            ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') . '://' .
+            ($this->isSslSecured() ? 'https' : 'http') . '://' .
             ($_SERVER['HTTP_HOST'] ?? 'localhost')
         );
         return implode('/', $path);
+    }
+
+    public function cookieOptions()
+    {
+        return [
+            'path'     => '/',
+            'domain'   => null,
+            'secure'   => $this->isSslSecured(),
+            'httponly' => true,
+        ];
+    }
+
+    protected function isSslSecured()
+    {
+        return false;
     }
 }

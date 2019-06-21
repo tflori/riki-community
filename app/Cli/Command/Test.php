@@ -4,6 +4,9 @@ namespace App\Cli\Command;
 
 use GetOpt\GetOpt;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Test extends AbstractCommand
 {
     protected $name = 'test';

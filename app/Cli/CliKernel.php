@@ -4,6 +4,7 @@ namespace App\Cli;
 
 use App\Application;
 use App\Cli\Command;
+use App\Kernel;
 use App\Service\Exception\ConsoleHandler;
 use GetOpt\ArgumentException;
 use GetOpt\ArgumentException\Missing;
@@ -12,7 +13,12 @@ use GetOpt\GetOpt;
 use GetOpt\Option;
 use Hugga\Console;
 
-class CliKernel extends \App\Kernel
+/**
+ * Class CliKernel
+ *
+ * @package App\Cli
+ */
+class CliKernel extends Kernel
 {
     /** @var string[] */
     protected static $commands = [

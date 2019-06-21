@@ -5,9 +5,8 @@ namespace App\Environment;
 use App\Environment;
 
 /**
- * Class Development
+ * The development environment defines things that are specific for development environment but not configurations.
  *
- * @package App\Environment
  * @codeCoverageIgnore Environment will not be loaded in tests
  */
 class Development extends Environment

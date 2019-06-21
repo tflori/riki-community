@@ -15,9 +15,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Whoops;
 
 /**
- * Class Application
- *
- * @package App
+ * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
  * @method static Config config()

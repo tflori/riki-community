@@ -4,7 +4,9 @@ namespace App\Factory;
 
 use App\Service\Mailer;
 
-/** @codeCoverageIgnore  */
+/**
+ * @codeCoverageIgnore
+ */
 class MailerFactory extends AbstractFactory
 {
     protected $shared = true;

@@ -6,9 +6,16 @@ use App\Config\SessionConfig;
 use App\Config\SmtpConfig;
 use Monolog\Logger;
 use ORM\DbConfig;
-use Riki\Environment;
+use Riki\Config as BaseConfig;
 
-class Config extends \Riki\Config
+/**
+ * Application configuration
+ *
+ * Keep in mind that this file gets serialized for caching.
+ *
+ * @property Environment $environment
+ */
+class Config extends BaseConfig
 {
     public $logLevel = Logger::WARNING;
 
@@ -57,6 +64,7 @@ class Config extends \Riki\Config
         );
 
         $this->sessionConfig = new SessionConfig(
+            $this->environment,
             $this->env('SESSION_NAME', 'riki_session'),
             $this->env('SESSION_HOST', 'redis'),
             $this->env('SESSION_PORT', 6379),

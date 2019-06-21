@@ -5,10 +5,6 @@ namespace App\Factory;
 use NbSessions\SessionInstance;
 
 /**
- * Class SessionFactory
- *
- * @package App\Factory
- * @author Thomas Flori <thflori@gmail.com>
  * @codeCoverageIgnore trivial code that can not be executed in tests
  */
 class SessionFactory extends AbstractFactory

@@ -1,4 +1,5 @@
 #!/bin/sh
 set -e
 
+community config:cache
 community db:migrate

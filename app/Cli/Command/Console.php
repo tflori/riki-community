@@ -6,10 +6,6 @@ use GetOpt\GetOpt;
 use Psy\Shell;
 
 /**
- * Class Console
- *
- * @package App\Cli\Command
- * @author Thomas Flori <thflori@gmail.com>
  * @codeCoverageIgnore
  */
 class Console extends AbstractCommand
