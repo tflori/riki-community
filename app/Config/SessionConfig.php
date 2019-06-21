@@ -20,6 +20,7 @@ class SessionConfig extends RedisConfig
     {
         $prefix = $name . ':';
         $this->name = $name;
+        $this->cookie['secure'] = ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') === 'https' ? true : false;
         parent::__construct($host, $port, $dbNumber, $prefix);
     }
 
