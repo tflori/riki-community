@@ -23,6 +23,7 @@ export default class SignupDialog extends Vue {
             this._modalInstance = M.Modal.init(this.$el, {
                 onOpenStart: this.reset,
                 onOpenEnd: () => {
+                    /* istanbul ignore next */
                     (<HTMLElement>this.$refs.email).focus();
                 },
             });
@@ -67,7 +68,10 @@ export default class SignupDialog extends Vue {
             method: 'post',
             url: '/registration',
             data: user,
-        }).then(console.log).catch((error) => {
+        }).then((response) => {
+            this.close();
+            this.$root.$data.user = response.data;
+        }).catch((error) => {
             if (error.response.status === 400 && error.response.data.message === 'Invalid user data') {
                 this.errors = error.response.data.errors;
 

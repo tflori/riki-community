@@ -46,7 +46,7 @@ export default class LoginDialog extends Vue {
         this.close();
     }
 
-    protected showSignup() {
+    public showSignup() {
         this.close();
         (<SignupDialog>this.$root.$refs.signupDialog).open();
     }

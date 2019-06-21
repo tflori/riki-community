@@ -55,7 +55,6 @@ describe('LoginDialog', () => {
         spyOn(loginDialog, 'close').and.stub();
         spyOn(signupDialog, 'open').and.stub();
 
-        // @ts-ignore
         loginDialog.showSignup();
 
         expect(loginDialog.close).toHaveBeenCalled();

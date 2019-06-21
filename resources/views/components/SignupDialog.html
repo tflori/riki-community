@@ -28,9 +28,9 @@
       </div>
       <div class="row">
         <div class="input-field col s12 m6">
-          <input id="signup-displayName" ref="displayName" type="text"
+          <input id="signup-display-name" ref="displayName" type="text"
                  v-model="displayName" v-bind:class="{invalid: errors.displayName}"/>
-          <label for="signup-displayName">Pseudonym</label>
+          <label for="signup-display-name">Pseudonym</label>
           <span v-for="error in errors.displayName" class="helper-text red-text">{{error}}</span>
         </div>
         <div class="input-field col s12 m6">
