@@ -260,7 +260,7 @@ class RegisterTest extends TestCase
         $response = $controller->register();
 
         self::assertJson($response->getBody());
-        self::assertSame([
+        self::assertArraySubset([
             'id' => $id,
             'name' => $userData['name'],
             'displayName' => $userData['displayName'],
