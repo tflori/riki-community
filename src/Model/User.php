@@ -153,6 +153,7 @@ class User extends Entity implements JsonSerializable
             'displayName' => $this->displayName,
             'email' => $this->email,
             'accountStatus' => $this->accountStatus,
+            'avatar' => 'https://www.gravatar.com/avatar/' . md5($this->email) . '?s=24',
             'created' => $this->created->format('Y-m-d\TH:i:s.u\Z'),
             'updated' => $this->updated->format('Y-m-d\TH:i:s.u\Z'),
         ];
