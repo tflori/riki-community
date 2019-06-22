@@ -25,7 +25,7 @@ $r->post('/registration', 'register@UserController');
 //$r->get('/user/activate/{token}', 'activateByToken@UserController');
 
 $r->get('/auth', 'getUser@AuthController');
-//$r->post('/auth', 'authenticate@AuthController');
+$r->post('/auth', 'authenticate@AuthController');
 //$r->delete('/auth', 'logout@AuthController');
 
 // example routes - comment them out and use as reference
