@@ -99,7 +99,7 @@ abstract class TestCase extends MockeryTestCase
         $this->em = $this->mocks['entityManager'] = $this->ormInitMock([
             'tableNameTemplate' => '%short%s',
         ], 'pgsql');
-        $this->mocks['pdo'] = $this->em->getConnection();
+        $this->mocks['pdo'] = $this->pdo = $this->em->getConnection();
         $this->app->instance('entityManager', $this->em);
 
         /** @var Mailer|m\Mock $mailer */

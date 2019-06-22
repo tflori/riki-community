@@ -4,30 +4,27 @@ namespace Test\Extension;
 
 use Mockery as m;
 use ORM\Entity;
+use PDO;
+use PDOStatement;
 
 trait OrmFetcher
 {
     protected $fetcherResults = [];
 
+    /** @var m\Mock|PDO */
+    protected $pdo;
+
     protected function initFetcher()
     {
-        $this->mocks['pdo']->shouldReceive('query')->with(m::pattern('/^SELECT DISTINCT t0\.\* FROM /'))
+        $this->pdo->shouldReceive('query')->with(m::pattern('/^SELECT DISTINCT t0\.\* FROM /'))
             ->andReturnUsing(function ($query) {
-                $results = $this->getResultsForQuery($query);
-                array_push($results, false);
-
-                $statement = m::mock(\PDOStatement::class);
-                $statement->shouldReceive('fetch')->with(\PDO::FETCH_ASSOC)
-                    ->andReturn(...$results)
-                    ->atLeast()->once();
-
-                return $statement;
+                return $this->buildStatementMock($query);
             })->byDefault();
-        $this->mocks['pdo']->shouldReceive('query')->with(m::pattern('/^SELECT COUNT\(DISTINCT t0\.\*\) FROM /'))
+        $this->pdo->shouldReceive('query')->with(m::pattern('/^SELECT COUNT\(DISTINCT t0\.\*\) FROM /'))
             ->andReturnUsing(function ($query) {
                 $results = $this->getResultsForQuery($query);
 
-                $statement = m::mock(\PDOStatement::class);
+                $statement = m::mock(PDOStatement::class);
                 $statement->shouldReceive('fetchColumn')->with()
                     ->andReturn(count($results))
                     ->once();
@@ -55,15 +52,20 @@ trait OrmFetcher
             }
 
             if ($this->queryMatchesConditions($query, $fetcherResult['conditions'])) {
-                return $fetcherResult['entities'];
+                return array_map(function (Entity $entity) {
+                    return $entity->getData();
+                }, $fetcherResult['entities']);
             }
         }
 
-        return $unconditional;
+        return array_map(function (Entity $entity) {
+            return $entity->getData();
+        }, $unconditional);
     }
 
     protected function addFetcherResult(string $class, array $conditions, Entity ...$entities)
     {
+        /** @var Entity|string $class */
         $table = $class::getTableName();
 
         // complete the primary keys
@@ -94,6 +96,40 @@ trait OrmFetcher
             'conditions' => $conditions,
             'entities' => $entities
         ];
+    }
+
+    protected function expectFetch(string $class, array $conditions, Entity ...$entities)
+    {
+        $this->addFetcherResult($class, $conditions, ...$entities);
+
+        $this->pdo->shouldReceive('query')->withArgs(function ($query) use ($class, $conditions) {
+            if (!preg_match('/^SELECT DISTINCT t0\.\* FROM (.*?) AS t0/', $query, $match)) {
+                return false;
+            }
+
+            /** @var Entity|string $class */
+            $table = str_replace('"', '', $match[1]);
+            if ($class::getTableName() !== $table) {
+                return false;
+            }
+
+            return $this->queryMatchesConditions($query, $conditions);
+        })->atLeast()->once()->andReturnUsing(function ($query) {
+            return $this->buildStatementMock($query);
+        });
+    }
+
+    protected function buildStatementMock($query)
+    {
+        $results = $this->getResultsForQuery($query);
+        array_push($results, false);
+
+        $statement = m::mock(PDOStatement::class);
+        $statement->shouldReceive('fetch')->with(PDO::FETCH_ASSOC)
+            ->andReturn(...$results)
+            ->atLeast()->once();
+
+        return $statement;
     }
 
     protected function queryMatchesConditions(string $query, array $conditions): bool
