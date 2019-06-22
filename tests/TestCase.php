@@ -6,6 +6,8 @@ use App\Application;
 use App\Config;
 use App\Environment;
 use App\Service\Mailer;
+use Carbon\Carbon;
+use Community\Model\User;
 use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
@@ -137,6 +139,26 @@ abstract class TestCase extends MockeryTestCase
         $value = $property->getValue($object);
         $property->setAccessible(false);
         return $value;
+    }
+
+    protected function signIn(User $user = null): User
+    {
+        if (!$user) {
+            $user = new User();
+            $user->fill([
+                'id' => 23,
+                'name' => 'John Doe',
+                'displayName' => 'john',
+                'email' => 'john.doe@example.com',
+                'accountStatus' => User::ACTIVATED,
+            ]);
+            $user->setCreated(Carbon::now()->subMonth());
+            $user->setUpdated(Carbon::now()->subDay());
+        }
+
+        $this->app->session->set('user', $user);
+
+        return $user;
     }
 
     protected function requiresTrait(string $class, string $trait)

@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use Mockery as m;
 use Test\TestCase;
 
-class RegisterTest extends TestCase
+class RegistrationTest extends TestCase
 {
     protected function setUp()
     {

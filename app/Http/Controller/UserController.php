@@ -55,6 +55,6 @@ class UserController extends AbstractController
         ])->addTo($user->email));
 
         $this->app->session->set('user', $user);
-        return new ServerResponse(200, ['Content-Type' => 'application/json'], json_encode($user));
+        return $this->json($user);
     }
 }
