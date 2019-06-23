@@ -267,4 +267,26 @@ class RequestTest extends TestCase
 
         self::assertNull($request->getJson());
     }
+
+    /** @test */
+    public function getIpReturnsTheRemoteAddr()
+    {
+        $request = (new Request('GET', '/any/path', [], null, '1.1', [
+            'REMOTE_ADDR' => '172.19.0.9',
+        ]));
+
+        self::assertSame('172.19.0.9', $request->getIp());
+    }
+
+    /** @test */
+    public function getIpReturnsTheRealIpByDefault()
+    {
+        $request = (new Request('GET', '/any/path', [
+            'X-Real-Ip' => '8.8.8.8'
+        ], null, '1.1', [
+            'REMOTE_ADDR' => '172.19.0.9',
+        ]));
+
+        self::assertSame('8.8.8.8', $request->getIp());
+    }
 }

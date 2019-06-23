@@ -10,6 +10,25 @@ use Tal\ServerRequest;
 class Request extends ServerRequest
 {
     /**
+     * Get the most precise IP from the request
+     *
+     * The $trustedHeaders are checked in order.
+     *
+     * @param array $trustedHeaders
+     * @return string
+     */
+    public function getIp(array $trustedHeaders = ['X-Real-Ip']): string
+    {
+        foreach ($trustedHeaders as $header) {
+            if ($this->hasHeader($header)) {
+                return $this->getHeader($header)[0];
+            }
+        }
+
+        return $this->serverParams['REMOTE_ADDR'] ?? '127.0.0.1';
+    }
+
+    /**
      * Get the preferred value from accept header
      *
      * Limit to $possible if necessary. Return $default if nothing possible accepted or header omitted.
