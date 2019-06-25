@@ -1,43 +1,50 @@
+language: php
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+name: "PHPUnit Tests"
+sudo: false
+cache:
+  directories:
+    - $HOME/.composer/cache
+matrix:
+  fast_finish: true
+before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_script:
+  - composer install --no-interaction
+  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
+    composer require php-coveralls/php-coveralls &&
+    mkdir -p build/logs;
+    fi;
+script:
+  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
+    bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text;
+    else
+    bin/phpunit -c phpunit.xml --color=always --coverage-text;
+    fi;
+after_success:
+  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
+    php bin/php-coveralls -v
+    fi;
+
 jobs:
   include:
     - stage: "Test"
+      name: "Code Style"
       language: php
-      php:
-        - 7.1
-      sudo: false
+      php: 7.3
       cache:
         directories:
           - $HOME/.composer/cache
-      matrix:
-        fast_finish: true
+      before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       before_script:
         - composer install --no-interaction
-        - composer require php-coveralls/php-coveralls
-        - mkdir -p build/logs
       script:
         - composer code-style
-        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-      after_success:
-        - php bin/php-coveralls -v
 
     - stage: "Test"
-      language: php
-      php:
-        - 7.2
-      sudo: false
-      cache:
-        directories:
-          - $HOME/.composer/cache
-      matrix:
-        fast_finish: true
-      before_script:
-        - composer install --no-interaction
-        - mkdir -p build/logs
-      script:
-        - composer code-style
-        - bin/phpunit -c phpunit.xml --color=always --coverage-text
-
-    - stage: "Test"
+      name: "Jest Tests"
       language: node_js
       node_js:
         - 8
