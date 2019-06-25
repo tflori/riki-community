@@ -10,6 +10,8 @@ use Hugga\Console;
 use Monolog\Logger;
 use NbSessions\SessionInstance;
 use ORM\EntityManager;
+use Psr\SimpleCache\CacheInterface;
+use Redis;
 use Syna\Factory;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Whoops;
@@ -18,6 +20,7 @@ use Whoops;
  * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
+ * @method static CacheInterface cache()
  * @method static Config config()
  * @method static Console console()
  * @method static CssToInlineStyles cssInliner()
@@ -28,8 +31,10 @@ use Whoops;
  * @method static Logger logger()
  * @method static Mail mail(string $name, array $data = [])
  * @method static Mailer mailer()
+ * @method static Redis Redis()
  * @method Static SessionInstance session()
  * @property-read Application $app
+ * @property-read CacheInterface $cache
  * @property-read Config $config
  * @property-read Console $console
  * @property-read CssToInlineStyles $cssInliner
@@ -39,6 +44,7 @@ use Whoops;
  * @property-read Gate $gate
  * @property-read Logger $logger
  * @property-read Mailer $mailer
+ * @property-read Redis $redis
  * @property-read SessionInstance $session
  */
 class Application extends \Riki\Application

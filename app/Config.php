@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Config\RedisConfig;
 use App\Config\SessionConfig;
 use App\Config\SmtpConfig;
 use Monolog\Logger;
@@ -27,6 +28,9 @@ class Config extends BaseConfig
 
     /** @var SessionConfig */
     public $sessionConfig;
+
+    /** @var RedisConfig */
+    public $cacheConfig;
 
     public $email = [
         'headers' => [
@@ -69,6 +73,13 @@ class Config extends BaseConfig
             $this->env('SESSION_HOST', 'redis'),
             $this->env('SESSION_PORT', 6379),
             $this->env('SESSION_DB', 0)
+        );
+
+        $this->cacheConfig = new RedisConfig(
+            $this->env('CACHE_HOST', 'redis'),
+            $this->env('CACHE_PORT', 6379),
+            $this->env('CACHE_DB', 0),
+            $this->env('CACHE_PREFIX', 'riki_community:')
         );
     }
 }
