@@ -24,11 +24,9 @@ class AuthController extends AbstractController
         $authData = $this->request->getJson();
 
         $key = sprintf(self::LOGIN_ATTEMPTS_KEY, 'ip', $this->request->getIp());
-        $ipAuthAttempts = $this->app->cache->get($key, []);
-        foreach (self::LOGIN_ATTEMPTS_LIMITS['ip'] as $seconds => $limit) {
-            if ($this->countAttemptsWithinSeconds($ipAuthAttempts, $seconds) >= $limit) {
-                return $this->error(423, 'Locked', 'Too many authentication attempts');
-            }
+        $authAttempts = $this->app->cache->get($key, []);
+        if ($this->attemptLimitReached(self::LOGIN_ATTEMPTS_LIMITS['ip'], $authAttempts)) {
+            return $this->error(423, 'Locked', 'Too many authentication attempts');
         }
 
         /** @var User $user */
@@ -36,25 +34,51 @@ class AuthController extends AbstractController
             ->where('email', $authData['email'] ?? '')
             ->one();
         if (!$user) {
-            $ipAuthAttempts[] = time();
-            $this->app->cache->set($key, $ipAuthAttempts, max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['ip'])));
-            return $this->error(400, 'Bad Request', 'Authentication failed');
+            return $this->increaseAttempts($key, $authAttempts);
         }
 
-        // @todo throttle login attempts for user
+        $key = sprintf(self::LOGIN_ATTEMPTS_KEY, 'user', $user->id);
+        $authAttempts = $this->app->cache->get($key, []);
+        if ($this->attemptLimitReached(self::LOGIN_ATTEMPTS_LIMITS['user'], $authAttempts)) {
+            return $this->error(423, 'Locked', 'Too many authentication attempts');
+        }
+
         if (!password_verify($authData['password'] ?? '', $user->password)) {
-            return $this->error(400, 'Bad Request', 'Authentication failed');
+            return $this->increaseAttempts($key, $authAttempts);
         }
 
         $this->app->session->set('user', $user);
         return $this->json($user);
     }
 
-    protected function countAttemptsWithinSeconds(array $attempts, $seconds)
+    protected function attemptLimitReached(array $limits, array $attempts): bool
+    {
+        foreach ($limits as $seconds => $limit) {
+            if ($this->countAttemptsWithinSeconds($attempts, $seconds) >= $limit) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function countAttemptsWithinSeconds(array $attempts, $seconds): int
     {
         $earliest = time() - $seconds;
         return count(array_filter($attempts, function ($time) use ($earliest) {
             return $time >= $earliest;
         }));
+    }
+
+    protected function increaseAttempts(string $key, array $attempts)
+    {
+        $attempts[] = time();
+        $this->app->cache->set($key, $attempts,
+            max(
+                max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['ip'])),
+                max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['user']))
+            )
+        );
+        return $this->error(400, 'Bad Request', 'Authentication failed');
     }
 }
