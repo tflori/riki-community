@@ -23,9 +23,9 @@ class RegistrationTest extends TestCase
 
         User::$bcryptCost = 4;
         $this->ormAllowInsert(User::class, [
-            'id' => $id = rand(1000000, 2000000),
-            'created' => ($created = Carbon::now('UTC'))->format('Y-m-d H:i:s.u'),
-            'updated' => ($updated = Carbon::now('UTC'))->format('Y-m-d H:i:s.u'),
+            'id' => rand(1000000, 2000000),
+            'created' => Carbon::now('UTC')->format('Y-m-d H:i:s.u'),
+            'updated' => Carbon::now('UTC')->format('Y-m-d H:i:s.u'),
             'account_status' => 'pending',
         ])->byDefault();
         $this->ormAllowInsert(ActivationCode::class, [

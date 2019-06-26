@@ -41,7 +41,7 @@ class ApplicationTest extends TestCase
 
         $kernel->shouldReceive('handle')->with()
             ->once()->andReturnUsing(function () use ($handlersBefore, $kernelHandlers) {
-                self::assertEquals(array_merge($kernelHandlers, $handlersBefore), $this->app->whoops->getHandlers());
+                self::assertEquals(array_merge($handlersBefore, $kernelHandlers), $this->app->whoops->getHandlers());
             });
 
         $this->app->run($kernel);
