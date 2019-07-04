@@ -84,12 +84,10 @@ class AuthController extends AbstractController
     protected function increaseAttempts(string $key, array $attempts)
     {
         $attempts[] = time();
-        $this->app->cache->set($key, $attempts,
-            max(
-                max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['ip'])),
-                max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['user']))
-            )
-        );
+        $this->app->cache->set($key, $attempts, max(
+            max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['ip'])),
+            max(array_keys(self::LOGIN_ATTEMPTS_LIMITS['user']))
+        ));
         return $this->error(400, 'Bad Request', 'Authentication failed');
     }
 }
