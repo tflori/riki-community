@@ -11,11 +11,14 @@
  * @see \App\Http\HttpKernel::collectRoutes
  */
 
-use App\Application;
-use App\Http\Router\MiddlewareRouteCollector;
+namespace App\Http;
 
-/** @var MiddlewareRouteCollector $router */
+use App\Application;
+
+/** @var Router\MiddlewareRouteCollector $router */
 $r = $router;
+
+$r->addHandler(new Middleware\VerifyCsrfToken(Application::app()));
 
 $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
@@ -26,7 +29,7 @@ $r->post('/registration', 'register@UserController');
 
 $r->get('/auth', 'getUser@AuthController');
 $r->post('/auth', 'authenticate@AuthController');
-//$r->delete('/auth', 'logout@AuthController');
+$r->delete('/auth', 'logout@AuthController');
 
 // example routes - comment them out and use as reference
 //$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {

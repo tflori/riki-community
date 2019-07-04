@@ -2,6 +2,7 @@
 
 namespace Test\Http\Auth;
 
+use Community\Model\Token\AbstractToken;
 use Community\Model\User;
 use Test\Http\TestCase;
 
@@ -55,6 +56,43 @@ class AuthenticationTest extends TestCase
 
         $response = $this->get('/auth');
 
+        self::assertJson($response->getBody());
+        self::assertSame(json_encode($user), (string)$response->getBody());
+    }
+
+    /** @test */
+    public function removesAuthentication()
+    {
+        $this->signIn();
+        $this->app->session->set('csrfToken', $token = AbstractToken::generateToken(10));
+
+        $this->call('delete', '/auth', ['csrf_token' => $token]);
+
+        $response = $this->get('/auth');
+        self::assertSame('null', (string)$response->getBody());
+    }
+
+    /** @test */
+    public function staysLoggedInWithoutToken()
+    {
+        $user = $this->signIn();
+
+        $this->call('delete', '/auth');
+
+        $response = $this->get('/auth');
+        self::assertJson($response->getBody());
+        self::assertSame(json_encode($user), (string)$response->getBody());
+    }
+
+    /** @test */
+    public function staysLoggedInWithWrongToken()
+    {
+        $user = $this->signIn();
+        $this->app->session->set('csrfToken', $token = AbstractToken::generateToken(10));
+
+        $this->call('delete', '/auth', ['csrf_token' => $token . 'foo']);
+
+        $response = $this->get('/auth');
         self::assertJson($response->getBody());
         self::assertSame(json_encode($user), (string)$response->getBody());
     }

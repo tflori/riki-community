@@ -51,6 +51,17 @@ class AuthController extends AbstractController
         return $this->json($user);
     }
 
+    public function logout()
+    {
+        if (!$this->request->getAttribute('csrfTokenVerified', false)) {
+            return $this->error(400, 'Bad Request', 'Invalid Request Token');
+        }
+
+        $this->app->session->destroy();
+
+        return $this->json(['message' => 'Successfully logged out!']);
+    }
+
     protected function attemptLimitReached(array $limits, array $attempts): bool
     {
         foreach ($limits as $seconds => $limit) {
