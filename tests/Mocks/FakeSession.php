@@ -18,7 +18,18 @@ class FakeSession extends SessionInstance
 
     protected function updateSession(array $data = [])
     {
-        $_SESSION = $data;
+        foreach ($data as $key => $val) {
+            if ($val === null) {
+                unset($_SESSION[$key]);
+                // destroy the session when empty
+                if (empty($_SESSION) && $this->destroyEmptySession) {
+                    $this->destroy();
+                    return;
+                }
+            } else {
+                $_SESSION[$key] = $val;
+            }
+        }
         $this->data = $_SESSION;
     }
 
