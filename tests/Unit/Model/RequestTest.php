@@ -289,4 +289,46 @@ class RequestTest extends TestCase
 
         self::assertSame('8.8.8.8', $request->getIp());
     }
+
+    /** @test */
+    public function getReturnsTheValueFromQuery()
+    {
+        $request = (new Request('GET', '/any/path'))
+            ->withQueryParams(['foo' => 'bar']);
+
+        self::assertSame('bar', $request->get('foo'));
+    }
+
+    /** @test */
+    public function getReturnsTheValueFromPost()
+    {
+        $request = (new Request('GET', '/any/path'))
+            ->withQueryParams(['foo' => 'bar'])
+            ->withParsedBody(['foo' => 'baz']);
+
+        self::assertSame('baz', $request->get('foo'));
+    }
+
+    /** @test */
+    public function getReturnsTheValueFromJson()
+    {
+        $request = (new Request('GET', '/any/path'))
+            ->withQueryParams(['foo' => 'bar'])
+            ->withBody(stream_for(json_encode(['foo' => 'baz'])));
+
+        self::assertSame('baz', $request->get('foo'));
+    }
+
+    /** @test */
+    public function getReturnsTheMergedArray()
+    {
+        $request = (new Request('GET', '/any/path'))
+            ->withQueryParams(['foo' => 'bar'])
+            ->withBody(stream_for(json_encode(['answer' => 42])));
+
+        self::assertSame([
+            'foo' => 'bar',
+            'answer' => 42,
+        ], $request->get());
+    }
 }

@@ -3,12 +3,28 @@
 namespace App\Model;
 
 use App\Application;
+use App\Exception\InvalidJsonBody;
 use App\Service\ValidatorMessages;
 use InvalidArgumentException;
 use Tal\ServerRequest;
 
 class Request extends ServerRequest
 {
+    /** @var array */
+    protected $input;
+
+    /** @codeCoverageIgnore */
+    public function __clone()
+    {
+        $this->input = null;
+    }
+
+    /** @codeCoverageIgnore */
+    public function __get($name)
+    {
+        $this->get($name);
+    }
+
     /**
      * Get the most precise IP from the request
      *
@@ -107,6 +123,25 @@ class Request extends ServerRequest
         return [$valid, $data, $errors];
     }
 
+    public function get(string $key = null, $default = null)
+    {
+        if (!$this->input) {
+            try {
+                $body = $this->getJson();
+            } catch (InvalidJsonBody $e) {
+                $body = $this->getPost();
+            }
+
+            $this->input = is_array($body) ? array_merge($this->getQuery(), $body) : $this->getQuery();
+        }
+
+        if (!$key) {
+            return $this->input;
+        }
+
+        return $this->input[$key] ?? $default;
+    }
+
     /**
      * Get all params or the parameter $key from query
      *
@@ -155,7 +190,7 @@ class Request extends ServerRequest
         $data = json_decode((string)$this->getBody(), $assoc, $depth, $options);
 
         if ($data === null && (string)$this->getBody() !== 'null') {
-            throw new InvalidArgumentException('Invalid json provided in body');
+            throw new InvalidJsonBody('Invalid json provided in body');
         }
 
         return $data;
