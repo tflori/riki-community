@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7dc65f984646cf3a68897dd9c2f87016",
+    "content-hash": "2d81e221d93eef0c812263feaed2e95c",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2040,16 +2040,16 @@
         },
         {
             "name": "tflori/dependency-injector",
-            "version": "v2.1.0",
+            "version": "v2.2.0-beta.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/dependency-injector.git",
-                "reference": "aef4072a6383f0839b4332568cf6461488c8fdaa"
+                "reference": "e608e72f5201710cfb03122c297d9f879ce0fc76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/dependency-injector/zipball/aef4072a6383f0839b4332568cf6461488c8fdaa",
-                "reference": "aef4072a6383f0839b4332568cf6461488c8fdaa",
+                "url": "https://api.github.com/repos/tflori/dependency-injector/zipball/e608e72f5201710cfb03122c297d9f879ce0fc76",
+                "reference": "e608e72f5201710cfb03122c297d9f879ce0fc76",
                 "shasum": ""
             },
             "require": {
@@ -2086,7 +2086,7 @@
                 "dependency injector",
                 "di"
             ],
-            "time": "2018-07-26T04:41:49+00:00"
+            "time": "2019-07-08T16:25:18+00:00"
         },
         {
             "name": "tflori/hugga",
@@ -4129,6 +4129,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "tflori/dependency-injector": 10,
         "tflori/breyta": 5,
         "tflori/riki-framework": 5,
         "tflori/syna": 5

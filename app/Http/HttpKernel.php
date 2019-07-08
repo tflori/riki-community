@@ -8,6 +8,7 @@ use App\Http\Router\MiddlewareDataGenerator;
 use App\Http\Router\MiddlewareRouteCollector;
 use App\Http\Router\MiddlewareRouter;
 use App\Model\Request;
+use DependencyInjector\Factory\NamespaceFactory;
 use FastRoute;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -28,7 +29,10 @@ class HttpKernel extends \App\Kernel
     public function __construct(Application $app)
     {
         parent::__construct($app);
-        // bootstrap the kernel
+
+        $factory = new NamespaceFactory($app, Middleware::class);
+        $factory->addArguments($app);
+        $app->addPatternFactory($factory);
     }
 
     public function handle(Request $request = null): ResponseInterface

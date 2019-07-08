@@ -13,12 +13,10 @@
 
 namespace App\Http;
 
-use App\Application;
-
 /** @var Router\MiddlewareRouteCollector $router */
 $r = $router;
 
-$r->addHandler(new Middleware\VerifyCsrfToken(Application::app()));
+$r->addHandler(Middleware\VerifyCsrfToken::class);
 
 $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
