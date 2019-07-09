@@ -26,6 +26,7 @@ $r->post('/registration', 'register@UserController');
 //$r->get('/user/activate/{token}', 'activateByToken@UserController');
 
 $r->get('/auth', 'getUser@AuthController');
+$r->get('/auth/token', 'getCsrfToken@AuthController');
 $r->post('/auth', 'authenticate@AuthController');
 $r->delete('/auth', 'logout@AuthController');
 

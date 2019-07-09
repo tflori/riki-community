@@ -164,6 +164,32 @@ class AuthControllerTest extends TestCase
             self::assertSame(400, $response->getStatusCode());
     }
 
+    /** @test */
+    public function returnsCsrfToken()
+    {
+        $request = new Request('GET', '/auth/token');
+        $controller = new AuthController($this->app, $request);
+
+        $response = $controller->getCsrfToken();
+
+        $body = (string)$response->getBody();
+        self::assertJson($body);
+        self::assertIsString(json_decode($body));
+        self::assertNotEmpty(json_decode($body));
+    }
+
+    /** @test */
+    public function storesCsrfToken()
+    {
+        $request = new Request('GET', '/auth/token');
+        $controller = new AuthController($this->app, $request);
+
+        $response = $controller->getCsrfToken();
+        $token = json_decode($response->getBody());
+
+        self::assertSame($token, $this->app->session->get('csrfToken'));
+    }
+
     public function provideAuthAttemptsPerIp()
     {
         $result = [];

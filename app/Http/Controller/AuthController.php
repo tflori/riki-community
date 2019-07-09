@@ -2,6 +2,7 @@
 
 namespace App\Http\Controller;
 
+use Community\Model\Token\AbstractToken;
 use Community\Model\User;
 use Tal\ServerResponse;
 
@@ -60,6 +61,13 @@ class AuthController extends AbstractController
         $this->app->session->destroy();
 
         return $this->json(['message' => 'Successfully logged out!']);
+    }
+
+    public function getCsrfToken(): ServerResponse
+    {
+        $this->app->session->set('csrfToken', AbstractToken::generateToken(10));
+
+        return $this->json($this->app->session->get('csrfToken'));
     }
 
     protected function attemptLimitReached(array $limits, array $attempts): bool
