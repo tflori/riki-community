@@ -190,7 +190,7 @@ class Request extends ServerRequest
         $data = json_decode((string)$this->getBody(), $assoc, $depth, $options);
 
         if ($data === null && (string)$this->getBody() !== 'null') {
-            throw new InvalidJsonBody('Invalid json provided in body');
+            throw new InvalidJsonBody(sprintf('Invalid json provided in body: \'%s\'', $this->getBody()));
         }
 
         return $data;
