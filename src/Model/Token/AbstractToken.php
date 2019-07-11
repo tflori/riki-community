@@ -17,6 +17,7 @@ use ORM\EntityManager;
  * @property int $userId
  * @property string $token
  * @property Carbon $validUntil
+ * @property User $user
  */
 abstract class AbstractToken extends Entity
 {

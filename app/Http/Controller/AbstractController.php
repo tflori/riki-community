@@ -98,4 +98,18 @@ abstract class AbstractController
     {
         return new ServerResponse(200, ['Content-Type' => 'application/json'], json_encode($data, $options, $depth));
     }
+
+    /**
+     * Create a redirect response to $location with $status
+     *
+     * @param string $location
+     * @param int $status
+     * @return ServerResponse
+     */
+    protected function redirect(string $location, int $status = 302): ServerResponse
+    {
+        return new ServerResponse($status, [
+            'Location' => $location,
+        ]);
+    }
 }

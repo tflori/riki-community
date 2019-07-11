@@ -89,4 +89,25 @@ class UserController extends AbstractController
 
         return $this->json($user);
     }
+
+    public function activateByToken(Request $request, $token): ServerResponse
+    {
+        /** @var ActivationToken $activationToken */
+        $activationToken = $this->app->entityManager->fetch(ActivationToken::class)
+            ->where('valid_until', '>', Carbon::now())
+            ->where('token', $token)
+            ->one();
+        if (!$activationToken) {
+            return $this->error(400, 'Bad Request', 'Invalid activation token');
+        }
+
+        $user = $activationToken->user;
+        if ($user->accountStatus !== User::PENDING) {
+            return $this->error(400, 'Bad Request', 'Account disabled');
+        }
+
+        $user->activate();
+
+        return $this->redirect('/');
+    }
 }

@@ -23,7 +23,7 @@ $r->get('/home', 'getHome@HomeController');
 
 $r->post('/registration', 'register@UserController');
 $r->post('/user/activate', 'activate@UserController');
-//$r->get('/user/activate/{token}', 'activateByToken@UserController');
+$r->get('/user/activate/{token}', 'activateByToken@UserController');
 
 $r->get('/auth', 'getUser@AuthController');
 $r->get('/auth/token', 'getCsrfToken@AuthController');
