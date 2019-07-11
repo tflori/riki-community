@@ -45,7 +45,7 @@ class RegistrationTest extends TestCase
             ->withBody(stream_for('name=john&displayName=john'));
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @dataProvider provideRequiredFields
@@ -59,7 +59,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($this->getIncompleteUserData($field))));
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
@@ -80,7 +80,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($this->getInvalidUserData($field))));
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
@@ -100,7 +100,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($userData)));
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
@@ -122,7 +122,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($data)));
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
@@ -144,7 +144,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($data)));
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset(
@@ -168,7 +168,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @test */
@@ -183,7 +183,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @test */
@@ -198,7 +198,7 @@ class RegistrationTest extends TestCase
         ]))->withBody(stream_for(json_encode($this->getValidUserData())));
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @test */
@@ -220,7 +220,7 @@ class RegistrationTest extends TestCase
             });
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @test */
@@ -237,7 +237,7 @@ class RegistrationTest extends TestCase
             ->once();
 
         $controller = new UserController($this->app, $request);
-        $controller->register();
+        $controller->register($request);
     }
 
     /** @test */
@@ -257,7 +257,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $controller = new UserController($this->app, $request);
-        $response = $controller->register();
+        $response = $controller->register($request);
 
         self::assertJson($response->getBody());
         self::assertArraySubset([

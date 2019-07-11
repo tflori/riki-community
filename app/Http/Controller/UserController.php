@@ -3,6 +3,8 @@
 namespace App\Http\Controller;
 
 use App\Application as a;
+use App\Model\Request;
+use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\User;
@@ -11,11 +13,11 @@ use Verja\Error;
 
 class UserController extends AbstractController
 {
-    public function register()
+    public function register(Request $request): ServerResponse
     {
         $em = a::entityManager();
 
-        list($valid, $userData, $errors) = $this->request->validate([
+        list($valid, $userData, $errors) = $request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
                 if (!$value) {
                     return true;
@@ -55,6 +57,36 @@ class UserController extends AbstractController
         ])->addTo($user->email));
 
         $this->app->session->set('user', $user);
+        return $this->json($user);
+    }
+
+    public function activate(Request $request): ServerResponse
+    {
+        if (!$user = $this->app->session->get('user')) {
+            return $this->error(401, 'Unauthorized', 'This service requires authorization');
+        }
+        /** @var User $user */
+
+        if (!$request->getAttribute('csrfTokenVerified')) {
+            return ($this->error(400, 'Bad Request', 'Invalid request token'));
+        }
+
+        list(,$data) = $request->validate(['token'], 'json');
+        $activationCode = $this->app->entityManager->fetch(ActivationCode::class)
+            ->where('user_id', $user->id)
+            ->where('valid_until', '>', Carbon::now())
+            ->where('token', $data['token'])
+            ->one();
+        if (!$activationCode) {
+            return $this->error(400, 'Bad Request', 'Invalid activation code');
+        }
+
+        if ($user->accountStatus !== User::PENDING) {
+            return $this->error(400, 'Bad Request', 'Account disabled');
+        }
+
+        $user->activate();
+
         return $this->json($user);
     }
 }

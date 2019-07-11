@@ -141,17 +141,22 @@ abstract class TestCase extends MockeryTestCase
         return $value;
     }
 
-    protected function signIn(User $user = null): User
+    /**
+     * @param User|array $user
+     * @return User
+     */
+    protected function signIn($user = null): User
     {
-        if (!$user) {
+        if (!$user instanceof User) {
+            $data = is_array($user) ? $user : [];
             $user = new User();
-            $user->fill([
+            $user->fill(array_merge([
                 'id' => 23,
                 'name' => 'John Doe',
                 'displayName' => 'john',
                 'email' => 'john.doe@example.com',
                 'accountStatus' => User::ACTIVATED,
-            ]);
+            ], $data));
             $user->setCreated(Carbon::now()->subMonth());
             $user->setUpdated(Carbon::now()->subDay());
         }

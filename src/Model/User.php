@@ -76,6 +76,11 @@ class User extends Entity implements JsonSerializable
     public function setAccountStatus(string $newStatus)
     {
         $currentStatus = $this->accountStatus;
+        if ($currentStatus === $newStatus) {
+            // nothing to do
+            return;
+        }
+
         if (!isset(self::TRANSITIONS[$currentStatus]) || !in_array($newStatus, self::TRANSITIONS[$currentStatus])) {
             throw new \LogicException(sprintf(
                 'Transition to "%s" is not possible from "%s"',
