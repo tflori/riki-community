@@ -15,7 +15,7 @@ class UserController extends AbstractController
 {
     public function register(Request $request): ServerResponse
     {
-        $em = a::entityManager();
+        $em = $this->app->entityManager;
 
         list($valid, $userData, $errors) = $request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
@@ -50,9 +50,9 @@ class UserController extends AbstractController
         $activationCode = ActivationCode::newToken($user, '1d')->save();
         $activationToken = ActivationToken::newToken($user, '7d')->save();
 
-        a::mailer()->send(a::mail('user/registration', [
+        $this->app->mailer->send(a::mail('user/registration', [
             'user' => $user,
-            'activationLink' => a::environment()->url('user/activate', $activationToken->token),
+            'activationLink' => $this->app->environment->url('user/activate', $activationToken->token),
             'activationCode' => $activationCode->token,
         ])->addTo($user->email));
 
@@ -109,5 +109,32 @@ class UserController extends AbstractController
         $user->activate();
 
         return $this->redirect('/');
+    }
+
+    public function resendActivation(Request $request)
+    {
+        if (!$user = $this->app->session->get('user')) {
+            return $this->error(401, 'Unauthorized', 'This service requires authorization');
+        }
+        /** @var User $user */
+
+        if (!$request->getAttribute('csrfTokenVerified')) {
+            return ($this->error(400, 'Bad Request', 'Invalid request token'));
+        }
+
+        if ($user->accountStatus !== User::PENDING) {
+            return $this->error(400, 'Bad Request', 'Account disabled');
+        }
+
+        $activationCode = ActivationCode::newToken($user, '1d')->save();
+        $activationToken = ActivationToken::newToken($user, '7d')->save();
+
+        $this->app->mailer->send(a::mail('user/resendActivation', [
+            'user' => $user,
+            'activationLink' => $this->app->environment->url('user/activate', $activationToken->token),
+            'activationCode' => $activationCode->token,
+        ])->addTo($user->email));
+
+        return $this->json('OK');
     }
 }

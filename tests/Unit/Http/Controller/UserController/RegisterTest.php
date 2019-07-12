@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use Mockery as m;
 use Test\TestCase;
 
-class RegistrationTest extends TestCase
+class RegisterTest extends TestCase
 {
     protected function setUp()
     {
@@ -226,13 +226,16 @@ class RegistrationTest extends TestCase
     /** @test */
     public function sendsAnEmailForActivation()
     {
-        $mail = new Mail();
+        $mail = m::mock(Mail::class);
         $this->app->instance('mail', $mail);
+        $userData = $this->getValidUserData();
         $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-        ]))->withBody(stream_for(json_encode($this->getValidUserData())));
+        ]))->withBody(stream_for(json_encode($userData)));
 
+        $mail->shouldReceive('addTo')->with($userData['email'])
+            ->once()->andReturnSelf();
         $this->mocks['mailer']->shouldReceive('send')->with($mail)
             ->once();
 

@@ -23,6 +23,7 @@ $r->get('/home', 'getHome@HomeController');
 
 $r->post('/registration', 'register@UserController');
 $r->post('/user/activate', 'activate@UserController');
+$r->addRoute(['GET', 'POST'], '/user/resendActivation', 'resendActivation@UserController');
 $r->get('/user/activate/{token}', 'activateByToken@UserController');
 
 $r->get('/auth', 'getUser@AuthController');
