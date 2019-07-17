@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { clickOn } from '../helper';
+import {clickOn, respondWith} from '../helper';
 import moxios from 'moxios';
 
 import SignupDialog from '@src/Vue/SignupDialog';
@@ -118,21 +118,29 @@ describe('SignupDialog', () => {
 
         describe('with errors', () => {
             function respondWithErrors(errors: {[key: string]: string[]}): Promise<any> {
-                return new Promise((resolve, reject) => {
-                    moxios.wait(() => {
-                        let request = moxios.requests.mostRecent();
+                let response = {
+                    reason: 'Bad Request',
+                    message: 'Invalid user data',
+                    errors: errors,
+                };
 
-                        request.respondWith({
-                            status: 400,
-                            response: {
-                                reason: 'Bad Request',
-                                message: 'Invalid user data',
-                                errors: errors,
-                            },
-                        }).then(resolve, reject);
-                    });
-                });
+                return respondWith(400, response);
             }
+
+            it('shows a toast message on error', (done) => {
+                let signupDialog = new SignupDialog();
+                signupDialog.$mount();
+                spyOn(M, 'toast');
+
+                respondWith(400, {message: 'That failed'}).then(() => {
+                    expect(M.toast).toHaveBeenCalledWith(jasmine.objectContaining({
+                        html: 'That failed'
+                    }));
+                    done();
+                });
+
+                signupDialog.register();
+            });
 
             it('stores the errors from response', (done) => {
                 let signupDialog = new SignupDialog();
@@ -187,7 +195,7 @@ describe('SignupDialog', () => {
 
         describe('with success', () => {
             function respondWithUser(user: {[key: string]: any}|null = null): Promise<any> {
-                user = user || {
+                user = Object.assign({
                     id: 23,
                     name: 'John Doe',
                     displayName: 'john',
@@ -195,18 +203,9 @@ describe('SignupDialog', () => {
                     accountStatus: 'pending',
                     created: (new Date()).toISOString(),
                     updated: (new Date()).toISOString(),
-                };
+                }, user || {});
 
-                return new Promise((resolve, reject) => {
-                    moxios.wait(() => {
-                        let request = moxios.requests.mostRecent();
-
-                        request.respondWith({
-                            status: 200,
-                            response: user
-                        }).then(resolve, reject);
-                    });
-                });
+                return respondWith(200, user);
             }
 
             it('closes the signup dialog', (done) => {
@@ -222,16 +221,17 @@ describe('SignupDialog', () => {
                 signupDialog.register();
             });
 
-            it('stores the user in root', (done) => {
+            it('stores the user in $root', (done) => {
                 let signupDialog = new SignupDialog();
                 signupDialog.$mount();
-                const user = {
-                    id: 42,
-                    name: 'Arthur Dent'
-                };
 
-                respondWithUser(user).then(() => {
-                    expect(signupDialog.$root.$data.user).toEqual(user);
+                respondWithUser({
+                    id: 42,
+                    name: 'Arthur Dent',
+                }).then(() => {
+                    expect(signupDialog.$root.$data.user).not.toBeNull();
+                    expect(signupDialog.$root.$data.user.id).toBe(42);
+                    expect(signupDialog.$root.$data.user.name).toBe('Arthur Dent');
                     done();
                 });
 

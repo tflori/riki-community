@@ -72,6 +72,7 @@ export default class SignupDialog extends Vue {
             this.close();
             this.$root.$data.user = response.data;
         }).catch((error) => {
+            M.toast({html: error.response.data.message, classes: 'red darken-2 white-text'});
             if (error.response.status === 400 && error.response.data.message === 'Invalid user data') {
                 this.errors = error.response.data.errors;
 
