@@ -1,4 +1,4 @@
-require('./vue');
-require('./legacy');
-require('./prism');
-require('./scrolling');
+import './vue';
+import './legacy';
+import './prism';
+import './scrolling';
