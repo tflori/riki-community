@@ -1,9 +1,8 @@
-import Timeout = NodeJS.Timeout;
 import { AnimationSpeed } from './AnimationSpeed';
 
 export class ScrollAnimator {
     protected scrollTop: number = 0;
-    protected worker: Timeout|undefined;
+    protected worker: number|undefined;
 
     constructor(public scrollAnimations: ScrollAnimation[]) {}
 
@@ -14,7 +13,7 @@ export class ScrollAnimator {
             if (this.worker) {
                 clearTimeout(this.worker);
             }
-            this.worker = setTimeout(() => {
+            this.worker = window.setTimeout(() => {
                 for (let animation of this.scrollAnimations) {
                     animation.execute(this.scrollTop);
                 }
