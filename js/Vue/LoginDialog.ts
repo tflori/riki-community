@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Component from 'vue-class-component';
 import M from 'materialize-css';
 import Vue from 'vue';
@@ -33,17 +34,22 @@ export default class LoginDialog extends Vue {
         return this._modalInstance;
     }
 
-    protected authenticate() {
-        // for now lets assume it works - so we store a user object in $root.$data.user
-        /* istanbul ignore next */
-        this.$root.$data.user = {
-            id: Math.round(Math.random() * 1000000),
-            name: "John Arthur Doe",
-            email: "john.doe@example.com",
-            avatar: "https://www.gravatar.com/avatar/3cbc553a0a4353f5986bf8e8d36fe64a?s=24",
-            displayName: "arthur42",
+    public authenticate() {
+        let authData = {
+            email: this.email,
+            password: this.password,
         };
-        this.close();
+
+        axios({
+            method: 'post',
+            url: '/auth',
+            data: authData,
+        }).then((response) => {
+            this.close();
+            this.$root.$data.user = response.data;
+        }).catch((error) => {
+            M.toast({html: error.response.data.message, classes: 'red darken-2 white-text'});
+        });
     }
 
     public showSignup() {
