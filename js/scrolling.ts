@@ -57,10 +57,21 @@ jQuery(function($) {
             after: 'fixed'
         }),
         new ScrollAnimation($leftNav, 'top', {
-            from: headerAnimationEnd,
-            to: headerAnimationEnd,
+            from: headerAnimationEnd+1,
+            to: headerAnimationEnd+1,
             before: '',
-            after: '88px'
+            suffix: 'px',
+            steps: [
+                new CalculatedStep(() => {
+                    // prevent floating over footer
+                    let $parent = $leftNav.parent();
+
+                    $leftNav.css('top', '88px');
+                    // @ts-ignore
+                    let space = $parent.offset().top + $parent.height() - $leftNav.offset().top - $leftNav.height();
+                    return space < 0 ? 88 + space : 88;
+                }, true),
+            ],
         }),
 
         // icon animation

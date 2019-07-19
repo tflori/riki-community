@@ -59,9 +59,9 @@
   },
   "scripts":      {
     "code-style": [
-      "phpcs --standard=PSR2 app",
-      "phpcs --standard=PSR2 src",
-      "phpcs --standard=PSR2 --ignore=example tests"
+      "phpcs --standard=PSR2 --colors app",
+      "phpcs --standard=PSR2 --colors src",
+      "phpcs --standard=PSR2 --ignore=example --extensions=php --colors tests"
     ],
     "start":      "docker-compose up -d",
     "cli":        "docker-compose exec -T php community",

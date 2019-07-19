@@ -1,11 +1,16 @@
 import Vue from 'vue';
-import {clickOn, respondWith} from '../helper';
+import {respondWith} from '../helper';
 
 import SignupDialog from '@src/Vue/SignupDialog';
 import LoginDialog from '@src/Vue/LoginDialog';
 import moxios from "moxios";
 
 describe('LoginDialog', () => {
+    beforeAll(() => {
+        Vue.config.productionTip = false;
+        Vue.config.devtools = false;
+    });
+
     it('is a vue component', () => {
         let loginDialog = new LoginDialog();
 

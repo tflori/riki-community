@@ -52,7 +52,6 @@ jQuery(function($) {
         $('.card-content.search input').not(e.target).val(<string>$(e.target).val());
     });
 
-
     let $leftSearch = $('#left-col .card.search');
     let $rightSearch = $('#right-col .card.search');
     let $close = $('#close-search');
@@ -131,7 +130,7 @@ jQuery(function($) {
         }, 300);
     });
 
-    $close.click(function() {
+    $close.on('click', function() {
         $leftSearch.attr('style', '').find('input').val('');
         $rightSearch.attr('style', 'display: none;').find('input').val('').blur();
         $close.hide();
