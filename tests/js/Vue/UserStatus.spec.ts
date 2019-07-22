@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import { clickOn, containing } from '../helper';
-
+import App from "@src/Vue/App";
 import LoginDialog from '@src/Vue/LoginDialog';
 import UserStatus from '@src/Vue/UserStatus';
+import Vue from 'vue';
+import { clickOn, containing } from '../helper';
 
 describe('UserStatus', () => {
     it('is a vue component', () => {
@@ -21,14 +21,16 @@ describe('UserStatus', () => {
         });
 
         it('opens the login dialog on click', () => {
-            let userStatus = new UserStatus();
+            let app = new App();
+            let userStatus = new UserStatus({
+                parent: app,
+            });
             userStatus.$mount();
-            let loginDialog = userStatus.$root.$refs.loginDialog = new LoginDialog();
-            spyOn(loginDialog, 'open').and.stub();
+            spyOn(app, 'openDialog');
 
             clickOn(userStatus.$el.querySelector('a'));
 
-            expect(loginDialog.open).toHaveBeenCalled();
+            expect(app.openDialog).toHaveBeenCalledWith(LoginDialog);
         });
     });
 

@@ -1,44 +1,20 @@
+import AbstractDialog from "@src/Vue/AbstractDialog";
+import App from "@src/Vue/App";
 import axios from 'axios';
 import Component from 'vue-class-component';
+import LoginDialog from '@src/Vue/LoginDialog';
 import M from 'materialize-css';
-import Vue from 'vue';
-
-import LoginDialog from './LoginDialog';
-import WithRender from '../../resources/views/components/SignupDialog.html';
+import WithRender from '@view/SignupDialog.html';
 
 @WithRender
 @Component
-export default class SignupDialog extends Vue {
+export default class SignupDialog extends AbstractDialog {
     protected email: string = '';
     protected password: string = '';
     protected passwordConfirmation: string = '';
     protected displayName: string = '';
     protected name: string = '';
     protected errors: any = {};
-
-    protected _modalInstance: M.Modal|undefined;
-
-    protected get dialog(): M.Modal {
-        if (!this._modalInstance) {
-            this._modalInstance = M.Modal.init(this.$el, {
-                onOpenStart: this.reset,
-                onOpenEnd: () => {
-                    /* istanbul ignore next */
-                    (<HTMLElement>this.$refs.email).focus();
-                },
-            });
-        }
-
-        return this._modalInstance;
-    }
-
-    public close() {
-        this.dialog.close();
-    }
-
-    public open() {
-        this.dialog.open();
-    }
 
     public reset() {
         this.email = '';
@@ -52,7 +28,7 @@ export default class SignupDialog extends Vue {
 
     public showLogin() {
         this.close();
-        (<LoginDialog>this.$root.$refs.loginDialog).open();
+        (<App>this.$root).openDialog(LoginDialog);
     }
 
     public register() {

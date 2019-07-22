@@ -1,38 +1,17 @@
+import AbstractDialog from "@src/Vue/AbstractDialog";
+import ActivateDialog from "@src/Vue/ActivateDialog";
+import App from "@src/Vue/App";
 import axios from 'axios';
 import Component from 'vue-class-component';
 import M from 'materialize-css';
-import Vue from 'vue';
-
-import SignupDialog from './SignupDialog';
-import WithRender from '../../resources/views/components/LoginDialog.html';
+import SignupDialog from '@src/Vue/SignupDialog';
+import WithRender from '@view/LoginDialog.html';
 
 @WithRender
 @Component
-export default class LoginDialog extends Vue {
+export default class LoginDialog extends AbstractDialog {
     protected email: string = '';
     protected password: string = '';
-    protected _modalInstance: M.Modal|undefined;
-
-    public close() {
-        this.dialog.close();
-    }
-
-    public open() {
-        this.dialog.open();
-    }
-
-    protected get dialog(): M.Modal {
-        if (!this._modalInstance) {
-            this._modalInstance = M.Modal.init(this.$el, {
-                onOpenEnd: () => {
-                    /* istanbul ignore next */
-                    (<HTMLElement>this.$refs.email).focus();
-                },
-            });
-        }
-
-        return this._modalInstance;
-    }
 
     public authenticate() {
         let authData = {
@@ -47,6 +26,9 @@ export default class LoginDialog extends Vue {
         }).then((response) => {
             this.close();
             this.$root.$data.user = response.data;
+            if (response.data.accountStatus === 'pending') {
+                (<App>this.$root).openDialog(ActivateDialog);
+            }
         }).catch((error) => {
             M.toast({html: error.response.data.message, classes: 'red darken-2 white-text'});
         });
@@ -54,6 +36,11 @@ export default class LoginDialog extends Vue {
 
     public showSignup() {
         this.close();
-        (<SignupDialog>this.$root.$refs.signupDialog).open();
+        (<App>this.$root).openDialog(SignupDialog);
+    }
+
+    protected opened() {
+        /* istanbul ignore next */
+        (<HTMLElement>this.$refs.email).focus();
     }
 }

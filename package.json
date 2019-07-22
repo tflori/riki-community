@@ -19,6 +19,7 @@
     "css-loader": "^2.1.1",
     "cssnano": "^4.1.10",
     "jest": "^24.8.0",
+    "jest-environment-jsdom-fourteen": "^0.1.0",
     "mini-css-extract-plugin": "^0.5.0",
     "moxios": "^0.4.0",
     "node-sass": "^4.12.0",
@@ -53,6 +54,7 @@
     },
     "testURL": "http://localhost/",
     "testRegex": "/tests/js/.*\\.spec\\.ts$",
+    "testEnvironment": "jest-environment-jsdom-fourteen",
     "moduleNameMapper": {
       "@view/(.*)": "<rootDir>/resources/views/components/$1",
       "@src/(.*)": "<rootDir>/js/$1"

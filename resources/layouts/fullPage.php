@@ -60,9 +60,8 @@
         </nav>
       </div>
 
-      <!-- Overlays -->
-      <login-dialog ref="loginDialog"></login-dialog>
-      <signup-dialog ref="signupDialog"></signup-dialog>
+      <!-- Overlay container -->
+      <div ref="overlayContainer"></div>
 
       <!-- Mobile Navigation -->
       <ul class="sidenav" id="mobile-nav">

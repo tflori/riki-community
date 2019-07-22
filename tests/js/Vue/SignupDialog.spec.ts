@@ -1,10 +1,9 @@
-import Vue from 'vue';
-import {clickOn, respondWith} from '../helper';
-import moxios from 'moxios';
-
-import SignupDialog from '@src/Vue/SignupDialog';
+import App from "@src/Vue/App";
 import LoginDialog from '@src/Vue/LoginDialog';
-
+import moxios from 'moxios';
+import SignupDialog from '@src/Vue/SignupDialog';
+import Vue from 'vue';
+import {respondWith} from '../helper';
 
 describe('SignupDialog', () => {
     beforeAll(() => {
@@ -59,16 +58,18 @@ describe('SignupDialog', () => {
     });
 
     it('opens the login dialog', () => {
-        let signupDialog = new SignupDialog();
-        let loginDialog = signupDialog.$root.$refs.loginDialog = new LoginDialog();
+        let app = new App();
+        let signupDialog = new SignupDialog({
+            parent: app,
+        });
         signupDialog.$mount();
         spyOn(signupDialog, 'close').and.stub();
-        spyOn(loginDialog, 'open').and.stub();
+        spyOn(app, 'openDialog');
 
         signupDialog.showLogin();
 
         expect(signupDialog.close).toHaveBeenCalled();
-        expect(loginDialog.open).toHaveBeenCalled();
+        expect(app.openDialog).toHaveBeenCalledWith(LoginDialog);
     });
 
     it('updates the text fields on reset', () => {

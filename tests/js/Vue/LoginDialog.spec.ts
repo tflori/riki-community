@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import {respondWith} from '../helper';
-
 import SignupDialog from '@src/Vue/SignupDialog';
 import LoginDialog from '@src/Vue/LoginDialog';
+import ActivateDialog from '@src/Vue/ActivateDialog';
 import moxios from "moxios";
+import App from "@src/Vue/App";
 
 describe('LoginDialog', () => {
     beforeAll(() => {
@@ -22,12 +23,10 @@ describe('LoginDialog', () => {
 
         loginDialog.$mount();
 
-        const form = loginDialog.$el.querySelector('form');
+        const form = <HTMLElement>loginDialog.$el.querySelector('form');
         expect(form).toBeInstanceOf(HTMLElement);
-        if (form instanceof HTMLElement) {
-            expect(form.querySelector('input[name=email]')).toBeInstanceOf(HTMLElement);
-            expect(form.querySelector('input[name=password]')).toBeInstanceOf(HTMLElement);
-        }
+        expect(form.querySelector('input[name=email]')).toBeInstanceOf(HTMLElement);
+        expect(form.querySelector('input[name=password]')).toBeInstanceOf(HTMLElement);
     });
 
     it('opens a modal dialog', () => {
@@ -55,16 +54,18 @@ describe('LoginDialog', () => {
     });
 
     it('opens the signup dialog', () => {
-        let loginDialog = new LoginDialog();
-        let signupDialog = loginDialog.$root.$refs.signupDialog = new SignupDialog();
+        let app = new App();
+        let loginDialog = new LoginDialog({
+            parent: app,
+        });
         loginDialog.$mount();
         spyOn(loginDialog, 'close').and.stub();
-        spyOn(signupDialog, 'open').and.stub();
+        spyOn(app, 'openDialog');
 
         loginDialog.showSignup();
 
         expect(loginDialog.close).toHaveBeenCalled();
-        expect(signupDialog.open).toHaveBeenCalled();
+        expect(app.openDialog).toHaveBeenCalledWith(SignupDialog);
     });
 
     describe('authentication', () => {
@@ -135,6 +136,25 @@ describe('LoginDialog', () => {
                 expect(loginDialog.$root.$data.user.id).toBe(42);
                 expect(loginDialog.$root.$data.user.name).toBe('Arthur Dent');
                 done();
+            });
+
+            loginDialog.authenticate();
+        });
+
+        it('opens the activate dialog', (done) => {
+            let app = new App();
+            let loginDialog = new LoginDialog({
+                parent: app,
+            });
+            loginDialog.$mount();
+            spyOn(loginDialog, 'close');
+            spyOn(app, 'openDialog');
+
+            respondWithUser({
+                accountStatus: 'pending',
+            }).then(() => {
+                expect(app.openDialog).toHaveBeenCalledWith(ActivateDialog);
+               done();
             });
 
             loginDialog.authenticate();
