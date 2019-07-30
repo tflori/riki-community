@@ -64,7 +64,7 @@ class AuthenticationTest extends TestCase
     public function removesAuthentication()
     {
         $this->signIn();
-        $this->app->session->set('csrfToken', $token = AbstractToken::generateToken(10));
+        $token = json_decode($this->get('/auth/token')->getBody());
 
         $this->call('delete', '/auth', ['csrf_token' => $token]);
 

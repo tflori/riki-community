@@ -2,6 +2,7 @@
 
 namespace App\Http\Controller;
 
+use App\Http\Middleware\VerifyCsrfToken;
 use Community\Model\Token\AbstractToken;
 use Community\Model\User;
 use Tal\ServerResponse;
@@ -65,9 +66,7 @@ class AuthController extends AbstractController
 
     public function getCsrfToken(): ServerResponse
     {
-        $this->app->session->set('csrfToken', AbstractToken::generateToken(10));
-
-        return $this->json($this->app->session->get('csrfToken'));
+        return $this->json($this->app->get(VerifyCsrfToken::class)->createToken());
     }
 
     protected function attemptLimitReached(array $limits, array $attempts): bool

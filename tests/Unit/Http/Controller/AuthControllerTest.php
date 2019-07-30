@@ -3,6 +3,7 @@
 namespace Test\Unit\Http\Controller;
 
 use App\Http\Controller\AuthController;
+use App\Http\HttpKernel;
 use App\Model\Request;
 use Community\Model\User;
 use Test\TestCase;
@@ -162,32 +163,6 @@ class AuthControllerTest extends TestCase
         $blocked ?
             self::assertSame(423, $response->getStatusCode()) :
             self::assertSame(400, $response->getStatusCode());
-    }
-
-    /** @test */
-    public function returnsCsrfToken()
-    {
-        $request = new Request('GET', '/auth/token');
-        $controller = new AuthController($this->app, $request);
-
-        $response = $controller->getCsrfToken();
-
-        $body = (string)$response->getBody();
-        self::assertJson($body);
-        self::assertIsString(json_decode($body));
-        self::assertNotEmpty(json_decode($body));
-    }
-
-    /** @test */
-    public function storesCsrfToken()
-    {
-        $request = new Request('GET', '/auth/token');
-        $controller = new AuthController($this->app, $request);
-
-        $response = $controller->getCsrfToken();
-        $token = json_decode($response->getBody());
-
-        self::assertSame($token, $this->app->session->get('csrfToken'));
     }
 
     public function provideAuthAttemptsPerIp()
