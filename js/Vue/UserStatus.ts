@@ -1,13 +1,13 @@
 import App from "@src/Vue/App";
-import axios, {AxiosResponse} from 'axios';
-import Component from 'vue-class-component';
 import LoginDialog from "@src/Vue/LoginDialog";
-import Vue from 'vue';
 import WithRender from '@view/UserStatus.html'
+import {AxiosResponse} from 'axios';
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
 @WithRender
 @Component
-export default class UserStatus extends Vue{
+export default class UserStatus extends Vue {
     protected static authCheck: Promise<AxiosResponse>;
 
     get user() {
@@ -33,7 +33,7 @@ export default class UserStatus extends Vue{
     }
 
     /* istanbul ignore next */
-    public showUserMenu (): void {
+    public showUserMenu(): void {
         alert(JSON.stringify(this.user));
     }
 }

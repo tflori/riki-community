@@ -1,5 +1,5 @@
-import WithRender from '@view/ActivateDialog.html';
 import AbstractDialog from "@src/Vue/AbstractDialog";
+import WithRender from '@view/ActivateDialog.html';
 import Component from 'vue-class-component';
 
 @WithRender

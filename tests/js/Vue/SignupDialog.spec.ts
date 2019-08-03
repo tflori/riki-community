@@ -1,7 +1,7 @@
 import App from "@src/Vue/App";
 import LoginDialog from '@src/Vue/LoginDialog';
-import moxios from 'moxios';
 import SignupDialog from '@src/Vue/SignupDialog';
+import moxios from 'moxios';
 import Vue from 'vue';
 import {respondWith} from '../helper';
 
@@ -118,7 +118,7 @@ describe('SignupDialog', () => {
         });
 
         describe('with errors', () => {
-            function respondWithErrors(errors: {[key: string]: string[]}): Promise<any> {
+            function respondWithErrors(errors: { [key: string]: string[] }): Promise<any> {
                 let response = {
                     reason: 'Bad Request',
                     message: 'Invalid user data',
@@ -195,7 +195,7 @@ describe('SignupDialog', () => {
         });
 
         describe('with success', () => {
-            function respondWithUser(user: {[key: string]: any}|null = null): Promise<any> {
+            function respondWithUser(user: { [key: string]: any } | null = null): Promise<any> {
                 user = Object.assign({
                     id: 23,
                     name: 'John Doe',

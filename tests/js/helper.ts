@@ -1,6 +1,6 @@
 import moxios from "moxios";
 
-export function clickOn(el: Element|null): boolean {
+export function clickOn(el: Element | null): boolean {
     if (!el) {
         return false;
     }
@@ -10,7 +10,7 @@ export function clickOn(el: Element|null): boolean {
 }
 
 export function containing(elements: NodeListOf<Element>, pattern: string): Element[] {
-    return Array.prototype.filter.call(elements, function(element: Element) {
+    return Array.prototype.filter.call(elements, function (element: Element) {
         return RegExp(pattern).test(element.textContent || '');
     });
 }

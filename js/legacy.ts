@@ -1,9 +1,9 @@
-jQuery(function($) {
+jQuery(function ($) {
     let heightOfLargeHeader = $('#riki-community > header').height() || 0;
     let heightOfSmallHeader = $('.navbar-fixed').height() || 0;
     let headerAnimationEnd = heightOfLargeHeader - heightOfSmallHeader;
 
-    window.setTimeout(function() {
+    window.setTimeout(function () {
         let st = document.documentElement.scrollTop || document.body.scrollTop;
         if (st < headerAnimationEnd) {
             $('html, body').animate({
@@ -13,23 +13,23 @@ jQuery(function($) {
     }, window.location.href.match(/^https?:\/\/[a-zA-Z0-9:.-]+\/?(home)?$/) ? 5000 : 2000);
 
     $('#mobile-nav').sidenav({
-        onOpenStart: function() {
+        onOpenStart: function () {
             $('.sidenav-toggle .menu-icon').hide();
             $('.sidenav-toggle .close-icon').css('display', 'block');
         },
-        onCloseStart: function() {
+        onCloseStart: function () {
             $('.sidenav-toggle .menu-icon').css('display', 'block');
             $('.sidenav-toggle .close-icon').hide();
         },
     });
-    $('.sidenav-toggle').click(function(e) {
+    $('.sidenav-toggle').click(function (e) {
         let st = document.documentElement.scrollTop || document.body.scrollTop;
         let sidenav = M.Sidenav.getInstance($('#mobile-nav')[0]);
 
         if (!sidenav.isOpen && st < headerAnimationEnd) {
             $('html, body').animate({
                 scrollTop: headerAnimationEnd
-            }, 500, function() {
+            }, 500, function () {
                 sidenav.open();
             });
             // w.setTimeout(, 1000);
@@ -42,13 +42,13 @@ jQuery(function($) {
         return false;
     });
 
-    $('.card-content.search input').focus(function() {
+    $('.card-content.search input').focus(function () {
         $('.card.search').addClass('active');
-    }).blur(function() {
+    }).blur(function () {
         if ($(this).val() === '') {
             $('.card.search').removeClass('active');
         }
-    }).on('change', function(e) {
+    }).on('change', function (e) {
         $('.card-content.search input').not(e.target).val(<string>$(e.target).val());
     });
 
@@ -59,8 +59,8 @@ jQuery(function($) {
     let $searchResults = $rightSearch.find('.search-results');
     let openTimer: number;
     let search = function search(term: string) {
-        window.setTimeout(function() {
-            $rightSearch.promise().done(function() {
+        window.setTimeout(function () {
+            $rightSearch.promise().done(function () {
                 $searchTabs.show().find('.tabs').tabs();
                 $searchResults.show();
             });
@@ -68,14 +68,14 @@ jQuery(function($) {
         $close.show();
     };
 
-    $leftSearch.find('input').on('keydown', function() {
+    $leftSearch.find('input').on('keydown', function () {
         let $this = $(this);
         if (openTimer) {
             window.clearTimeout(openTimer);
             openTimer = 0;
         }
 
-        openTimer = window.setTimeout(function() {
+        openTimer = window.setTimeout(function () {
             if ($this.val() === '') {
                 return;
             }
@@ -91,9 +91,9 @@ jQuery(function($) {
             let offsetLeft = $leftSearch.offset() || {left: 0, top: 0};
             $leftSearch.animate({
                 width: $rightSearch.width(),
-                left:  offsetRight.left - offsetLeft.left,
-                top:   -8,
-            }, 500, function() {
+                left: offsetRight.left - offsetLeft.left,
+                top: -8,
+            }, 500, function () {
                 $leftSearch.css({
                     opacity: 0,
                     left: '',
@@ -110,13 +110,13 @@ jQuery(function($) {
         }, 300);
     });
 
-    $rightSearch.find('input').on('keydown', function() {
+    $rightSearch.find('input').on('keydown', function () {
         let $this = $(this);
         if (openTimer) {
             window.clearTimeout(openTimer);
         }
 
-        openTimer = window.setTimeout(function() {
+        openTimer = window.setTimeout(function () {
             if ($this.val() === '') {
                 return;
             }
@@ -130,7 +130,7 @@ jQuery(function($) {
         }, 300);
     });
 
-    $close.on('click', function() {
+    $close.on('click', function () {
         $leftSearch.attr('style', '').find('input').val('');
         $rightSearch.attr('style', 'display: none;').find('input').val('').blur();
         $close.hide();

@@ -1,6 +1,6 @@
+import {Easing, EasingDirection, EasingFx} from '@src/Models/AnimationSpeed';
+import {CalculatedStep, ScrollAnimation, ScrollAnimator, Step} from '@src/Models/ScrollAnimator';
 import $ from 'jquery';
-import { Easing, EasingDirection, EasingFx } from '@src/Models/AnimationSpeed';
-import { CalculatedStep, ScrollAnimation, ScrollAnimator, Step } from '@src/Models/ScrollAnimator';
 
 describe('ScrollAnimation', () => {
     describe('constructor', () => {
@@ -27,7 +27,7 @@ describe('ScrollAnimation', () => {
             let animation = {
                 from: 0,
                 to: 20,
-                steps: [ step1 ],
+                steps: [step1],
             };
 
             new ScrollAnimation($('<div>'), 'opacity', animation);
@@ -261,7 +261,7 @@ describe('ScrollAnimation', () => {
                 to: 30,
                 suffix: 'px',
                 steps: [
-                    new Step(0, 20, undefined,  0),
+                    new Step(0, 20, undefined, 0),
                     new Step(20, 0, undefined, 10), // from scrollTop 10 to scrollTop 20
                     new Step(0, 40, undefined, 20), // unused step in this test
                 ],
@@ -365,11 +365,11 @@ describe('ScrollAnimator', () => {
     });
 
     describe('scroll handler', () => {
-        let scrollHandler: () => void|boolean;
+        let scrollHandler: () => void | boolean;
         let scrollAnimator: ScrollAnimator;
 
         beforeEach(() => {
-            spyOn($.fn, 'on').and.callFake((event: string, handler: () => void|boolean) => {
+            spyOn($.fn, 'on').and.callFake((event: string, handler: () => void | boolean) => {
                 if (event === 'scroll') {
                     scrollHandler = handler;
                 }

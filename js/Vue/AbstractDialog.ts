@@ -1,8 +1,8 @@
-import Vue from 'vue';
 import M from "materialize-css";
+import Vue from 'vue';
 
 export default abstract class AbstractDialog extends Vue {
-    protected _modalInstance: M.Modal|undefined;
+    protected _modalInstance: M.Modal | undefined;
 
     public close() {
         this.dialog.close();
@@ -24,5 +24,6 @@ export default abstract class AbstractDialog extends Vue {
         return this._modalInstance;
     }
 
-    protected opened() {}
+    protected opened() {
+    }
 }

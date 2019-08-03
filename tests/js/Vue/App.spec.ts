@@ -1,6 +1,6 @@
+import ActivateDialog from "@src/Vue/ActivateDialog";
 import App from "@src/Vue/App";
 import Vue from 'vue';
-import ActivateDialog from "@src/Vue/ActivateDialog";
 
 describe('App', () => {
     beforeAll(() => {

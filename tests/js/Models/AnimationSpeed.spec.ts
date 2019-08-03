@@ -1,4 +1,4 @@
-import { AnimationSpeed, Easing, EasingDirection, EasingFx, Linear } from '@src/Models/AnimationSpeed';
+import {AnimationSpeed, Easing, EasingDirection, EasingFx, Linear} from '@src/Models/AnimationSpeed';
 
 // easing is currently forced to start from 0 and end at 1 with a force of π/2 in duration 1
 // the idea is that this is just simple math around
@@ -15,34 +15,34 @@ describe('AnimationSpeed', () => {
 
     describe('Easing', () => {
         const checkpoints = {
-            [EasingFx.Quad]:    {
+            [EasingFx.Quad]: {
                 0.25: 0.0625,
-                0.5:  0.25,
+                0.5: 0.25,
                 0.75: 0.5625,
             },
-            [EasingFx.Cubic]:   {
+            [EasingFx.Cubic]: {
                 0.25: 0.015625,
-                0.5:  0.125,
+                0.5: 0.125,
                 0.75: 0.421875,
             },
-            [EasingFx.Quart]:   {
+            [EasingFx.Quart]: {
                 0.25: 0.00390625,
-                0.5:  0.0625,
+                0.5: 0.0625,
                 0.75: 0.31640625,
             },
-            [EasingFx.Quint]:   {
+            [EasingFx.Quint]: {
                 0.25: 0.0009765625,
-                0.5:  0.03125,
+                0.5: 0.03125,
                 0.75: 0.2373046875,
             },
-            [EasingFx.Sine]:    {
+            [EasingFx.Sine]: {
                 0.25: 0.076120467488713,
-                0.5:  0.292893218813453,
+                0.5: 0.292893218813453,
                 0.75: 0.61731656763491,
             },
-            [EasingFx.Expo]:    {
+            [EasingFx.Expo]: {
                 0.25: 0.00552427172802,
-                0.5:  0.03125,
+                0.5: 0.03125,
                 0.75: 0.176776695296637,
             },
             [EasingFx.Elastic]: {
@@ -53,7 +53,7 @@ describe('AnimationSpeed', () => {
                 0.715: 0.131907909586537,
                 0.865: -0.37309190944313,
             },
-            [EasingFx.Back]:    {
+            [EasingFx.Back]: {
                 0.115: -0.0183941618525,
                 0.265: -0.0692160001775,
                 0.415: -0.0999595450025,
@@ -142,7 +142,7 @@ describe('AnimationSpeed', () => {
                         continue;
                     }
 
-                    let easing = new Easing(effect, EasingDirection.In, Math.random()*4);
+                    let easing = new Easing(effect, EasingDirection.In, Math.random() * 4);
                     for (let checkpoint in checkpoints[effect]) {
                         // @ts-ignore
                         expect(easing.calc(parseFloat(checkpoint))).toBeCloseTo(checkpoints[effect][checkpoint], 8);
@@ -159,7 +159,7 @@ describe('AnimationSpeed', () => {
                 }
             });
 
-            const strength: {[index:number]: {at: number, min: number}} = {
+            const strength: { [index: number]: { at: number, min: number } } = {
                 1.16530: {
                     min: -0.05,
                     at: 0.35878,

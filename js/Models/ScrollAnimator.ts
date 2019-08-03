@@ -1,10 +1,11 @@
-import { AnimationSpeed } from './AnimationSpeed';
+import {AnimationSpeed} from './AnimationSpeed';
 
 export class ScrollAnimator {
     protected scrollTop: number = 0;
-    protected worker: number|undefined;
+    protected worker: number | undefined;
 
-    constructor(public scrollAnimations: ScrollAnimation[]) {}
+    constructor(public scrollAnimations: ScrollAnimation[]) {
+    }
 
     public start() {
         jQuery(window).on('scroll', () => {
@@ -62,18 +63,18 @@ export class ScrollAnimation {
             if (this._steps.length > 1) {
                 for (let i = 1; i < this._steps.length; i++) {
                     this._steps[i].from = Math.max(
-                        this._steps[i-1].from + 1,
+                        this._steps[i - 1].from + 1,
                         this._steps[i].from
                     );
                     this._steps[i - 1].to = !this._steps[i - 1].to ?
-                                            this._steps[i].from :
-                                            Math.min(
-                                                this._steps[i - 1].to,
-                                                this._steps[i].from,
-                                            );
+                        this._steps[i].from :
+                        Math.min(
+                            this._steps[i - 1].to,
+                            this._steps[i].from,
+                        );
                 }
             }
-        } else if (animation.start !==  undefined && animation.end !== undefined) {
+        } else if (animation.start !== undefined && animation.end !== undefined) {
             this._steps = [
                 new Step(animation.start, animation.end, animation.easing, animation.from, animation.to)
             ];
@@ -96,11 +97,11 @@ export class ScrollAnimation {
         return this._suffix;
     }
 
-    public get before(): undefined|string {
+    public get before(): undefined | string {
         return this._before;
     }
 
-    public get after(): undefined|string {
+    public get after(): undefined | string {
         return this._after;
     }
 
@@ -160,7 +161,8 @@ export class Step {
         public easing?: AnimationSpeed,
         public from: number = 0,
         public to: number = 0,
-    ) {}
+    ) {
+    }
 
     public calc(scrollTop: number): number {
         let t: number = (scrollTop - this.from) / (this.to - this.from);

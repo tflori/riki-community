@@ -1,5 +1,4 @@
 import ActivateDialog from "@src/Vue/ActivateDialog";
-import moxios from "moxios";
 import Vue from 'vue';
 
 describe('ActivateDialog', () => {

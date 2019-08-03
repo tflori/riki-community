@@ -1,7 +1,7 @@
-import { Easing, EasingDirection, EasingFx } from './Models/AnimationSpeed';
-import { CalculatedStep, ScrollAnimation, ScrollAnimator } from './Models/ScrollAnimator';
+import {Easing, EasingDirection, EasingFx} from './Models/AnimationSpeed';
+import {CalculatedStep, ScrollAnimation, ScrollAnimator} from './Models/ScrollAnimator';
 
-jQuery(function($) {
+jQuery(function ($) {
     // get the elements
     let $body = $('#riki-community > header');
     let $navBar = $('.navbar-fixed');
@@ -57,8 +57,8 @@ jQuery(function($) {
             after: 'fixed'
         }),
         new ScrollAnimation($leftNav, 'top', {
-            from: headerAnimationEnd+1,
-            to: headerAnimationEnd+1,
+            from: headerAnimationEnd + 1,
+            to: headerAnimationEnd + 1,
             before: '',
             suffix: 'px',
             steps: [

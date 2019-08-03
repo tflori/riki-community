@@ -1,10 +1,10 @@
+import ActivateDialog from '@src/Vue/ActivateDialog';
+import App from "@src/Vue/App";
+import LoginDialog from '@src/Vue/LoginDialog';
+import SignupDialog from '@src/Vue/SignupDialog';
+import moxios from "moxios";
 import Vue from 'vue';
 import {respondWith} from '../helper';
-import SignupDialog from '@src/Vue/SignupDialog';
-import LoginDialog from '@src/Vue/LoginDialog';
-import ActivateDialog from '@src/Vue/ActivateDialog';
-import moxios from "moxios";
-import App from "@src/Vue/App";
 
 describe('LoginDialog', () => {
     beforeAll(() => {
@@ -77,7 +77,7 @@ describe('LoginDialog', () => {
             moxios.uninstall();
         });
 
-        function respondWithUser(user: {[key: string]: any}|null = null): Promise<any> {
+        function respondWithUser(user: { [key: string]: any } | null = null): Promise<any> {
             user = Object.assign({
                 id: 23,
                 name: 'John Doe',
@@ -116,7 +116,7 @@ describe('LoginDialog', () => {
             let loginDialog = new LoginDialog();
             loginDialog.$mount();
             spyOn(loginDialog, 'close').and.stub();
-            respondWithUser().then(function() {
+            respondWithUser().then(function () {
                 expect(loginDialog.close).toHaveBeenCalled();
                 done();
             });
@@ -154,7 +154,7 @@ describe('LoginDialog', () => {
                 accountStatus: 'pending',
             }).then(() => {
                 expect(app.openDialog).toHaveBeenCalledWith(ActivateDialog);
-               done();
+                done();
             });
 
             loginDialog.authenticate();

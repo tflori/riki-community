@@ -1,10 +1,10 @@
 import AbstractDialog from "@src/Vue/AbstractDialog";
 import App from "@src/Vue/App";
-import axios from 'axios';
-import Component from 'vue-class-component';
 import LoginDialog from '@src/Vue/LoginDialog';
-import M from 'materialize-css';
 import WithRender from '@view/SignupDialog.html';
+import axios from 'axios';
+import M from 'materialize-css';
+import Component from 'vue-class-component';
 
 @WithRender
 @Component

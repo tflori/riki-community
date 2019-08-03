@@ -70,11 +70,11 @@ export class Easing extends AnimationSpeed {
     }
 
     protected calcOut(x: number): number {
-        return Math.abs(this.execFx(Math.abs(x-1))-1)
+        return Math.abs(this.execFx(Math.abs(x - 1)) - 1)
     }
 
     protected calcInOut(x: number): number {
-        return x < 0.5 ? this.execFx(x*2)/2 : Math.abs(this.execFx(Math.abs(x-1) * 2) / 2 - 1);
+        return x < 0.5 ? this.execFx(x * 2) / 2 : Math.abs(this.execFx(Math.abs(x - 1) * 2) / 2 - 1);
 
     }
 

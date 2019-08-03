@@ -2,7 +2,7 @@ import App from "@src/Vue/App";
 import LoginDialog from '@src/Vue/LoginDialog';
 import UserStatus from '@src/Vue/UserStatus';
 import Vue from 'vue';
-import { clickOn, containing } from '../helper';
+import {clickOn, containing} from '../helper';
 
 describe('UserStatus', () => {
     it('is a vue component', () => {
@@ -11,7 +11,7 @@ describe('UserStatus', () => {
         expect(userStatus).toBeInstanceOf(Vue);
     });
 
-    describe('without login', () =>{
+    describe('without login', () => {
         it('renders a link to login dialog', () => {
             let userStatus = new UserStatus();
 
