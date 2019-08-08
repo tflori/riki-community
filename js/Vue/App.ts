@@ -139,6 +139,7 @@ export default class App extends Vue {
         }).then((response) => {
             return response.data;
         }).catch((response) => {
+            /* istanbul ignore next */
             console.warn('Could not receive csrf token', response);
         });
     }
