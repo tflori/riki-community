@@ -1,5 +1,8 @@
-import {Easing, EasingDirection, EasingFx} from '@src/Models/AnimationSpeed';
-import {CalculatedStep, ScrollAnimation, ScrollAnimator, Step} from '@src/Models/ScrollAnimator';
+import {Easing, EasingDirection, EasingFx} from '@src/Models/Scrolling/AnimationSpeed';
+import {CalculatedStep} from "@src/Models/Scrolling/CalculatedStep";
+import {ScrollAnimation} from "@src/Models/Scrolling/ScrollAnimation";
+import {ScrollAnimator} from '@src/Models/Scrolling/ScrollAnimator';
+import {Step} from "@src/Models/Scrolling/Step";
 import $ from 'jquery';
 
 describe('ScrollAnimation', () => {
@@ -343,6 +346,23 @@ describe('ScrollAnimation', () => {
             expect(element.css).not.toHaveBeenCalled();
         });
     });
+
+    describe('reset', () => {
+        it('empties the style', () => {
+            let element = $('<div>');
+            spyOn(element, 'css');
+            let scrollAnimation = new ScrollAnimation(element, 'opacity', {
+                from: 0,
+                to: 20,
+                before: '0',
+                after: '1',
+            });
+
+            scrollAnimation.reset();
+
+            expect(element.css).toHaveBeenCalledWith('opacity', '');
+        });
+    });
 });
 
 describe('ScrollAnimator', () => {
@@ -361,6 +381,35 @@ describe('ScrollAnimator', () => {
 
             expect($.fn.on).toHaveBeenCalledWith('scroll', jasmine.any(Function));
             expect($.fn.triggerHandler).toHaveBeenCalledWith('scroll');
+        });
+    });
+
+    describe('stop', () => {
+        it('removes the event handler', () => {
+            spyOn($.fn, 'off');
+            let scrollAnimator = new ScrollAnimator([]);
+            scrollAnimator.start();
+
+            scrollAnimator.stop();
+
+            expect($.fn.off).toHaveBeenCalledWith('scroll', jasmine.any(Function));
+        });
+
+        it('resets all scrollAnimations', () => {
+            let scrollAnimation = new ScrollAnimation($('<div>'), 'top', {
+                from: 0,
+                to: 10,
+                start: 10,
+                end: 5,
+                suffix: 'vh',
+            });
+            let scrollAnimator = new ScrollAnimator([scrollAnimation]);
+            spyOn(scrollAnimation, 'reset');
+            scrollAnimator.start();
+
+            scrollAnimator.stop();
+
+            expect(scrollAnimation.reset).toHaveBeenCalled();
         });
     });
 

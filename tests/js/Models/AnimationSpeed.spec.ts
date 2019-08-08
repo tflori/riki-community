@@ -1,4 +1,4 @@
-import {AnimationSpeed, Easing, EasingDirection, EasingFx, Linear} from '@src/Models/AnimationSpeed';
+import {AnimationSpeed, Easing, EasingDirection, EasingFx, Linear} from '@src/Models/Scrolling/AnimationSpeed';
 
 // easing is currently forced to start from 0 and end at 1 with a force of π/2 in duration 1
 // the idea is that this is just simple math around

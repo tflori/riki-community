@@ -25,7 +25,6 @@ nav {
     .nav-wrapper {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 0 20px;
     }
 
     .sidenav-toggle {
@@ -37,10 +36,6 @@ nav {
 
     .sidenav-toggle .close-icon {
         display: none;
-    }
-
-    ul li:last-child {
-        margin-right: -20px;
     }
 
     .brand-logo.left {
@@ -256,7 +251,7 @@ footer {
 
 header nav {
     overflow: hidden;
-    height: 640px;
+    height: 40vh;
     position: relative;
 }
 
@@ -268,7 +263,7 @@ header .logo-wrapper div {
 }
 
 #header-background-icon {
-    bottom: 334px;
+    top: calc(50% - 117px);
     left: calc(50% - 41px);
     width: 83px;
     height: 86px;
@@ -276,7 +271,7 @@ header .logo-wrapper div {
 }
 
 #header-background-modules {
-    bottom: 290px;
+    top: calc(50% - 159px);
     left: calc(50% - 93px);
     width: 187px;
     height: 172px;
@@ -284,7 +279,7 @@ header .logo-wrapper div {
 }
 
 #header-background-name {
-    bottom: 196px;
+    top: calc(50% + 40px);
     left: calc(50% - 93px);
     width: 187px;
     height: 67px;
@@ -292,7 +287,7 @@ header .logo-wrapper div {
 }
 
 #header-background-subtitle {
-    bottom: 170px;
+    top: calc(50% + 113px);
     left: calc(50% - 93px);
     width: 187px;
     height: 20px;
@@ -301,7 +296,7 @@ header .logo-wrapper div {
 
 header ul {
     position: relative;
-    top: calc(640px - 64px);
+    top: calc(100% - 64px);
 }
 
 .navbar-fixed {
@@ -376,12 +371,20 @@ header ul {
 }
 
 @media only screen and (max-height: 700px) {
+    header nav {
+        height: 80vh
+    }
+
     .modal {
         max-height: 80%;
     }
 }
 
 @media only screen and (max-height: 500px) {
+    header nav {
+        height: 100vh
+    }
+
     .modal {
         max-height: 90%;
         top: 5% !important;
@@ -403,8 +406,14 @@ header ul {
 }
 
 @media only screen and (max-width: 992px) {
-    nav .brand-logo.left {
-        left: 64px;
+    nav {
+        .nav-wrapper {
+            padding: 0 20px;
+        }
+
+        .brand-logo.left {
+            left: 64px;
+        }
     }
 
     #logo-icon {
@@ -460,7 +469,7 @@ header ul {
     }
 
     header ul {
-        top: calc(640px - 56px);
+        top: calc(100% - 56px);
     }
 
     .card.search-result .search-area {

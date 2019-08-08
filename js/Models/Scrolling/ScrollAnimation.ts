@@ -1,28 +1,5 @@
-import {AnimationSpeed} from './AnimationSpeed';
-
-export class ScrollAnimator {
-    protected scrollTop: number = 0;
-    protected worker: number | undefined;
-
-    constructor(public scrollAnimations: ScrollAnimation[]) {
-    }
-
-    public start() {
-        jQuery(window).on('scroll', () => {
-            this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-
-            if (this.worker) {
-                clearTimeout(this.worker);
-            }
-            this.worker = window.setTimeout(() => {
-                for (let animation of this.scrollAnimations) {
-                    animation.execute(this.scrollTop);
-                }
-                this.worker = undefined;
-            }, 0);
-        }).triggerHandler('scroll');
-    }
-}
+import {AnimationSpeed} from "@src/Models/Scrolling/AnimationSpeed";
+import {Step} from "@src/Models/Scrolling/Step";
 
 export class ScrollAnimation {
     protected _from: number;
@@ -113,6 +90,10 @@ export class ScrollAnimation {
         return this._style;
     }
 
+    public reset() {
+        this.element.css(this.style, '');
+    }
+
     public execute(scrollTop: number) {
         if (this.element.length === 0) {
             return;
@@ -149,38 +130,5 @@ export class ScrollAnimation {
                 this.element.css(this.style, value + this.suffix);
             }
         }
-    }
-}
-
-export class Step {
-    public wait: boolean = false;
-
-    constructor(
-        public start: number,
-        public end: number,
-        public easing?: AnimationSpeed,
-        public from: number = 0,
-        public to: number = 0,
-    ) {
-    }
-
-    public calc(scrollTop: number): number {
-        let t: number = (scrollTop - this.from) / (this.to - this.from);
-        t = Math.max(0, Math.min(1, t)); // limit to 0 - 1
-        if (this.easing) {
-            t = this.easing.calc(t);
-        }
-        return (this.start + (this.end - this.start) * t);
-    }
-}
-
-export class CalculatedStep extends Step {
-    constructor(
-        public calc: (scrollTop: number) => number,
-        public wait: boolean = false,
-        public from: number = 0,
-        public to: number = 0,
-    ) {
-        super(0, 0);
     }
 }
