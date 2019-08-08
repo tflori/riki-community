@@ -179,7 +179,7 @@ footer {
         }
 
         p {
-            margin-top: 1em
+            margin-top: 1em;
         }
 
         h1 {
@@ -347,8 +347,32 @@ header ul {
     background: inherit;
 }
 
-.modal .modal-footer {
-    padding-right: 10px;
+.modal {
+    .modal-content {
+        > .row:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .modal-footer {
+        padding-right: 10px;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap-reverse;
+        justify-content: flex-end;
+    }
+
+    &.small {
+        min-width: 300px;
+        max-width: 400px;
+        width: 90%;
+    }
+}
+
+@media only screen and (max-height: 1200px) {
+    header nav {
+        height: 60vh;
+    }
 }
 
 @media only screen and (max-height: 700px) {
