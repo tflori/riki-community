@@ -40,9 +40,16 @@
           <span v-for="error in errors.name" class="helper-text red-text">{{error}}</span>
         </div>
       </div>
-      <button class="btn waves-effect waves-light" type="submit">
-        Signup <i class="material-icons right">send</i>
-      </button>
+      <div class="row">
+        <div class="col s6 m2">
+          <button class="btn waves-effect waves-light" type="submit">
+            Signup <i class="material-icons right">send</i>
+          </button>
+        </div>
+        <div class="col s6 m10">
+          <span v-if="errorMessage" class="error"><i class="material-icons">warning</i> {{errorMessage}}</span>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">

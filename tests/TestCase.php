@@ -149,21 +149,33 @@ abstract class TestCase extends MockeryTestCase
     {
         if (!$user instanceof User) {
             $data = is_array($user) ? $user : [];
-            $user = new User();
-            $user->fill(array_merge([
+            /** @var User|m\Mock $user */
+            $user = $this->ormCreateMockedEntity(User::class, $this->ormAttributesToData(User::class, array_merge([
                 'id' => 23,
                 'name' => 'John Doe',
                 'displayName' => 'john',
                 'email' => 'john.doe@example.com',
                 'accountStatus' => User::ACTIVATED,
-            ], $data));
-            $user->setCreated(Carbon::now()->subMonth());
-            $user->setUpdated(Carbon::now()->subDay());
+                'created' => Carbon::now()->subMonth()->format('c'),
+                'updated' => Carbon::now()->subDay()->format('c'),
+            ], $data)));
         }
 
         $this->app->session->set('user', $user);
 
         return $user;
+    }
+
+    // @todo will be implemented to ORM - should be removed then
+    protected function ormAttributesToData(string $class, array $attributes)
+    {
+        $data = [];
+
+        foreach ($attributes as $attribute => $value) {
+            $data[call_user_func([$class, 'getColumnName'], $attribute)] = $value;
+        }
+
+        return $data;
     }
 
     protected function requiresTrait(string $class, string $trait)

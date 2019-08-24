@@ -4,20 +4,31 @@
     <div class="col s12">
       <h4>Login</h4>
     </div>
-    <form class="col s12 l8 offset-l2" @submit.prevent="authenticate" action="/any_url">
+    <form class="col s12 l8 offset-l2" @submit.prevent="authenticate">
       <div class="row">
         <div class="input-field col s12">
           <input id="login-email" name="email" ref="email" type="email" v-model="email"/>
           <label for="login-email">eMail Address</label>
         </div>
         <div class="input-field col s12">
-          <input id="login-password" name="password" type="password" v-model="password"/>
+          <a class="btn-flat suffix" @click.prevent="showPassword = !showPassword">
+            <i class="material-icons">{{showPassword ? 'visibility' : 'visibility_off'}}</i>
+          </a>
+          <input id="login-password" name="password" ref="password"
+                 :type="showPassword ? 'text' : 'password'" v-model="password"/>
           <label for="login-password">Password</label>
         </div>
       </div>
-      <button class="btn waves-effect waves-light" type="submit">
-        Login <i class="material-icons right">arrow_forward_ios</i>
-      </button>
+      <div class="row">
+        <div class="col s6 m2">
+          <button class="btn waves-effect waves-light" type="submit">
+            Login <i class="material-icons right">arrow_forward_ios</i>
+          </button>
+        </div>
+        <div class="col s6 m10">
+          <span v-if="errorMessage" class="error"><i class="material-icons">warning</i> {{errorMessage}}</span>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">

@@ -4,7 +4,6 @@ import App from "@src/Vue/App";
 import ConfirmDialog from "@src/Vue/ConfirmDialog";
 import moxios from "moxios";
 import Vue from 'vue';
-import {respondWith} from "../helper";
 
 describe('App', () => {
     beforeAll(() => {
@@ -179,16 +178,16 @@ describe('App', () => {
 
         it('returns the token', (done) => {
             let app = new App();
-            let promise: Promise<string|void>;
 
-            respondWith(200, '"foo"').then(() => {
-                promise.then((response) => {
-                    expect(response).toBe('foo');
-                    done();
-                });
+            moxios.stubRequest('/auth/token', {
+                status: 200,
+                response: 'foo',
             });
 
-            promise = app.getCsrfToken();
+            app.getCsrfToken().then((response) => {
+                expect(response).toBe('foo');
+                done();
+            });
         });
     });
 });

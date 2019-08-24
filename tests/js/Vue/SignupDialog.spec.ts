@@ -3,7 +3,6 @@ import LoginDialog from '@src/Vue/LoginDialog';
 import SignupDialog from '@src/Vue/SignupDialog';
 import moxios from 'moxios';
 import Vue from 'vue';
-import {respondWith} from '../helper';
 
 describe('SignupDialog', () => {
     beforeAll(() => {
@@ -118,29 +117,54 @@ describe('SignupDialog', () => {
         });
 
         describe('with errors', () => {
-            function respondWithErrors(errors: { [key: string]: string[] }): Promise<any> {
+            function respondWithErrors(errors: { [key: string]: string[] }) {
                 let response = {
                     reason: 'Bad Request',
                     message: 'Invalid user data',
                     errors: errors,
                 };
-
-                return respondWith(400, response);
+                moxios.stubRequest('/registration', {
+                    status: 400,
+                    response,
+                });
             }
 
-            it('shows a toast message on error', (done) => {
+            it('stores the error message', (done) => {
                 let signupDialog = new SignupDialog();
                 signupDialog.$mount();
-                spyOn(M, 'toast');
 
-                respondWith(400, {message: 'That failed'}).then(() => {
-                    expect(M.toast).toHaveBeenCalledWith(jasmine.objectContaining({
-                        html: 'That failed'
-                    }));
-                    done();
+                moxios.stubRequest('/registration', {
+                    status: 400,
+                    response: {message: 'That failed'},
                 });
 
                 signupDialog.register();
+
+                setTimeout(() => {
+                    expect(signupDialog['errorMessage']).toBe('That failed');
+                    done();
+                });
+            });
+
+            it('logs a warning for unexpected errors', (done) => {
+                let signupDialog = new SignupDialog();
+                signupDialog.$mount();
+                spyOn(console, 'warn');
+
+                moxios.stubRequest('/registration', {
+                    status: 500,
+                    response: 'Database not available',
+                });
+
+                signupDialog.register();
+
+                setTimeout(() => {
+                    expect(console.warn).toHaveBeenCalledWith(
+                        'Registration failed for unknown reason',
+                        jasmine.anything()
+                    );
+                    done();
+                });
             });
 
             it('stores the errors from response', (done) => {
@@ -150,12 +174,14 @@ describe('SignupDialog', () => {
                     password: ['Foo'],
                 };
 
-                respondWithErrors(errors).then(() => {
+                respondWithErrors(errors);
+
+                signupDialog.register();
+
+                setTimeout(() => {
                     expect(signupDialog['errors']).toEqual(errors);
                     done();
                 });
-
-                signupDialog.register();
             });
 
             it('focuses the first element with error', (done) => {
@@ -166,12 +192,14 @@ describe('SignupDialog', () => {
                 respondWithErrors({
                     displayName: ['Foo'],
                     password: ['Foo'],
-                }).then(() => {
-                    expect((<HTMLElement>signupDialog.$refs.password).focus).toHaveBeenCalled();
-                    done();
                 });
 
                 signupDialog.register();
+
+                setTimeout(() => {
+                    expect((<HTMLElement>signupDialog.$refs.password).focus).toHaveBeenCalled();
+                    done();
+                });
             });
 
             it('resets the password elements when password has errors', (done) => {
@@ -183,19 +211,21 @@ describe('SignupDialog', () => {
 
                 respondWithErrors({
                     password: ['Password to weak'],
-                }).then(() => {
+                });
+
+                signupDialog.register();
+
+                setTimeout(() => {
                     expect(signupDialog['password']).toBe('');
                     expect(signupDialog['passwordConfirmation']).toBe('');
                     expect(signupDialog.$nextTick).toHaveBeenCalledWith(M.updateTextFields);
                     done();
                 });
-
-                signupDialog.register();
             });
         });
 
         describe('with success', () => {
-            function respondWithUser(user: { [key: string]: any } | null = null): Promise<any> {
+            function respondWithUser(user: { [key: string]: any } | null = null) {
                 user = Object.assign({
                     id: 23,
                     name: 'John Doe',
@@ -206,7 +236,10 @@ describe('SignupDialog', () => {
                     updated: (new Date()).toISOString(),
                 }, user || {});
 
-                return respondWith(200, user);
+                moxios.stubRequest('/registration', {
+                    status: 200,
+                    response: user,
+                });
             }
 
             it('closes the signup dialog', (done) => {
@@ -214,12 +247,14 @@ describe('SignupDialog', () => {
                 signupDialog.$mount();
                 spyOn(signupDialog, 'close');
 
-                respondWithUser().then(() => {
+                respondWithUser();
+
+                signupDialog.register();
+
+                setTimeout(() => {
                     expect(signupDialog.close).toHaveBeenCalled();
                     done();
                 });
-
-                signupDialog.register();
             });
 
             it('stores the user in $root', (done) => {
@@ -229,14 +264,16 @@ describe('SignupDialog', () => {
                 respondWithUser({
                     id: 42,
                     name: 'Arthur Dent',
-                }).then(() => {
+                });
+
+                signupDialog.register();
+
+                setTimeout(() => {
                     expect(signupDialog.$root.$data.user).not.toBeNull();
                     expect(signupDialog.$root.$data.user.id).toBe(42);
                     expect(signupDialog.$root.$data.user.name).toBe('Arthur Dent');
                     done();
                 });
-
-                signupDialog.register();
             });
         });
     });

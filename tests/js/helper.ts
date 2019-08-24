@@ -1,4 +1,6 @@
-import moxios from "moxios";
+import App from "@src/Vue/App";
+import Vue from 'vue';
+import {compileToFunctions} from "vue-template-compiler";
 
 export function clickOn(el: Element | null): boolean {
     if (!el) {
@@ -15,15 +17,27 @@ export function containing(elements: NodeListOf<Element>, pattern: string): Elem
     });
 }
 
-export function respondWith(status: number = 200, response: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-        moxios.wait(() => {
-            let request = moxios.requests.mostRecent();
-
-            request.respondWith({
-                status: status,
-                response: response
-            }).then(resolve, reject);
-        });
+export function prepareComponent<T extends Vue>(Component: { new(options: any): T}, options: any = {}): T {
+    Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+        get() { return this.parentNode; },
     });
+
+    let app = new App({
+        render: compileToFunctions(
+`<div id="riki-community">
+  <div ref=overlayContainer></div>
+</div>`
+        ).render,
+    });
+    app.$mount();
+
+    let component = new Component(Object.assign({
+        parent: app,
+    }, options));
+    component.$mount();
+    app.$el.appendChild(component.$el);
+
+    document.body.appendChild(app.$el);
+
+    return component;
 }

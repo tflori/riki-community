@@ -26,6 +26,17 @@ export default class App extends Vue {
         };
     }
 
+    /**
+     * Open a Dialog with options
+     *
+     * Creates an instance of Dialog, appends it to the overlayContainer and opens it.
+     *
+     * Returns the created instance
+     *
+     * @param {T extends AbstractDialog} Dialog
+     * @param {any} options
+     * @return {T extends AbstractDialog}
+     */
     public openDialog<T extends AbstractDialog>(Dialog: { new(options: any): T }, options: any = {}): T {
         let dialog = new Dialog(Object.assign(options, {
             parent: this

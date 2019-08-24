@@ -1,10 +1,20 @@
-<li class="icon user-status">
-  <a v-if="!user" class="btnLogin" @click="openLoginDialog">
-    <i class="material-icons left">account_circle</i>
-    <span class="icon-text"> Login / Signup</span>
-  </a>
-  <a v-else @click="showUserMenu" class="btnLogin">
-    <div class="avatar" :style="{background: 'url(' + user.avatar + ')'}"></div>
-    <span class="icon-text"> {{ user.displayName }}</span>
-  </a>
-</li>
+<div class="user-status">
+  <li class="icon user-status">
+    <a v-if="!user" ref="loginButton" class="btnLogin" @click="openLoginDialog">
+      <i class="material-icons left">account_circle</i>
+      <span class="icon-text"> Login / Signup</span>
+    </a>
+    <a v-else ref="userMenuButton" @click="userMenu.open()" class="btnLogin dropdown-trigger" :data-target="'dropdown_'+_uid">
+      <div class="avatar" :style="{background: 'url(' + user.avatar + ')'}"></div>
+      <span class="icon-text"> {{ user.displayName }}</span>
+    </a>
+  </li>
+
+  <ul class="dropdown-content" ref="userMenu" :id="'dropdown_'+_uid">
+    <li v-if="user && user.accountStatus === 'pending'">
+      <a @click="openActivateDialog"><i class="material-icons">verified_user</i> Activate account</a></li>
+    <li>
+      <a><i class="material-icons">input</i> Logout</a>
+    </li>
+  </ul>
+</div>

@@ -12,6 +12,8 @@ import Component from 'vue-class-component';
 export default class LoginDialog extends AbstractDialog {
     protected email: string = '';
     protected password: string = '';
+    protected showPassword: boolean = false;
+    protected errorMessage: string = '';
 
     public authenticate() {
         let authData = {
@@ -19,6 +21,7 @@ export default class LoginDialog extends AbstractDialog {
             password: this.password,
         };
 
+        this.errorMessage = '';
         axios({
             method: 'post',
             url: '/auth',
@@ -30,7 +33,12 @@ export default class LoginDialog extends AbstractDialog {
                 (<App>this.$root).openDialog(ActivateDialog);
             }
         }).catch((error) => {
-            M.toast({html: error.response.data.message, classes: 'red darken-2 white-text'});
+            if (error.response && error.response.data && error.response.data.message) {
+                this.errorMessage = error.response.data.message;
+                (<HTMLElement>this.$refs.password).focus();
+            } else {
+                console.warn('Authentication failed for unknown reason', error);
+            }
         });
     }
 

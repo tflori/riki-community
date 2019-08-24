@@ -78,6 +78,7 @@ class ActivateTest extends TestCase
     public function activatesAndReturnsTheUser()
     {
         $user = $this->signIn(['accountStatus' => User::PENDING]);
+        $this->ormExpectUpdate($user);
         $this->addFetcherResult(ActivationCode::class, [
             '/token"? *= \'foobar/',
         ], new ActivationCode());

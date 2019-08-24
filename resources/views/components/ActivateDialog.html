@@ -4,20 +4,27 @@
     <div class="col s12">
       <h4>Activate your account</h4>
     </div>
-    <form class="col s12 l8 offset-l2" @submit.prevent="authenticate" action="/any_url">
+    <form class="col s12 l8 offset-l2" @submit.prevent="activate" action="/any_url">
       <div class="row">
         <div class="input-field col s12">
           <input id="activate-code" name="code" ref="code" type="text" v-model="code"/>
           <label for="activate-code">Activation code</label>
         </div>
       </div>
-      <button class="btn waves-effect waves-light" type="submit">
-        Activate <i class="material-icons right">check</i>
-      </button>
+      <div class="row">
+        <div class="col s6 m2">
+          <button class="btn waves-effect waves-light" type="submit">
+            Activate <i class="material-icons right">check</i>
+          </button>
+        </div>
+        <div class="col s6 m10">
+          <span v-if="errorMessage" class="error"><i class="material-icons">warning</i> {{errorMessage}}</span>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <a class="btn-small light-blue waves-effect waves-light">
+    <a class="btn-small btn-flat light-blue waves-effect waves-light">
       No activation code? Resend activation code
     </a>
   </div>

@@ -13,6 +13,24 @@ use Verja\Error;
 
 class UserController extends AbstractController
 {
+    /**
+     * Register a new User
+     *
+     * Expects a json encoded body with the following data:
+     * {
+     *     "email": "emailAddress",
+     *     "password": "passwordStrength:50",
+     *     "passwordConfirmation": "passwordStrength:50",
+     *     "displayName": "pregMatch:/^[\w @._-]+$/",
+     *     "name": null|"pregMatch:/^[\p{L}\p{N} .-]+$/u"
+     * }
+     *
+     * Returns a json encoded user
+     *
+     * @route POST /user
+     * @param Request $request
+     * @return ServerResponse
+     */
     public function register(Request $request): ServerResponse
     {
         $em = $this->app->entityManager;
@@ -32,7 +50,7 @@ class UserController extends AbstractController
                 }
                 return $em->fetch(User::class)->where('displayName', $value)->count() === 0 ? true :
                     new Error('DISPLAY_NAME_TAKEN', $value, 'Display name already taken');
-            }],
+            }, 'strLen:1:20'],
             'name' => ['pregMatch:/^[\p{L}\p{N} .-]+$/u']
         ], 'json', [
             'password.NOT_EQUAL' => 'Passwords don\'t match',
@@ -60,6 +78,22 @@ class UserController extends AbstractController
         return $this->json($user);
     }
 
+    /**
+     * Activate an User by activation code
+     *
+     * Requires authentication and verified CSRF token.
+     *
+     * Expects a json encoded body with the following data:
+     * {
+     *     "name": "string"
+     * }
+     *
+     * Returns a json encoded user
+     *
+     * @route POST /user
+     * @param Request $request
+     * @return ServerResponse
+     */
     public function activate(Request $request): ServerResponse
     {
         if (!$user = $this->app->session->get('user')) {
@@ -86,6 +120,7 @@ class UserController extends AbstractController
         }
 
         $user->activate();
+        $user->save();
 
         return $this->json($user);
     }

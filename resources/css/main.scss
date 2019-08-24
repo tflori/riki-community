@@ -342,6 +342,41 @@ header ul {
     background: inherit;
 }
 
+.input-field  {
+    .suffix {
+        position: absolute;
+        width: 3rem;
+        font-size: 2rem;
+        -webkit-transition: color .2s;
+        transition: color .2s;
+        top: .5rem;
+        right: 0;
+    }
+
+    .suffix ~ label {
+        width: calc(100% - 3rem - 1.5rem);
+        margin-right: 3rem;
+    }
+
+    .suffix ~ input {
+        margin-right: 3rem;
+        width: 92%;
+        width: calc(100% - 3rem);
+    }
+}
+
+.error {
+    color: #F44336;
+    font-weight: bold;
+    line-height: 36px;
+    font-size: 16px;
+    margin-left: 1rem;
+
+    .material-icons {
+        vertical-align: text-bottom;
+    }
+}
+
 .modal {
     .modal-content {
         > .row:last-child {

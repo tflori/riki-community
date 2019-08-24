@@ -119,15 +119,7 @@ class StatusTest extends TestCase
         $this->mocks['console']->shouldReceive('line')->with(m::type('string'))
             ->once()->andReturnUsing(function ($table) {
                 self::assertSame(
-                    trim('
-╭───────────────────────────────────────────┬────────┬─────────────────────┬─────────────────────┬────────────────╮
-│ Name                                      │ Status │ Executed            │ Reverted            │ Execution Time │
-├───────────────────────────────────────────┼────────┼─────────────────────┼─────────────────────┼────────────────┤
-│ @breyta/CreateMigrationTable.php          │  done  │ 2018-08-23 12:23:50 │ -                   │           0.06 │
-│ 2018-09-01T06:23:44Z_CreateUsersTable.php │  done  │ 2018-09-30 06:32:40 │ 2018-09-22 20:06:12 │           0.03 │
-│ 2018-09-05T07:20:13Z_WhatEver.php         │ failed │ 2018-12-05 12:50:34 │ -                   │       0.021546 │
-│ 2018-12-05T13:00:00Z_CreateUsersTable.php │   new  │ -                   │ -                   │                │
-╰───────────────────────────────────────────┴────────┴─────────────────────┴─────────────────────┴────────────────╯'),
+                    trim(file_get_contents(__DIR__ . '/expected-status.txt')),
                     $this->mocks['console']->format($table) // remove formatting
                 );
             });

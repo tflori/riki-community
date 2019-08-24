@@ -15,6 +15,7 @@ export default class SignupDialog extends AbstractDialog {
     protected displayName: string = '';
     protected name: string = '';
     protected errors: any = {};
+    protected errorMessage: string = '';
 
     public reset() {
         this.email = '';
@@ -23,6 +24,7 @@ export default class SignupDialog extends AbstractDialog {
         this.displayName = '';
         this.name = '';
         this.errors = {};
+        this.errorMessage = '';
         this.$nextTick(M.updateTextFields);
     }
 
@@ -40,6 +42,8 @@ export default class SignupDialog extends AbstractDialog {
             name: this.name,
         };
 
+        this.errors = {};
+        this.errorMessage = '';
         axios({
             method: 'post',
             url: '/registration',
@@ -48,24 +52,28 @@ export default class SignupDialog extends AbstractDialog {
             this.close();
             this.$root.$data.user = response.data;
         }).catch((error) => {
-            M.toast({html: error.response.data.message, classes: 'red darken-2 white-text'});
-            if (error.response.status === 400 && error.response.data.message === 'Invalid user data') {
-                this.errors = error.response.data.errors;
+            if (error.response && error.response.data && error.response.data.message) {
+                this.errorMessage = error.response.data.message;
+                if (error.response.data.message === 'Invalid user data') {
+                    this.errors = error.response.data.errors;
 
-                // reset the password if it has errors
-                if (this.errors.password) {
-                    this.password = '';
-                    this.passwordConfirmation = '';
-                    this.$nextTick(M.updateTextFields);
-                }
+                    // reset the password if it has errors
+                    if (this.errors.password) {
+                        this.password = '';
+                        this.passwordConfirmation = '';
+                        this.$nextTick(M.updateTextFields);
+                    }
 
-                // focus the first field with errors
-                for (let field of ['email', 'password', 'displayName', 'name']) {
-                    if (this.errors[field]) {
-                        (<HTMLElement>this.$refs[field]).focus();
-                        break;
+                    // focus the first field with errors
+                    for (let field of ['email', 'password', 'displayName', 'name']) {
+                        if (this.errors[field]) {
+                            (<HTMLElement>this.$refs[field]).focus();
+                            break;
+                        }
                     }
                 }
+            } else {
+                console.warn('Registration failed for unknown reason', error);
             }
         });
     }

@@ -4,7 +4,6 @@ import LoginDialog from '@src/Vue/LoginDialog';
 import SignupDialog from '@src/Vue/SignupDialog';
 import moxios from "moxios";
 import Vue from 'vue';
-import {respondWith} from '../helper';
 
 describe('LoginDialog', () => {
     beforeAll(() => {
@@ -77,24 +76,10 @@ describe('LoginDialog', () => {
             moxios.uninstall();
         });
 
-        function respondWithUser(user: { [key: string]: any } | null = null): Promise<any> {
-            user = Object.assign({
-                id: 23,
-                name: 'John Doe',
-                displayName: 'john',
-                email: 'john.doe@example.com',
-                accountStatus: 'active',
-                created: (new Date()).toISOString(),
-                updated: (new Date()).toISOString(),
-            }, user || {});
-
-            return respondWith(200, user);
-        }
-
         it('posts a new authentication', (done) => {
             let loginDialog = new LoginDialog();
             loginDialog['email'] = 'john.doe@example.com';
-            loginDialog['password'] = 'asdf123';
+            loginDialog['password'] = '123456';
 
             moxios.wait(() => {
                 let request = moxios.requests.mostRecent();
@@ -103,7 +88,7 @@ describe('LoginDialog', () => {
                 expect(request.url).toBe('/auth');
                 expect(JSON.parse(request.config.data)).toEqual({
                     email: 'john.doe@example.com',
-                    password: 'asdf123',
+                    password: '123456',
                 });
 
                 done();
@@ -112,69 +97,144 @@ describe('LoginDialog', () => {
             loginDialog.authenticate();
         });
 
-        it('closes the dialog', (done) => {
-            let loginDialog = new LoginDialog();
-            loginDialog.$mount();
-            spyOn(loginDialog, 'close').and.stub();
-            respondWithUser().then(function () {
-                expect(loginDialog.close).toHaveBeenCalled();
-                done();
+        describe('with success', () => {
+            function respondWithUser(user: { [key: string]: any } | null = null) {
+                user = Object.assign({
+                    id: 23,
+                    name: 'John Doe',
+                    displayName: 'john',
+                    email: 'john.doe@example.com',
+                    accountStatus: 'active',
+                    created: (new Date()).toISOString(),
+                    updated: (new Date()).toISOString(),
+                }, user || {});
+
+                moxios.stubRequest('/auth', {
+                    status: 200,
+                    response: user,
+                });
+            }
+
+            it('closes the dialog', (done) => {
+                let loginDialog = new LoginDialog();
+                loginDialog.$mount();
+                spyOn(loginDialog, 'close').and.stub();
+                respondWithUser();
+
+                loginDialog.authenticate();
+
+                setTimeout(() => {
+                    expect(loginDialog.close).toHaveBeenCalled();
+                    done();
+                });
             });
 
-            loginDialog.authenticate();
+            it('stores the user in $root', (done) => {
+                let loginDialog = new LoginDialog();
+                loginDialog.$mount();
+
+                respondWithUser({
+                    id: 42,
+                    name: 'Arthur Dent',
+                });
+
+                loginDialog.authenticate();
+
+                setTimeout(() => {
+                    expect(loginDialog.$root.$data.user).not.toBeNull();
+                    expect(loginDialog.$root.$data.user.id).toBe(42);
+                    expect(loginDialog.$root.$data.user.name).toBe('Arthur Dent');
+                    done();
+                });
+            });
+
+            it('opens the activate dialog', (done) => {
+                let app = new App();
+                let loginDialog = new LoginDialog({
+                    parent: app,
+                });
+                loginDialog.$mount();
+                spyOn(loginDialog, 'close');
+                spyOn(app, 'openDialog');
+
+                respondWithUser({
+                    accountStatus: 'pending',
+                });
+
+                loginDialog.authenticate();
+
+                setTimeout(() => {
+                    expect(app.openDialog).toHaveBeenCalledWith(ActivateDialog);
+                    done();
+                });
+            });
         });
 
-        it('stores the user in $root', (done) => {
-            let loginDialog = new LoginDialog();
-            loginDialog.$mount();
+        describe('with error', () => {
+            let app: App, loginDialog: LoginDialog;
 
-            respondWithUser({
-                id: 42,
-                name: 'Arthur Dent',
-            }).then(() => {
-                expect(loginDialog.$root.$data.user).not.toBeNull();
-                expect(loginDialog.$root.$data.user.id).toBe(42);
-                expect(loginDialog.$root.$data.user.name).toBe('Arthur Dent');
-                done();
+            beforeEach(() => {
+                app = new App();
+                loginDialog = new LoginDialog({
+                    parent: app,
+                });
+                loginDialog.$mount();
+                loginDialog['email'] = 'jdoe@example.com';
+                loginDialog['password'] = '123456';
             });
 
-            loginDialog.authenticate();
-        });
+            it('stores the error message', (done) => {
+                moxios.stubRequest('/auth', {
+                    status: 400,
+                    response: {
+                        message: 'Authentication failed',
+                    }
+                });
 
-        it('opens the activate dialog', (done) => {
-            let app = new App();
-            let loginDialog = new LoginDialog({
-                parent: app,
-            });
-            loginDialog.$mount();
-            spyOn(loginDialog, 'close');
-            spyOn(app, 'openDialog');
+                loginDialog.authenticate();
 
-            respondWithUser({
-                accountStatus: 'pending',
-            }).then(() => {
-                expect(app.openDialog).toHaveBeenCalledWith(ActivateDialog);
-                done();
+                setTimeout(() => {
+                    expect(loginDialog['errorMessage']).toBe('Authentication failed');
+                    done();
+                });
             });
 
-            loginDialog.authenticate();
-        });
+            it('focuses the password', (done) => {
+                spyOn(<HTMLElement>loginDialog.$refs.password, 'focus');
 
-        it('shows a toast message on error', (done) => {
-            let loginDialog = new LoginDialog();
-            loginDialog.$mount();
-            spyOn(M, 'toast');
+                moxios.stubRequest('/auth', {
+                    status: 400,
+                    response: {
+                        message: 'Authentication failed',
+                    }
+                });
 
-            respondWith(400, {
-                message: 'Authentication failed',
-            }).then(() => {
-                expect(M.toast).toHaveBeenCalledWith(jasmine.objectContaining({
-                    html: 'Authentication failed'
-                }));
-                done();
+                loginDialog.authenticate();
+
+                setTimeout(() => {
+                    expect((<HTMLElement>loginDialog.$refs.password).focus).toHaveBeenCalled();
+                    done();
+                });
             });
 
-            loginDialog.authenticate();
+            it('logs a warning when the request fails', (done) => {
+                spyOn(console, 'warn');
+
+                moxios.stubRequest('/auth', {
+                    status: 500,
+                    response: 'Key value store not available',
+                });
+
+                loginDialog.authenticate();
+
+                setTimeout(() => {
+                    expect(console.warn).toHaveBeenCalledWith(
+                        'Authentication failed for unknown reason',
+                        jasmine.anything()
+                    );
+                    done();
+                });
+            });
         });
     });
 });
