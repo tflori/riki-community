@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d81e221d93eef0c812263feaed2e95c",
+    "content-hash": "b620c647fc2b43ffa102cac5ce2fea0a",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2172,16 +2172,16 @@
         },
         {
             "name": "tflori/orm",
-            "version": "v1.7.0",
+            "version": "dev-mocks-solution2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "819ed07c516ac224e3fbb8ab5215701ee33e6c0c"
+                "reference": "c0fa27d1039554302fa337c429e9bcdd2e2b6155"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/819ed07c516ac224e3fbb8ab5215701ee33e6c0c",
-                "reference": "819ed07c516ac224e3fbb8ab5215701ee33e6c0c",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/c0fa27d1039554302fa337c429e9bcdd2e2b6155",
+                "reference": "c0fa27d1039554302fa337c429e9bcdd2e2b6155",
                 "shasum": ""
             },
             "require": {
@@ -2209,7 +2209,7 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2019-05-29T08:02:37+00:00"
+            "time": "2019-09-07T17:07:51+00:00"
         },
         {
             "name": "tflori/riki-framework",
@@ -2599,16 +2599,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "0eb0b48c3f07b3b89f5169ce005b7d05b18cf1d2"
+                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/0eb0b48c3f07b3b89f5169ce005b7d05b18cf1d2",
-                "reference": "0eb0b48c3f07b3b89f5169ce005b7d05b18cf1d2",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/4eff936d83eb809bde2c57a3cea0ee9643769031",
+                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031",
                 "shasum": ""
             },
             "require": {
@@ -2660,7 +2660,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2019-02-13T09:37:52+00:00"
+            "time": "2019-08-07T15:01:07+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4135,6 +4135,7 @@
     "stability-flags": {
         "tflori/dependency-injector": 10,
         "tflori/breyta": 5,
+        "tflori/orm": 20,
         "tflori/riki-framework": 5,
         "tflori/syna": 5
     },

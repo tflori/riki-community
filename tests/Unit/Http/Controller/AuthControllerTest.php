@@ -10,6 +10,20 @@ use Test\TestCase;
 
 class AuthControllerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->ormAddResult(User::class, new User([
+            'email' => 'arthur.dent@example.com',
+            'password' => 'foo123',
+            'display_name' => 'arthur',
+        ]), new User([
+            'email' => 'ford.prefect@example.com',
+            'password' => '123foo',
+            'display_name' => 'ford',
+        ]));
+    }
+
     /** @test */
     public function requestsTheUserByEmail()
     {
@@ -17,9 +31,9 @@ class AuthControllerTest extends TestCase
             'email' => 'john.doe@example.com',
             'password' => 'foo123',
         ]));
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/']);
-        $controller = new AuthController($this->app, $request);
+        $this->ormAddResult(User::class)->where('email', 'john.doe@example.com');
 
+        $controller = new AuthController($this->app, $request);
         $controller->authenticate();
     }
 
@@ -30,7 +44,7 @@ class AuthControllerTest extends TestCase
             'email' => 'john.doe@example.com',
             'password' => 'foo123',
         ]));
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/']);
+        $this->ormAddResult(User::class)->where('email', 'john.doe@example.com');
         $controller = new AuthController($this->app, $request);
 
         $response = $controller->authenticate();
@@ -51,7 +65,7 @@ class AuthControllerTest extends TestCase
             'created' => date('c'),
             'updated' => date('c'),
         ]);
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/'], $user);
+        $this->ormAddResult(User::class, $user)->where('email', 'john.doe@example.com');
         $controller = new AuthController($this->app, $request);
 
         $response = $controller->authenticate();
@@ -68,6 +82,7 @@ class AuthControllerTest extends TestCase
         ]), 1.1, [
             'REMOTE_ADDR' => '172.19.0.9',
         ]);
+        $this->ormAddResult(User::class)->where('email', 'john.doe@example.com');
         $controller = new AuthController($this->app, $request);
         $key = sprintf(AuthController::LOGIN_ATTEMPTS_KEY, 'ip', $request->getIp());
 
@@ -120,7 +135,7 @@ class AuthControllerTest extends TestCase
             'created' => date('c'),
             'updated' => date('c'),
         ]);
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/'], $user);
+        $this->ormAddResult(User::class, $user)->where('email', 'john.doe@example.com');
         $controller = new AuthController($this->app, $request);
         $key = sprintf(AuthController::LOGIN_ATTEMPTS_KEY, 'user', $user->id);
 
@@ -150,7 +165,7 @@ class AuthControllerTest extends TestCase
             'created' => date('c'),
             'updated' => date('c'),
         ]);
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/'], $user);
+        $this->ormAddResult(User::class, $user)->where('email', 'john.doe@example.com');
         $controller = new AuthController($this->app, $request);
         $key = sprintf(AuthController::LOGIN_ATTEMPTS_KEY, 'user', $user->id);
 

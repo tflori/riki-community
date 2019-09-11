@@ -18,12 +18,11 @@ use ORM\EntityManager;
 use ORM\MockTrait;
 use ReflectionClass;
 use Test\Extension\ArraySubsetAssert;
-use Test\Extension\OrmFetcher;
 use Whoops;
 
 abstract class TestCase extends MockeryTestCase
 {
-    use MockTrait, ArraySubsetAssert, OrmFetcher;
+    use MockTrait, ArraySubsetAssert;
 
     /** @var Application|m\Mock */
     protected $app;
@@ -41,7 +40,6 @@ abstract class TestCase extends MockeryTestCase
     {
         parent::setUp();
         $this->initApplication(realpath(__DIR__ . '/..'));
-        $this->initFetcher();
     }
 
     protected function tearDown()
@@ -99,7 +97,7 @@ abstract class TestCase extends MockeryTestCase
         $this->em = $this->mocks['entityManager'] = $this->ormInitMock([
             'tableNameTemplate' => '%short%s',
         ], 'pgsql');
-        $this->mocks['pdo'] = $this->pdo = $this->em->getConnection();
+        $this->mocks['pdo'] = $this->em->getConnection();
         $this->app->instance('entityManager', $this->em);
 
         /** @var Mailer|m\Mock $mailer */
@@ -164,18 +162,6 @@ abstract class TestCase extends MockeryTestCase
         $this->app->session->set('user', $user);
 
         return $user;
-    }
-
-    // @todo will be implemented to ORM - should be removed then
-    protected function ormAttributesToData(string $class, array $attributes)
-    {
-        $data = [];
-
-        foreach ($attributes as $attribute => $value) {
-            $data[call_user_func([$class, 'getColumnName'], $attribute)] = $value;
-        }
-
-        return $data;
     }
 
     protected function requiresTrait(string $class, string $trait)

@@ -58,14 +58,13 @@ class ActivateTest extends TestCase
     public function requiresStatusPending()
     {
         $user = $this->signIn(['accountStatus' => User::DISABLED]);
+        $this->ormAddResult(ActivationCode::class, new ActivationCode(['user_id' => $user->id]))
+            ->where('token', 'foobar');
+
         $request = (new Request('POST', '/user/activate', ['Accept' => 'application/json']))
             ->withBody(stream_for(json_encode(['token' => 'foobar'])))
             ->withAttribute('csrfTokenVerified', true);
         $controller = new UserController($this->app, $request);
-        $this->addFetcherResult(ActivationCode::class, [
-            '/token"? *= \'foobar/',
-        ], $user);
-
         $response = $controller->activate($request);
 
         self::assertSame(400, $response->getStatusCode());
@@ -79,9 +78,8 @@ class ActivateTest extends TestCase
     {
         $user = $this->signIn(['accountStatus' => User::PENDING]);
         $this->ormExpectUpdate($user);
-        $this->addFetcherResult(ActivationCode::class, [
-            '/token"? *= \'foobar/',
-        ], new ActivationCode());
+        $this->ormAddResult(ActivationCode::class, new ActivationCode(['user_id' => $user->id]))
+            ->where('token', 'foobar');
 
         $request = (new Request('POST', '/user/activate', ['Accept' => 'application/json']))
             ->withBody(stream_for(json_encode(['token' => 'foobar'])))

@@ -28,7 +28,8 @@ class AuthenticationTest extends TestCase
             'created' => date('c'),
             'updated' => date('c'),
         ]);
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/'], $user);
+        $this->ormAddResult(User::class, $user)
+            ->where('email', 'john.doe@example.com');
 
         $response = $this->post('/auth', [], json_encode([
             'email' => 'john.doe@example.com',
@@ -48,7 +49,8 @@ class AuthenticationTest extends TestCase
             'created' => date('c'),
             'updated' => date('c'),
         ]);
-        $this->expectFetch(User::class, ['/email"?\s*=\s*\'john.doe@example.com\'/'], $user);
+        $this->ormAddResult(User::class, $user)
+            ->where('email', 'john.doe@example.com');
         $this->post('/auth', [], json_encode([
             'email' => 'john.doe@example.com',
             'password' => 'asdf123',

@@ -24,15 +24,12 @@ class ActivateByTokenTest extends TestCase
     /** @test */
     public function activatesTheUser()
     {
-        $this->addFetcherResult(ActivationToken::class, [
-            '/token"? *= \'foobar123/',
-        ], new ActivationToken(['user_id' => 23]));
-        $this->addFetcherResult(User::class, [
-            '/id"? *= 23',
-        ], $user = $this->ormCreateMockedEntity(User::class, [
+        $user = $this->ormCreateMockedEntity(User::class, [
             'id' => 23,
             'account_status' => User::PENDING,
-        ]));
+        ]);
+        $this->ormAddResult(ActivationToken::class, new ActivationToken(['user_id' => 23]))
+            ->where('token', 'foobar123');
 
         $user->shouldReceive('activate')->with()
             ->once();
@@ -45,15 +42,12 @@ class ActivateByTokenTest extends TestCase
     /** @test */
     public function redirectsToHome()
     {
-        $this->addFetcherResult(ActivationToken::class, [
-            '/token"? *= \'foobar123/',
-        ], new ActivationToken(['user_id' => 23]));
-        $this->addFetcherResult(User::class, [
-            '/id"? *= 23',
-        ], $user = $this->ormCreateMockedEntity(User::class, [
+        $this->ormCreateMockedEntity(User::class, [
             'id' => 23,
             'account_status' => User::PENDING,
-        ]));
+        ]);
+        $this->ormAddResult(ActivationToken::class, new ActivationToken(['user_id' => 23]))
+            ->where('token', 'foobar123');
 
         $request = (new Request('GET', '/user/activate/foobar123'));
         $controller = new UserController($this->app, $request);
@@ -66,15 +60,12 @@ class ActivateByTokenTest extends TestCase
     /** @test */
     public function requiresPendingUser()
     {
-        $this->addFetcherResult(ActivationToken::class, [
-            '/token"? *= \'foobar123/',
-        ], new ActivationToken(['user_id' => 23]));
-        $this->addFetcherResult(User::class, [
-            '/id"? *= 23',
-        ], $user = $this->ormCreateMockedEntity(User::class, [
+        $this->ormCreateMockedEntity(User::class, [
             'id' => 23,
             'account_status' => User::ACTIVATED,
-        ]));
+        ]);
+        $this->ormAddResult(ActivationToken::class, new ActivationToken(['user_id' => 23]))
+            ->where('token', 'foobar123');
 
         $request = (new Request('GET', '/user/activate/foobar123'));
         $controller = new UserController($this->app, $request);

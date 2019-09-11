@@ -113,9 +113,9 @@ class RegisterTest extends TestCase
     public function expectsUniqueEmail()
     {
         $data = $this->getValidUserData();
-        $this->addFetcherResult(User::class, [
-            sprintf('/"t0"\."email" = %s/', $this->mocks['pdo']->quote($data['email'])),
-        ], new User());
+        $this->ormAddResult(User::class, new User())
+            ->where('email', $data['email']);
+
         $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
@@ -135,9 +135,8 @@ class RegisterTest extends TestCase
     public function expectsUniqueDisplayName()
     {
         $data = $this->getValidUserData();
-        $this->addFetcherResult(User::class, [
-            sprintf('/"t0"\."display_name" = %s/', $this->mocks['pdo']->quote($data['displayName'])),
-        ], new User());
+        $this->ormAddResult(User::class, new User())
+            ->where('displayName', $data['displayName']);
         $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
