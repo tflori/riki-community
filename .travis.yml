@@ -1,9 +1,6 @@
 language: php
-php:
-  - 7.1
-  - 7.2
-  - 7.3
-name: "PHPUnit Tests (PHP $TRAVIS_PHP_VERSION)"
+name: "PHPUnit Tests (PHP 7.1)"
+php: 7.1
 sudo: false
 cache:
   directories:
@@ -13,23 +10,33 @@ matrix:
 before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 before_script:
   - composer install --no-interaction
-  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
-      composer require php-coveralls/php-coveralls &&
-      mkdir -p build/logs;
-    fi;
+  - composer require php-coveralls/php-coveralls
+  - mkdir -p build/logs
 script:
-  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
-      bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text;
-    else
-      bin/phpunit -c phpunit.xml --color=always --coverage-text;
-    fi;
+  - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
 after_success:
-  - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then
-      php bin/php-coveralls -v;
-    fi;
+  - php bin/php-coveralls -v
 
 jobs:
   include:
+    - stage: "Test"
+      name: "PHPUnit Tests (PHP 7.2)"
+      php: 7.2
+      before_script:
+        - composer install --no-interaction
+      script:
+        - bin/phpunit -c phpunit.xml --color=always --coverage-text
+      after_success: []
+
+    - stage: "Test"
+      name: "PHPUnit Tests (PHP 7.3)"
+      php: 7.3
+      before_script:
+        - composer install --no-interaction
+      script:
+        - bin/phpunit -c phpunit.xml --color=always --coverage-text
+      after_success: []
+
     - stage: "Test"
       name: "Code Style"
       language: php
@@ -42,6 +49,7 @@ jobs:
         - composer install --no-interaction
       script:
         - composer code-style
+      after_success: []
 
     - stage: "Test"
       name: "Jest Tests"
