@@ -1,6 +1,4 @@
 language: php
-name: "PHPUnit Tests (PHP 7.1)"
-php: 7.1
 sudo: false
 cache:
   directories:
@@ -8,17 +6,21 @@ cache:
 matrix:
   fast_finish: true
 before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-before_script:
-  - composer install --no-interaction
-  - composer require php-coveralls/php-coveralls
-  - mkdir -p build/logs
-script:
-  - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-after_success:
-  - php bin/php-coveralls -v
 
 jobs:
   include:
+    - stage: "Test"
+      name: "PHPUnit Tests (PHP 7.1)"
+      php: 7.1
+      before_script:
+        - composer install --no-interaction
+        - composer require php-coveralls/php-coveralls
+        - mkdir -p build/logs
+      script:
+        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+      after_success:
+        - php bin/php-coveralls -v
+
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.2)"
       php: 7.2
