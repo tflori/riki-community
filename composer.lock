@@ -2176,12 +2176,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "c0fa27d1039554302fa337c429e9bcdd2e2b6155"
+                "reference": "9783e10374b22d133b6912346c46ba8258043443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/c0fa27d1039554302fa337c429e9bcdd2e2b6155",
-                "reference": "c0fa27d1039554302fa337c429e9bcdd2e2b6155",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/9783e10374b22d133b6912346c46ba8258043443",
+                "reference": "9783e10374b22d133b6912346c46ba8258043443",
                 "shasum": ""
             },
             "require": {
@@ -2209,7 +2209,7 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2019-09-07T17:07:51+00:00"
+            "time": "2019-09-13T06:14:04+00:00"
         },
         {
             "name": "tflori/riki-framework",
