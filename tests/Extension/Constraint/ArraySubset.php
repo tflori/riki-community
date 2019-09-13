@@ -54,7 +54,7 @@ class ArraySubset extends Constraint
      */
     protected function failureDescription($other): string
     {
-        return 'Failed asserting that an array has the expected subset. Differences:' . PHP_EOL .
+        return 'an array has the expected subset. Differences:' . PHP_EOL .
             json_encode($this->arrayDiffRecursive($this->subset, $other), JSON_PRETTY_PRINT);
     }
 
