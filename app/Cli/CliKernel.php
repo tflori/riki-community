@@ -74,7 +74,7 @@ class CliKernel extends Kernel
                 $console->error('No command given');
             }
             $console->write($getOpt->getHelpText());
-            return 0;
+            return $getOpt->getOption('help') ? 0 : 1;
         }
 
         if ($verbose = $getOpt->getOption('verbose')) {
