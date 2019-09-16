@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b620c647fc2b43ffa102cac5ce2fea0a",
+    "content-hash": "ac0669d0d50faf1348299970a575d926",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2172,16 +2172,16 @@
         },
         {
             "name": "tflori/orm",
-            "version": "dev-mocks-solution2",
+            "version": "v1.8.0-rc.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "9783e10374b22d133b6912346c46ba8258043443"
+                "reference": "a925132b477081212acce902113b965b41224a00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/9783e10374b22d133b6912346c46ba8258043443",
-                "reference": "9783e10374b22d133b6912346c46ba8258043443",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/a925132b477081212acce902113b965b41224a00",
+                "reference": "a925132b477081212acce902113b965b41224a00",
                 "shasum": ""
             },
             "require": {
@@ -2209,7 +2209,7 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2019-09-13T06:14:04+00:00"
+            "time": "2019-09-15T10:34:17+00:00"
         },
         {
             "name": "tflori/riki-framework",
@@ -4135,7 +4135,7 @@
     "stability-flags": {
         "tflori/dependency-injector": 10,
         "tflori/breyta": 5,
-        "tflori/orm": 20,
+        "tflori/orm": 5,
         "tflori/riki-framework": 5,
         "tflori/syna": 5
     },
