@@ -61,7 +61,7 @@ class AuthController extends AbstractController
 
         $this->app->session->destroy();
 
-        return $this->json(['message' => 'Successfully logged out!']);
+        return $this->json('OK');
     }
 
     public function getCsrfToken(): ServerResponse

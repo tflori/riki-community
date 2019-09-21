@@ -10,15 +10,14 @@ use Syna\View;
 /** @var string $activationLink */
 /** @var string $activationCode */
 
-$v->provide('subject', 'Your registration at ríki community');
+$v->provide('subject', 'Your registration at' . $texts['domain']);
 
 ?>
 ## Welcome to ríki community!
 
 <?= sprintf($texts['salutation'], $user->name ?? $user->displayName) ?>
 
-Thanks for your registration at <?= $texts['domain'] ?>. To activate your account you need to confirm your email address
-by clicking on the link below.
+To activate your account you need confirm your email address by clicking on the link below.
 
 # [Activate your account](<?= $activationLink ?>)
 
