@@ -2,6 +2,7 @@ import ActivateDialog from "@src/Vue/ActivateDialog";
 import App from "@src/Vue/App";
 import moxios from "moxios";
 import Vue from 'vue';
+import {prepareComponent} from "../helper";
 
 describe('ActivateDialog', () => {
     beforeAll(() => {
@@ -215,6 +216,72 @@ describe('ActivateDialog', () => {
                     );
                     done();
                 });
+            });
+        });
+    });
+
+    describe('resendActivation', () => {
+        let activateDialog: ActivateDialog, app: App;
+        beforeEach(() => {
+            moxios.install();
+
+            activateDialog = prepareComponent(ActivateDialog);
+
+            app = <App>activateDialog.$root;
+            spyOn(app, 'getCsrfToken').and.returnValue(Promise.resolve('foo123'));
+        });
+
+        afterEach(() => {
+            moxios.uninstall();
+        });
+
+        it('requests a csrf token', () => {
+            moxios.stubRequest(/^\/user\/resendActivation\/?\?/, {status: 200, response: 'Ok'});
+
+            activateDialog.resendActivation();
+
+            expect(app.getCsrfToken).toHaveBeenCalled();
+        });
+
+        it('sends a resend activation request', (done) => {
+            moxios.wait(() => {
+                let request = moxios.requests.mostRecent();
+
+                expect(request.config.method).toBe('get');
+                let url: URL = new URL(request.url, 'http://localhost/');
+                expect(url.pathname).toBe('/user/resendActivation');
+                expect(url.searchParams.get('csrf_token')).toBe('foo123');
+
+                done();
+            });
+
+            activateDialog.resendActivation();
+        });
+
+        it('shows a toast message', (done) => {
+            moxios.stubRequest(/^\/user\/resendActivation\/?\?/, {status: 200, response: 'Ok'});
+            spyOn(M, 'toast');
+
+            activateDialog.resendActivation();
+
+            setTimeout(() => {
+                expect(M.toast).toHaveBeenCalled();
+                done();
+            });
+        });
+
+        it('logs unexpected errors', (done) => {
+            spyOn(console, 'warn');
+            moxios.stubRequest(/^\/user\/resendActivation\/?\?/, {status: 500, responseText: ''});
+
+            activateDialog.resendActivation();
+
+            setTimeout(() => {
+                expect(console.warn).toHaveBeenCalledWith(
+                    'Resend activation code failed for unknown reason',
+                    jasmine.anything()
+                );
+                done();
             });
         });
     });

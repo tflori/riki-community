@@ -24,22 +24,28 @@ export default class ActivateDialog extends AbstractDialog {
             };
 
             this.errorMessage = '';
-            axios({
-                method: 'post',
-                url: '/user/activate',
-                data,
-            }).then((response) => {
-                this.close();
-                this.$root.$data.user = response.data;
-                M.toast({html: "Account activated!"})
-            }).catch((error) => {
-                if (error.response && error.response.data && error.response.data.message) {
-                    this.errorMessage = error.response.data.message;
-                    (<HTMLElement>this.$refs.code).focus();
-                } else {
-                    console.warn('Activation failed for unknown reason', error);
-                }
-            });
+            return axios.post('/user/activate', data);
+        }).then((response) => {
+            this.close();
+            this.$root.$data.user = response.data;
+            M.toast({html: "Account activated!"})
+        }).catch((error) => {
+            if (error.response && error.response.data && error.response.data.message) {
+                this.errorMessage = error.response.data.message;
+                (<HTMLElement>this.$refs.code).focus();
+            } else {
+                console.warn('Activation failed for unknown reason', error);
+            }
+        });
+    }
+
+    public resendActivation() {
+        (<App>this.$root).getCsrfToken().then((csrfToken) => {
+            return axios.get('/user/resendActivation', {params: {csrf_token: csrfToken}});
+        }).then(() => {
+            M.toast({html: 'New activation code sent!'});
+        }).catch((error) => {
+            console.warn('Resend activation code failed for unknown reason', error);
         });
     }
 }
