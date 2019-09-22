@@ -83,7 +83,7 @@ class User extends Entity implements JsonSerializable
 
         if (!isset(self::TRANSITIONS[$currentStatus]) || !in_array($newStatus, self::TRANSITIONS[$currentStatus])) {
             throw new \LogicException(sprintf(
-                'Transition to "%s" is not possible from "%s"',
+                'Transition to status "%s" is not possible from status "%s"',
                 $newStatus,
                 $currentStatus
             ));
@@ -123,7 +123,7 @@ class User extends Entity implements JsonSerializable
         $currentStatus = $this->accountStatus;
         if (!isset(self::TRANSITIONS[$currentStatus][$transition])) {
             throw new \LogicException(sprintf(
-                'Unknown transition "%s" from "%s"',
+                'Unknown transition "%s" from status "%s"',
                 $transition,
                 $currentStatus
             ));

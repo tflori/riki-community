@@ -29,7 +29,11 @@ class UserTest extends TestCase
         $user = new User(['account_status' => $current]);
 
         self::expectException(\LogicException::class);
-        self::expectExceptionMessage(sprintf('Transition to "%s" is not possible from "%s"', $new, $current));
+        self::expectExceptionMessage(sprintf(
+            'Transition to status "%s" is not possible from status "%s"',
+            $new,
+            $current
+        ));
 
         $user->accountStatus = $new;
     }
@@ -42,6 +46,22 @@ class UserTest extends TestCase
             [User::ARCHIVED, User::ACTIVATED],
             [User::ARCHIVED, User::DISABLED],
         ];
+    }
+
+    /** @test */
+    public function doesNotThrowWhenStatusNotChanged()
+    {
+        $user = new User([
+            'id' => 23,
+            'account_status' => User::ACTIVATED,
+            'created' => date('c'),
+            'display_name' => 'john',
+            'email' => 'john.doe@example.com',
+        ], $this->mocks['entityManager'], true);
+
+        $user->accountStatus = User::ACTIVATED;
+
+        self::assertFalse($user->isDirty());
     }
 
     /** @test */
@@ -98,7 +118,7 @@ class UserTest extends TestCase
         $user = new User(['id' => 23, 'account_status' => USER::ARCHIVED]);
 
         self::expectException(\LogicException::class);
-        self::expectExceptionMessage(sprintf('Unknown transition "%s" from "%s"', 'activate', User::ARCHIVED));
+        self::expectExceptionMessage(sprintf('Unknown transition "%s" from status "%s"', 'activate', User::ARCHIVED));
 
         $user->activate();
     }
