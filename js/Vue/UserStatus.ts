@@ -24,19 +24,38 @@ export default class UserStatus extends Vue {
                     this.$root.$data.user = response.data;
                 }
             }).catch((error) => {
-                console.warn('Could not receive user status', error, error.response);
+                console.warn('Could not receive user status', error);
             });
         }
     }
 
     /* istanbul ignore next */
     public openLoginDialog(): void {
-        let dialog = (<App>this.$root).openDialog(LoginDialog);
+        (<App>this.$root).openDialog(LoginDialog);
     }
 
     /* istanbul ignore next */
     public openActivateDialog(): void {
         (<App>this.$root).openDialog(ActivateDialog);
+    }
+
+    public logout(): void {
+        (<App>this.$root).getCsrfToken().then((csrfToken) => {
+            return axios.delete('/auth', {
+                params: {
+                    csrf_token: csrfToken,
+                }
+            });
+        }).then(() => {
+            if (this._userMenu) {
+                this._userMenu.destroy();
+                this._userMenu = undefined;
+            }
+            this.$root.$data.user = null;
+            M.toast({html: 'Successfully logged out!'});
+        }).catch((error)  => {
+            console.warn('Logout failed for unknown reason', error);
+        });
     }
 
     protected get userMenu(): M.Dropdown {

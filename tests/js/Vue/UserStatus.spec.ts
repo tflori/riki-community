@@ -120,4 +120,99 @@ describe('UserStatus', () => {
             });
         });
     });
+
+    describe('logout', () => {
+        let app: App, userStatus: UserStatus;
+
+        beforeEach(() => {
+            moxios.install();
+
+            userStatus = prepareComponent(UserStatus);
+            userStatus.$root.$data.user = {id: 23, name: "John Doe", displayName: "jdoe"};
+
+            app = <App>userStatus.$root;
+            spyOn(app, 'getCsrfToken').and.returnValue(Promise.resolve('foo123'));
+        });
+
+        afterEach(() => {
+            moxios.uninstall();
+        });
+
+        it('requests a csrf token', () => {
+            moxios.stubRequest(/^\/auth\/?\?/, {status: 200, response: 'Ok'});
+
+            userStatus.logout();
+
+            expect(app.getCsrfToken).toHaveBeenCalled();
+        });
+
+        it('sends a delete request', (done) => {
+            moxios.wait(() => {
+                let request = moxios.requests.mostRecent();
+
+                expect(request.config.method).toBe('delete');
+                let url: URL = new URL(request.url, 'http://localhost/');
+                expect(url.pathname).toBe('/auth');
+                expect(url.searchParams.get('csrf_token')).toBe('foo123');
+
+                done();
+            });
+
+            userStatus.logout();
+        });
+
+        it('removes the user from app', (done) => {
+            moxios.stubRequest(/^\/auth\/?\?/, {status: 200, response: 'Ok'});
+
+            userStatus.logout();
+
+            setTimeout(() => {
+                expect(app.$data.user).toBeNull();
+                done()
+            });
+        });
+
+        it('shows a toast message', (done) => {
+            moxios.stubRequest(/^\/auth\/?\?/, {status: 200, response: 'Ok'});
+            spyOn(M, 'toast');
+
+            userStatus.logout();
+
+            setTimeout(() => {
+               expect(M.toast).toHaveBeenCalled();
+               done();
+            });
+        });
+
+        it('destroys the dropdown', (done) => {
+            moxios.stubRequest(/^\/auth\/?\?/, {status: 200, response: 'Ok'});
+            let userMenu = userStatus['userMenu'];
+            spyOn(userMenu, 'destroy');
+
+            userStatus.logout();
+
+            setTimeout(() => {
+                expect(userMenu.destroy).toHaveBeenCalled();
+                done();
+            });
+        });
+
+        it('logs unexpected errors', (done) => {
+            spyOn(console, 'warn');
+            moxios.stubRequest(/^\/auth\/?\?/, {
+                status: 500,
+                responseText: ''
+            });
+
+            userStatus.logout();
+
+            setTimeout(() => {
+                expect(console.warn).toHaveBeenCalledWith(
+                    'Logout failed for unknown reason',
+                    jasmine.anything()
+                );
+                done();
+            });
+        });
+    });
 });

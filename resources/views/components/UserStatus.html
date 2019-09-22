@@ -14,7 +14,7 @@
     <li v-if="user && user.accountStatus === 'pending'">
       <a @click="openActivateDialog"><i class="material-icons">verified_user</i> Activate account</a></li>
     <li>
-      <a><i class="material-icons">input</i> Logout</a>
+      <a @click="logout"><i class="material-icons">input</i> Logout</a>
     </li>
   </ul>
 </div>
