@@ -10,7 +10,7 @@ use Syna\View;
 /** @var string $activationLink */
 /** @var string $activationCode */
 
-$v->provide('subject', 'Your registration at' . $texts['domain']);
+$v->provide('subject', 'Account activation at ' . $texts['domain']);
 
 ?>
 ## Welcome to ríki community!
