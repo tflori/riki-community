@@ -45,6 +45,14 @@ class Config extends BaseConfig
         ],
     ];
 
+    /** The secret to verify recaptcha tokens */
+    public $recaptchaSecret = '';
+
+    public $frontEnd = [
+        /** The site key to request a recaptcha token */
+        'recaptchaKey' => '',
+    ];
+
     public function __construct(Environment $environment)
     {
         parent::__construct($environment);
@@ -81,5 +89,8 @@ class Config extends BaseConfig
             $this->env('CACHE_DB', 0),
             $this->env('CACHE_PREFIX', 'riki_community:')
         );
+
+        $this->recaptchaSecret = $this->env('RECAPTCHA_SECRET', '');
+        $this->frontEnd['recaptchaKey'] = $this->env('RECAPTCHA_KEY', '');
     }
 }

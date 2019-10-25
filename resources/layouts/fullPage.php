@@ -1,4 +1,11 @@
-<?php /** @var callable $e */ /** @var Syna\View $v */ ?>
+<?php
+
+/** @var callable $e */
+/** @var Syna\View $v */
+
+use App\Application;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -226,6 +233,10 @@
 
     </div>
 
+    <script>
+      // noinspection JSAnnotator
+      const AppConfig = <?= json_encode(Application::config()->frontEnd) ?>;
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.8/vue.min.js"></script>
