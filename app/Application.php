@@ -6,6 +6,7 @@ use App\Model\Gate;
 use App\Model\Mail;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
+use GuzzleHttp\Client;
 use Hugga\Console;
 use Monolog\Logger;
 use NbSessions\SessionInstance;
@@ -21,6 +22,7 @@ use Whoops;
  *
  * @method static Application app()
  * @method static CacheInterface cache()
+ * @method static Client httpClient()
  * @method static Config config()
  * @method static Console console()
  * @method static CssToInlineStyles cssInliner()
@@ -35,6 +37,7 @@ use Whoops;
  * @method Static SessionInstance session()
  * @property-read Application $app
  * @property-read CacheInterface $cache
+ * @property-read Client $httpClient
  * @property-read Config $config
  * @property-read Console $console
  * @property-read CssToInlineStyles $cssInliner
