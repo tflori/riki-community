@@ -87,6 +87,8 @@ label.label-icon.right {
     min-height: calc(100vh - 254px - 64px - 24px)
 }
 
+.grecaptcha-badge { visibility: hidden; }
+
 #right-col {
     padding: 0 0 0 0.75rem;
 }
