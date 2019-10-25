@@ -3,6 +3,7 @@
 namespace App\Http\Controller;
 
 use App\Application as a;
+use App\Http\Controller\Concerns\VerifiesRecaptchaTokens;
 use App\Model\Request;
 use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
@@ -13,6 +14,8 @@ use Verja\Error;
 
 class UserController extends AbstractController
 {
+    use VerifiesRecaptchaTokens;
+
     /**
      * Register a new User
      *
@@ -34,6 +37,8 @@ class UserController extends AbstractController
     public function register(Request $request): ServerResponse
     {
         $em = $this->app->entityManager;
+
+//        $recaptchaResponse = $this->verifyRecaptchaToken($request->get('recaptchaToken'), $request->getIp());
 
         list($valid, $userData, $errors) = $request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {

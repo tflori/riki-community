@@ -40,18 +40,18 @@ export default class SignupDialog extends AbstractDialog {
             passwordConfirmation: this.passwordConfirmation,
             displayName: this.displayName,
             name: this.name,
+            recaptchaToken: ''
         };
 
         this.errors = {};
         this.errorMessage = '';
-        axios({
-            method: 'post',
-            url: '/registration',
-            data: user,
-        }).then((response) => {
+        (<App>this.$root).getRecaptchaToken('signup').then((token) => {
+            user.recaptchaToken = token;
+            return axios.post('/registration', user);
+        }).then((response: any) => {
             this.close();
             this.$root.$data.user = response.data;
-        }).catch((error) => {
+        }).catch((error: any) => {
             if (error.response && error.response.data && error.response.data.message) {
                 this.errorMessage = error.response.data.message;
                 if (error.response.data.message === 'Invalid user data') {
@@ -76,5 +76,10 @@ export default class SignupDialog extends AbstractDialog {
                 console.warn('Registration failed for unknown reason', error);
             }
         });
+    }
+
+    protected opened() {
+        /* istanbul ignore next */
+        (<App>this.$root).loadRecaptcha();
     }
 }
