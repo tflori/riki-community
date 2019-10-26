@@ -38,7 +38,13 @@ class UserController extends AbstractController
     {
         $em = $this->app->entityManager;
 
-//        $recaptchaResponse = $this->verifyRecaptchaToken($request->get('recaptchaToken'), $request->getIp());
+        $recaptchaResponse = $this->verifyRecaptchaToken($request->get('recaptchaToken'), $request->getIp());
+        if (!$recaptchaResponse ||
+            ($recaptchaResponse->success ?? false) !== true ||
+            ($recaptchaResponse->score ?? 0) < 0.5
+        ) {
+            return $this->error(400, 'Bad Request', 'Invalid reCAPTCHA token');
+        }
 
         list($valid, $userData, $errors) = $request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
