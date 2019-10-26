@@ -153,6 +153,7 @@ class UserController extends AbstractController
         }
 
         $user->activate();
+        $user->save();
 
         return $this->redirect('/');
     }
