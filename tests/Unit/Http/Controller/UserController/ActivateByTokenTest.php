@@ -30,6 +30,7 @@ class ActivateByTokenTest extends TestCase
         ]);
         $this->ormAddResult(ActivationToken::class, new ActivationToken(['user_id' => 23]))
             ->where('token', 'foobar123');
+        $this->ormExpectUpdate($user);
 
         $user->shouldReceive('activate')->with()
             ->once();
@@ -42,12 +43,13 @@ class ActivateByTokenTest extends TestCase
     /** @test */
     public function redirectsToHome()
     {
-        $this->ormCreateMockedEntity(User::class, [
+        $user = $this->ormCreateMockedEntity(User::class, [
             'id' => 23,
             'account_status' => User::PENDING,
         ]);
         $this->ormAddResult(ActivationToken::class, new ActivationToken(['user_id' => 23]))
             ->where('token', 'foobar123');
+        $this->ormExpectUpdate($user);
 
         $request = (new Request('GET', '/user/activate/foobar123'));
         $controller = new UserController($this->app, $request);
