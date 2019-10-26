@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\User;
+use GuzzleHttp\Psr7\Response;
 use function GuzzleHttp\Psr7\stream_for;
 use InvalidArgumentException;
 use Mockery as m;
@@ -34,6 +35,130 @@ class RegisterTest extends TestCase
         $this->ormAllowInsert(ActivationToken::class, [
             'id' => rand(1000000, 2000000),
         ])->byDefault();
+
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => true,
+                'score' => 1.0
+            ])))->byDefault();
+    }
+
+    /** @test */
+    public function verifiesRecaptchaToken()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode(array_merge(
+                $this->getValidUserData(),
+                [ 'recaptchaToken' => 'abc123' ]
+            ))));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::on(function ($options) use ($request) {
+                self::assertArraySubset([
+                    'form_params' => [
+                        'secret' => 'r4nd0m',
+                        'response' => 'abc123',
+                        'remoteip' => $request->getIp(),
+                    ],
+                ], $options);
+                return true;
+            }))
+            ->once()->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => true,
+                'score' => 1.0,
+            ])));
+
+        $controller = new UserController($this->app, $request);
+        $controller->register($request);
+    }
+
+    /** @test */
+    public function doesNotAcceptUnsuccessfulVerification()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode($this->getValidUserData())));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->once()->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'score' => 1.0,
+            ])));
+
+        $controller = new UserController($this->app, $request);
+        $response = $controller->register($request);
+
+        self::assertGreaterThanOrEqual(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function doesNotAcceptIncompleteVerificationResponse()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode($this->getValidUserData())));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->once()->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'result' => 'valid',
+            ])));
+
+        $controller = new UserController($this->app, $request);
+        $response = $controller->register($request);
+
+        self::assertGreaterThanOrEqual(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function doesNotAcceptFailedVerification()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode($this->getValidUserData())));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->once()->andReturn(new Response(500));
+
+        $controller = new UserController($this->app, $request);
+        $response = $controller->register($request);
+
+        self::assertGreaterThanOrEqual(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function doesNotAcceptInvalidVerification()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode($this->getValidUserData())));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->once()->andReturn(new Response(200, ['Content-Type' => 'text/html'], '<h1>OK</h1>'));
+
+        $controller = new UserController($this->app, $request);
+        $response = $controller->register($request);
+
+        self::assertGreaterThanOrEqual(400, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function doesNotAcceptScoresUnderZeroDotFive()
+    {
+        $this->app->config->recaptchaSecret = 'r4nd0m';
+        $request = (new Request('POST', '/register', ['Content-Type' => 'application/json']))
+            ->withBody(stream_for(json_encode($this->getValidUserData())));
+        $this->mocks['httpClient']->shouldReceive('post')
+            ->with('https://www.google.com/recaptcha/api/siteverify', m::andAnyOtherArgs())
+            ->once()->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => true,
+                'score' => 0.49,
+            ])));
+
+        $controller = new UserController($this->app, $request);
+        $response = $controller->register($request);
+
+        self::assertGreaterThanOrEqual(400, $response->getStatusCode());
     }
 
     /** @test */

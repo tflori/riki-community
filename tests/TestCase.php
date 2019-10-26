@@ -8,6 +8,7 @@ use App\Environment;
 use App\Service\Mailer;
 use Carbon\Carbon;
 use Community\Model\User;
+use GuzzleHttp\Client;
 use Hugga\Console;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
@@ -104,6 +105,9 @@ abstract class TestCase extends MockeryTestCase
         $mailer = $this->mocks['mailer'] = m::mock(Mailer::class, []);
         $mailer->shouldReceive('send')->with(m::type(Message::class))->byDefault();
         $this->app->instance('mailer', $mailer);
+
+        $httpClient = $this->mocks['httpClient'] = m::mock(Client::class);
+        $this->app->instance('httpClient', $httpClient);
     }
 
     /**

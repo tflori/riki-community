@@ -3,6 +3,7 @@ import LoginDialog from '@src/Vue/LoginDialog';
 import SignupDialog from '@src/Vue/SignupDialog';
 import moxios from 'moxios';
 import Vue from 'vue';
+import {prepareComponent} from "../helper";
 
 describe('SignupDialog', () => {
     beforeAll(() => {
@@ -81,27 +82,43 @@ describe('SignupDialog', () => {
     });
 
     describe('registration', () => {
+        let signupDialog: SignupDialog, app: App;
+
         beforeEach(() => {
             moxios.install();
+
+            signupDialog = prepareComponent(SignupDialog);
+
+            app = <App>signupDialog.$root;
+            spyOn(app, 'getCsrfToken').and.returnValue(Promise.resolve('foo123'));
+            spyOn(app, 'getRecaptchaToken').and.returnValue(Promise.resolve('abc123'));
         });
 
         afterEach(() => {
             moxios.uninstall();
         });
 
+        it('requests a recaptcha token', () => {
+            moxios.stubRequest('/registration', {
+                status: 400,
+                response: {message: 'That failed'},
+            });
+
+            signupDialog.register();
+
+            expect(app.getRecaptchaToken).toHaveBeenCalledWith('signup');
+        });
+
         it('posts the current form data', (done) => {
-            let signupDialog = new SignupDialog();
-            const userData = {
+            const userData: any = {
                 email: 'john.doe@example.com',
                 password: 'asdf123',
                 passwordConfirmation: 'asdf123',
                 displayName: 'john',
                 name: 'John Doe',
             };
-            for (let field in userData) {
-                // @ts-ignore
-                signupDialog[field] = userData[field];
-            }
+            Object.assign(signupDialog, userData);
+            userData.recaptchaToken = 'abc123';
 
             moxios.wait(() => {
                 let request = moxios.requests.mostRecent();
@@ -130,9 +147,6 @@ describe('SignupDialog', () => {
             }
 
             it('stores the error message', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
-
                 moxios.stubRequest('/registration', {
                     status: 400,
                     response: {message: 'That failed'},
@@ -147,8 +161,6 @@ describe('SignupDialog', () => {
             });
 
             it('logs a warning for unexpected errors', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
                 spyOn(console, 'warn');
 
                 moxios.stubRequest('/registration', {
@@ -168,8 +180,6 @@ describe('SignupDialog', () => {
             });
 
             it('stores the errors from response', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
                 const errors = {
                     password: ['Foo'],
                 };
@@ -185,8 +195,6 @@ describe('SignupDialog', () => {
             });
 
             it('focuses the first element with error', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
                 spyOn(<HTMLElement>signupDialog.$refs.password, 'focus');
 
                 respondWithErrors({
@@ -203,8 +211,6 @@ describe('SignupDialog', () => {
             });
 
             it('resets the password elements when password has errors', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
                 signupDialog['password'] = 'asdf';
                 signupDialog['passwordConfirmation'] = 'asdf';
                 spyOn(signupDialog, '$nextTick');
@@ -243,8 +249,6 @@ describe('SignupDialog', () => {
             }
 
             it('closes the signup dialog', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
                 spyOn(signupDialog, 'close');
 
                 respondWithUser();
@@ -258,9 +262,6 @@ describe('SignupDialog', () => {
             });
 
             it('stores the user in $root', (done) => {
-                let signupDialog = new SignupDialog();
-                signupDialog.$mount();
-
                 respondWithUser({
                     id: 42,
                     name: 'Arthur Dent',

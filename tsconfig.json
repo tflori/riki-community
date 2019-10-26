@@ -19,7 +19,11 @@
             "@src/*": [
                 "js/*"
             ]
-        }
+        },
+        "typeRoots": [
+            "node_modules/@types",
+            "js/types"
+        ]
     },
     "include": [
         "tests/js/**/*.ts",

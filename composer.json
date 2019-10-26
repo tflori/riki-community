@@ -35,7 +35,8 @@
     "tflori/tal":                        "^1.0.1",
     "tflori/verja":                      "^1.1",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
-    "ulrichsg/getopt-php":               "^3.2"
+    "ulrichsg/getopt-php":               "^3.2",
+    "guzzlehttp/guzzle":                 "^6.4"
   },
   "suggest":      {
     "ext-pcntl": "*",

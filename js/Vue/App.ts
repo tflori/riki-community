@@ -20,6 +20,8 @@ Vue.use(VueResource);
     },
 })
 export default class App extends Vue {
+    private recaptchaLoaded!: Promise<void>;
+
     public data() {
         return {
             user: null,
@@ -143,7 +145,12 @@ export default class App extends Vue {
         });
     }
 
-    public getCsrfToken(): Promise<string | void> {
+    /**
+     * Get an CSRF token for the current session
+     *
+     * @return {Promise<string>}
+     */
+    public getCsrfToken(): Promise<string> {
         return axios({
             method: 'get',
             url: '/auth/token',
@@ -152,6 +159,37 @@ export default class App extends Vue {
         }).catch((response) => {
             /* istanbul ignore next */
             console.warn('Could not receive csrf token', response);
+        });
+    }
+
+    /* istanbul ignore next: can't be tested in unit tests */
+    /**
+     * Load Googles recaptcha v3
+     *
+     * @return {Promise<void>}
+     */
+    public loadRecaptcha(): Promise<void> {
+        if (!this.recaptchaLoaded) {
+            this.recaptchaLoaded = new Promise((resolve) => {
+                jQuery.getScript('https://www.google.com/recaptcha/api.js?render=' + AppConfig.recaptchaKey, () => {
+                    grecaptcha.ready(resolve);
+                });
+            });
+        }
+
+        return this.recaptchaLoaded;
+    }
+
+    /* istanbul ignore next: can't be tested in unit tests */
+    /**
+     * Get recaptcha token
+     *
+     * @param {string} action
+     * @return {Promise<string>}
+     */
+    public getRecaptchaToken(action: string): Promise<string> {
+        return this.loadRecaptcha().then(() => {
+            return grecaptcha.execute(AppConfig.recaptchaKey, {action});
         });
     }
 }
