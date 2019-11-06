@@ -14,6 +14,7 @@ use App\Application;
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="icon" href="/images/favicon.png" sizes="48x48">
     <link rel="apple-touch-icon" sizes="256x256" href="/images/favicon-2x.png">
+    <meta name="theme-color" content="#00897b">
     <title>Ríki:Welcome!<?= $v->section('article-title') ? ' - ' . $v->section('article-title') : '' ?></title>
     <?php if ($v->section('article-title')) : ?>
       <meta property="og:site_name" content="<?= $v->section('article-title') ?>"/>
