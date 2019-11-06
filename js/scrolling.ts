@@ -46,8 +46,8 @@ jQuery(function ($) {
                 after: 'fixed'
             }),
             new ScrollAnimation($leftNav, 'top', {
-                from: headerAnimationEnd + 1,
-                to: headerAnimationEnd + 1,
+                from: headerAnimationEnd,
+                to: headerAnimationEnd,
                 before: '',
                 suffix: 'px',
                 steps: [
