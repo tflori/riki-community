@@ -135,6 +135,17 @@ footer {
     .footer-copyright .row {
         margin-bottom: 0;
     }
+
+    .fav-lib {
+        color: #eee;
+
+        &:after {
+            content: " •";
+        }
+        &:last-child:after {
+            content: "";
+        }
+    }
 }
 
 .card {
