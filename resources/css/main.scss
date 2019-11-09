@@ -136,14 +136,21 @@ footer {
         margin-bottom: 0;
     }
 
-    .fav-lib {
-        color: #eee;
-
-        &:after {
-            content: " •";
+    .links {
+        h6 {
+            font-weight: bold;
         }
-        &:last-child:after {
-            content: "";
+
+        a {
+            color: #eee;
+
+            &:after {
+                content: " •";
+            }
+
+            &:last-child:after {
+                content: "";
+            }
         }
     }
 }

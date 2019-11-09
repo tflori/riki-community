@@ -11,19 +11,20 @@
         </p>
       </div>
       <div class="col l4 s12">
-        <div class="row">
+        <div class="row links">
           <div class="col m6 s12">
-            <h5 class="white-text">Favorite Libraries</h5>
-            <a class="fav-lib" href="https://packagist.org/packages/tflori/orm">tflori/orm</a>
-            <a class="fav-lib" href="https://packagist.org/packages/tflori/syna">tflori/syna</a>
-            <a class="fav-lib" href="https://packagist.org/packages/tflori/verja">tflori/verja</a>
-            <a class="fav-lib" href="https://packagist.org/packages/tflori/breyta">tflori/breyta</a>
-            <a class="fav-lib" href="https://packagist.org/packages/tflori/dependency-injector">tflori/dependency-injector</a>
+            <h6 class="white-text">Favorite Libraries</h6>
+            <?php // @todo fetch from a list of libraries with a random order ?>
+            <a href="https://packagist.org/packages/tflori/orm">tflori/orm</a>
+            <a href="https://packagist.org/packages/tflori/syna">tflori/syna</a>
+            <a href="https://packagist.org/packages/tflori/verja">tflori/verja</a>
+            <a href="https://packagist.org/packages/tflori/breyta">tflori/breyta</a>
+            <a href="https://packagist.org/packages/tflori/dependency-injector">tflori/dependency-injector</a>
           </div>
           <div class="col m6 s12">
-            <h5 class="white-text">Links</h5>
-            <a class="fav-lib" href="/imprint">Imprint</a>
-            <a class="fav-lib" href="/about">About Us</a>
+            <h6 class="white-text">Links</h6>
+            <a href="/imprint">Imprint</a>
+            <a href="/about">About Us</a>
           </div>
         </div>
       </div>
