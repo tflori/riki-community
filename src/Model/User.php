@@ -65,6 +65,7 @@ class User extends Entity implements JsonSerializable
         'activationTokens' => [ActivationToken::class, 'user'],
         'rememberTokens' => [RememberToken::class, 'user'],
         'passwordResetTokens' => [PasswordResetToken::class, 'user'],
+        'roles' => [Role::class, ['id' => 'user_id'], 'users', 'user_roles'],
     ];
 
     protected $data = [
