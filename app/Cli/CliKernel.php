@@ -27,6 +27,7 @@ class CliKernel extends Kernel
         Command\Db\CreateMigration::class,
         Command\Db\Migrate::class,
         Command\Db\Revert::class,
+        Command\Db\Seed::class,
         Command\Db\Status::class,
         Command\Test::class,
     ];
