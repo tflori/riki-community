@@ -3,6 +3,8 @@
 namespace App\Cli\Command;
 
 use GetOpt\GetOpt;
+use ORM\Entity;
+use Psy\Configuration;
 use Psy\Shell;
 
 /**
@@ -27,8 +29,13 @@ class Console extends AbstractCommand
             require_once $f->getPathname();
         }
 
+        $config = new Configuration();
+        $config->getPresenter()->addCasters([
+            Entity::class => [self::class, 'castEntity'],
+        ]);
+
         /** @var Shell $shell */
-        $shell = $this->app->make(Shell::class);
+        $shell = $this->app->make(Shell::class, $config);
         $shell->setScopeVariables([
             'app' => $this->app,
             'em' => $this->app->entityManager,
@@ -36,5 +43,10 @@ class Console extends AbstractCommand
         ]);
         $shell->run();
         return 0;
+    }
+
+    public static function castEntity(Entity $entity)
+    {
+        return $entity->toArray();
     }
 }
