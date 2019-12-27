@@ -53,7 +53,7 @@ jobs:
       name: "php"
       script:
         - rm -Rf vendor
-        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:1 composer install --no-dev --no-ansi --optimize-autoloader
+        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:3 composer install --no-dev --no-ansi --optimize-autoloader
         - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:lts-alpine npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG --file docker/php/Dockerfile . &&
