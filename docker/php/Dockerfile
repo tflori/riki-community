@@ -1,4 +1,4 @@
-FROM iras/php7-fpm:1
+FROM iras/php7-fpm:3
 
 COPY public /community/public
 COPY src /community/src
