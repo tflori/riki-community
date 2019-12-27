@@ -119,7 +119,7 @@ class Application extends \Riki\Application
         $whoops = $this->get('whoops');
         $whoops->clearHandlers();
         foreach ($handlers as $handler) {
-            $whoops->pushHandler($handler);
+            $whoops->appendHandler($handler);
         }
     }
 }
