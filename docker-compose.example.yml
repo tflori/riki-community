@@ -27,7 +27,7 @@ services:
       - "127.0.0.1:8025:8025"
 
   composer:
-    image: iras/php7-composer:1
+    image: iras/php7-composer:3
     user: "$UID"
     working_dir: "/community"
     entrypoint: /usr/bin/composer
