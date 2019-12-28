@@ -65,11 +65,12 @@ class LogHandlerTest extends TestCase
     public function messageContainsFileAndLine()
     {
         $exception = new RuntimeException('Test exception');
+        $file = str_replace($this->app->environment->getBasePath(), '', $exception->getFile());
         $handler = $this->prepareHandler($exception);
 
         $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
-            ->once()->andReturnUsing(function (string $message) use ($exception) {
-                self::assertContains($exception->getFile(), $message);
+            ->once()->andReturnUsing(function (string $message) use ($file, $exception) {
+                self::assertContains($file, $message);
                 self::assertContains((string)$exception->getLine(), $message);
             });
 
