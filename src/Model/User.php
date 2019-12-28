@@ -9,6 +9,7 @@ use Community\Model\Token\ActivationCode;
 use Community\Model\Token\ActivationToken;
 use Community\Model\Token\PasswordResetToken;
 use Community\Model\Token\RememberToken;
+use Community\Model\User\UserPermission;
 use JsonSerializable;
 use ORM\Entity;
 
@@ -65,6 +66,7 @@ class User extends Entity implements JsonSerializable
         'activationTokens' => [ActivationToken::class, 'user'],
         'rememberTokens' => [RememberToken::class, 'user'],
         'passwordResetTokens' => [PasswordResetToken::class, 'user'],
+        'permissions' => [UserPermission::class, 'user'],
         'roles' => [Role::class, ['id' => 'user_id'], 'users', 'user_roles'],
     ];
 

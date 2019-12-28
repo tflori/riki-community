@@ -5,6 +5,7 @@ namespace Community\Model;
 use Community\Model\Concerns\WithCreated;
 use Community\Model\Concerns\WithUpdated;
 use Community\Model\Role\RolePermission;
+use Community\Model\User\UserPermission;
 use ORM\Entity;
 
 class Permission extends Entity
@@ -19,5 +20,6 @@ class Permission extends Entity
 
     protected static $relations = [
         'roles' => [RolePermission::class, 'permission'],
+        'users' => [UserPermission::class, 'permission'],
     ];
 }
