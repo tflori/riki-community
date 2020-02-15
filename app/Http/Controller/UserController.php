@@ -3,7 +3,7 @@
 namespace App\Http\Controller;
 
 use App\Application as a;
-use App\Http\Controller\Concerns\VerifiesRecaptchaTokens;
+use App\Http\Concerns\VerifiesRecaptchaTokens;
 use App\Model\Request;
 use Carbon\Carbon;
 use Community\Model\Token\ActivationCode;

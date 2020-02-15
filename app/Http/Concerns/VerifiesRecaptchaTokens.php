@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controller\Concerns;
+namespace App\Http\Concerns;
 
 use App\Application as app;
-use Tal\ClientRequest;
-use function GuzzleHttp\Psr7\stream_for;
+use stdClass;
 
 trait VerifiesRecaptchaTokens
 {
-    protected function verifyRecaptchaToken(?string $token, string $ip = null): ?\stdClass
+    protected function verifyRecaptchaToken(?string $token, string $ip = null): ?stdClass
     {
         $response = app::httpClient()->post('https://www.google.com/recaptcha/api/siteverify', [
             'form_params' => [
