@@ -120,7 +120,7 @@ abstract class TestCase extends MockeryTestCase
     protected static function setProtectedProperty($object, string $property, $value)
     {
         /** @noinspection PhpUnhandledExceptionInspection */
-        $property = (new \ReflectionClass($object))->getProperty($property);
+        $property = (new ReflectionClass($object))->getProperty($property);
         $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
@@ -135,7 +135,7 @@ abstract class TestCase extends MockeryTestCase
      */
     protected function getProtectedProperty($object, string $string)
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         $property = $class->getProperty($string);
         $property->setAccessible(true);
         $value = $property->getValue($object);
@@ -145,7 +145,7 @@ abstract class TestCase extends MockeryTestCase
 
     /**
      * @param User|array $user
-     * @return User
+     * @return User|m\MockInterface
      */
     protected function signIn($user = null): User
     {
@@ -163,7 +163,7 @@ abstract class TestCase extends MockeryTestCase
             ], $data)));
         }
 
-        $this->app->session->set('user', $user);
+        $this->app->auth->setUser($user);
 
         return $user;
     }

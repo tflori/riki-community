@@ -35,7 +35,7 @@ class ApplicationTest extends TestCase
         $kernelHandlers = [new ConsoleHandler()];
         $kernel = m::mock(Kernel::class);
         $kernel->shouldReceive('getBootstrappers')->andReturn([]);
-        $kernel->shouldReceive('getErrorHandlers')->with($this->app)
+        $kernel->shouldReceive('getErrorHandlers')->with()
             ->once()->andReturn($kernelHandlers);
 
 

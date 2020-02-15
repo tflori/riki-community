@@ -4,6 +4,7 @@ namespace App;
 
 use App\Model\Gate;
 use App\Model\Mail;
+use App\Service\Authorization;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
 use GuzzleHttp\Client;
@@ -21,6 +22,7 @@ use Whoops;
  * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
+ * @method static Authorization auth();
  * @method static CacheInterface cache()
  * @method static Client httpClient()
  * @method static Config config()
@@ -34,8 +36,9 @@ use Whoops;
  * @method static Mail mail(string $name, array $data = [])
  * @method static Mailer mailer()
  * @method static Redis Redis()
- * @method Static SessionInstance session()
+ * @method static SessionInstance session()
  * @property-read Application $app
+ * @property-read Authorization $auth
  * @property-read CacheInterface $cache
  * @property-read Client $httpClient
  * @property-read Config $config
@@ -95,7 +98,7 @@ class Application extends \Riki\Application
     public function run(\Riki\Kernel $kernel, ...$args)
     {
         if ($kernel instanceof Kernel) {
-            $this->setErrorHandlers(...$kernel->getErrorHandlers($this), ...$this->getErrorHandlers());
+            $this->setErrorHandlers(...$kernel->getErrorHandlers(), ...$this->getErrorHandlers());
         }
 
         $result = parent::run($kernel, ...$args);
