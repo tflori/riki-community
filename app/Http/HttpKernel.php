@@ -170,6 +170,11 @@ class HttpKernel extends \App\Kernel
         return $this->router;
     }
 
+    public static function currentRequest(): ?Request
+    {
+        return self::$lastRequest;
+    }
+
     protected static function collectRoutes(MiddlewareRouteCollector $router)
     {
         // @todo maybe you want to load different route files or collect them from annotations..
