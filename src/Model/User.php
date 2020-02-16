@@ -3,6 +3,7 @@
 namespace Community\Model;
 
 use Carbon\Carbon;
+use Community\Model\Concerns\InheritsPermissionsFromRoles;
 use Community\Model\Concerns\WithCreated;
 use Community\Model\Concerns\WithUpdated;
 use Community\Model\Token\ActivationCode;
@@ -31,11 +32,12 @@ use ORM\Entity;
  * @property-read ActivationToken[] activationTokens
  * @property-read RememberToken[] rememberTokens
  * @property-read PasswordResetToken[] passwordResetTokens
+ * @property-read UserPermission[] permissions
+ * @property-read Role[] roles
  */
 class User extends Entity implements JsonSerializable
 {
-    use WithCreated;
-    use WithUpdated;
+    use WithCreated, WithUpdated, InheritsPermissionsFromRoles;
 
     const PENDING = 'pending';
     const ACTIVATED = 'activated';
@@ -75,6 +77,16 @@ class User extends Entity implements JsonSerializable
     ];
 
     public static $bcryptCost = 10;
+
+    protected function getInheritedRoles(): array
+    {
+        return $this->roles;
+    }
+
+    protected function getGrants(): array
+    {
+        return $this->permissions;
+    }
 
     public function setAccountStatus(string $newStatus)
     {

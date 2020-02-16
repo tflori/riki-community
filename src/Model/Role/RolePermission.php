@@ -6,6 +6,12 @@ use Community\Model\Permission;
 use Community\Model\Role;
 use ORM\Entity;
 
+/**
+ * @property string $permissionKey
+ * @property bool $restrict
+ * @property-read Role $role
+ * @property-read Permission $permission
+ */
 class RolePermission extends Entity
 {
     protected static $primaryKey = ['role_id', 'permission_key'];

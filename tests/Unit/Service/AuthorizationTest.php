@@ -21,4 +21,35 @@ class AuthorizationTest extends TestCase
 
         self::assertSame($user, $result);
     }
+
+    /** @test */
+    public function getsThePermissionsFromCurrentUser()
+    {
+        $user = $this->signIn();
+
+        $user->shouldReceive('getAllPermissions')->with()
+            ->once()->andReturn([
+                'user:edit' => true,
+                'user:delete' => false,
+            ]);
+
+        self::assertSame([
+            'user:edit' => true,
+            'user:delete' => false,
+        ], $this->app->auth->getPermissions());
+    }
+
+    /** @test */
+    public function restrictedPermissionsAreNotGranted()
+    {
+        $user = $this->signIn();
+
+        $user->shouldReceive('getAllPermissions')->with()
+            ->once()->andReturn([
+                'user:edit' => true,
+                'user:delete' => false,
+            ]);
+
+        self::assertFalse($this->app->auth->hasPermission('user:delete'));
+    }
 }

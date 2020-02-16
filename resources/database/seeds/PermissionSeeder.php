@@ -26,9 +26,10 @@ class PermissionSeeder extends AbstractSeeder
 
     protected function getPermissions()
     {
+        $ordinary = Permission::CATEGORY_ORDINARY;
         return [
             'user:edit' => ['description' => 'Can edit a user including name, email and password.'],
-            'user:editSelf' => ['description' => 'Can edit his own user.', 'category' => 'ordinary'],
+            'user:editSelf' => ['description' => 'Can edit his own user.', 'category' => $ordinary],
         ];
     }
 }

@@ -15,6 +15,9 @@ class Authorization
     /** @var bool|User */
     protected $user = false;
 
+    /** @var array|null */
+    protected $permissions = null;
+
     /** @var Application */
     protected $app;
 
@@ -82,9 +85,24 @@ class Authorization
         return true;
     }
 
+    public function hasPermission(string $key): bool
+    {
+        return $this->getPermissions()[$key] ?? false;
+    }
+
+    public function getPermissions(): array
+    {
+        if (!$this->permissions) {
+            $user = $this->getUser();
+            $this->permissions = $user ? $user->getAllPermissions() : [];
+        }
+        return $this->permissions;
+    }
+
     public function reset(): Authorization
     {
         $this->user = false;
+        $this->permissions = null;
         return $this;
     }
 }

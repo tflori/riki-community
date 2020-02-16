@@ -8,6 +8,11 @@ use Community\Model\Role\RolePermission;
 use Community\Model\User\UserPermission;
 use ORM\Entity;
 
+/**
+ * @property string $key
+ * @property RolePermission[] $roles
+ * @property UserPermission[] $users
+ */
 class Permission extends Entity
 {
     use WithCreated, WithUpdated;

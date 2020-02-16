@@ -6,6 +6,12 @@ use Community\Model\Permission;
 use Community\Model\User;
 use ORM\Entity;
 
+/**
+ * @property bool $restrict
+ * @property string $permissionKey
+ * @property-read User $user
+ * @property-read Permission $permission
+ */
 class UserPermission extends Entity
 {
     protected static $primaryKey = ['user_id', 'permission_key'];
