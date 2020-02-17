@@ -11,8 +11,9 @@ jobs:
       php: 7.3
       before_script:
         - composer install --no-interaction
+        - composer require php-coveralls/php-coveralls
       script:
-        - bin/phpunit -c phpunit.xml --color=always --coverage-text
+        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
       after_success:
         - php bin/php-coveralls -v
 
