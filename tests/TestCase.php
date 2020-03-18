@@ -56,6 +56,8 @@ abstract class TestCase extends MockeryTestCase
 
         /** @var Application|m\Mock $app */
         $app = $this->app = m::mock(Application::class)->makePartial();
+        $app->shouldReceive('make')->passthru()->byDefault();
+        $app->shouldReceive('get')->passthru()->byDefault();
         $app->__construct($basePath);
         $app->registerNamespace('Test\Factory', 'Factory');
 
@@ -74,12 +76,6 @@ abstract class TestCase extends MockeryTestCase
         $this->app->instance('config', $this->mocks['config']);
         $this->app->alias('config', Config::class);
 
-        /** @var Whoops\Run|m\Mock $whoops */
-        $whoops = $this->mocks['whoops'] = m::mock($this->app->get('whoops'));
-        $this->app->instance('whoops', $whoops);
-        $whoops->unregister();
-        $whoops->shouldReceive('register')->andReturnSelf()->byDefault();
-        
         /** @var Console|m\Mock $console */
         $console = $this->mocks['console'] = m::mock(Console::class)->makePartial();
         $console->__construct();

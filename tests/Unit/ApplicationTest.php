@@ -2,50 +2,73 @@
 
 namespace Test\Unit;
 
+use App\Application;
 use App\Kernel;
 use App\Service\Exception\ConsoleHandler;
 use App\Service\Exception\LogHandler;
-use Test\TestCase;
-use Whoops\Handler\PlainTextHandler;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Whoops\Util\SystemFacade;
 
-class ApplicationTest extends TestCase
+class ApplicationTest extends MockeryTestCase
 {
+    /** @var m\MockInterface|SystemFacade */
+    protected $systemFacade;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->systemFacade = m::mock(SystemFacade::class)->shouldIgnoreMissing();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Application::app()->destroy();
+    }
+
     /** @test */
     public function registersErrorHandler()
     {
-         $this->mocks['whoops']->shouldReceive('register')->with()
-           ->once()->andReturnSelf();
+        /** @var m\MockInterface|Application $app */
+        $app = m::mock(Application::class)->makePartial();
+        $app->instance(SystemFacade::class, $this->systemFacade);
 
-         $this->app->initWhoops();
+        $this->systemFacade->shouldReceive('setErrorHandler')->once();
+        $this->systemFacade->shouldReceive('setExceptionHandler')->once();
+        $this->systemFacade->shouldReceive('registerShutdownFunction')->once();
+
+        $app->__construct('/app');
     }
 
     /** @test */
     public function definesAnErrorHandlerForLogging()
     {
-        $this->app->initWhoops();
+        $app = new Application('/app');
 
-        self::assertInstanceOf(LogHandler::class, $this->app->get('whoops')->popHandler());
+        self::assertInstanceOf(LogHandler::class, $app->whoops->popHandler());
     }
 
     /** @test */
     public function prependsAndRemovesHandlerFromKernel()
     {
-        $handlersBefore = $this->app->whoops->getHandlers();
-        $kernelHandlers = [new ConsoleHandler()];
+        $app = new Application('/app');
+
+        $kernelHandler = new ConsoleHandler();
         $kernel = m::mock(Kernel::class);
         $kernel->shouldReceive('getBootstrappers')->andReturn([]);
-        $kernel->shouldReceive('getErrorHandlers')->with($this->app)
-            ->once()->andReturn($kernelHandlers);
-
+        $kernel->shouldReceive('getErrorHandlers')->with()
+            ->once()->andReturn([$kernelHandler]);
 
         $kernel->shouldReceive('handle')->with()
-            ->once()->andReturnUsing(function () use ($handlersBefore, $kernelHandlers) {
-                self::assertEquals(array_merge($handlersBefore, $kernelHandlers), $this->app->whoops->getHandlers());
+            ->once()->andReturnUsing(function () use ($kernelHandler, $app) {
+                self::assertSame($kernelHandler, $app->whoops->getHandlers()[1]);
+                return 0;
             });
 
-        $this->app->run($kernel);
+        $app->run($kernel);
 
-        self::assertEquals($handlersBefore, $this->app->whoops->getHandlers());
+        self::assertInstanceOf(LogHandler::class, $app->whoops->popHandler());
     }
 }

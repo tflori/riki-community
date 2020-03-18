@@ -34,7 +34,8 @@ use Whoops;
  * @method static Mail mail(string $name, array $data = [])
  * @method static Mailer mailer()
  * @method static Redis Redis()
- * @method Static SessionInstance session()
+ * @method static SessionInstance session()
+ * @method static Whoops\Run whoops()
  * @property-read Application $app
  * @property-read CacheInterface $cache
  * @property-read Client $httpClient
@@ -49,12 +50,10 @@ use Whoops;
  * @property-read Mailer $mailer
  * @property-read Redis $redis
  * @property-read SessionInstance $session
+ * @property-read Whoops\Run $whoops
  */
 class Application extends \Riki\Application
 {
-    /** @var Whoops\Run */
-    protected $whoops;
-
     public function __construct(string $basePath)
     {
         parent::__construct($basePath);
@@ -71,55 +70,38 @@ class Application extends \Riki\Application
         $this->registerNamespace('App\Factory', 'Factory');
 
         // Register shared instances / classes
-        $this->share('whoops', Whoops\Run::class);
         $this->share('cssInliner', CssToInlineStyles::class);
+        $this->instance('whoops', $this->make(Whoops\Run::class, $this->make(Whoops\Util\SystemFacade::class)));
         $this->instance('entityManager', new EntityManager([
             EntityManager::OPT_CONNECTION => $this->config->dbConfig,
             'tableNameTemplate' => '%short%s',
         ]));
     }
 
-
-    /**
-     * @return bool
-     */
-    public function initWhoops()
+    protected function initWhoops()
     {
-        /** @var Whoops\Run $whoops */
-        $whoops = $this->get('whoops');
-        $whoops->register();
-        $this->setErrorHandlers(...$this->getErrorHandlers());
-        return true;
+        $this->whoops->register();
+        $this->resetErrorHandlers();
     }
 
     public function run(\Riki\Kernel $kernel, ...$args)
     {
         if ($kernel instanceof Kernel) {
-            $this->setErrorHandlers(...$kernel->getErrorHandlers($this), ...$this->getErrorHandlers());
+            foreach ($kernel->getErrorHandlers() as $handler) {
+                $this->whoops->appendHandler($handler);
+            }
         }
 
         $result = parent::run($kernel, ...$args);
 
-        if ($kernel instanceof Kernel) {
-            // @todo this should be shift and unshift of kernels error handlers but there is only push and pop
-            $this->setErrorHandlers(...$this->getErrorHandlers());
-        }
+        $this->resetErrorHandlers();
 
         return $result;
     }
 
-    protected function getErrorHandlers()
+    protected function resetErrorHandlers()
     {
-        return [new LogHandler()];
-    }
-
-    protected function setErrorHandlers(...$handlers)
-    {
-        /** @var Whoops\Run $whoops */
-        $whoops = $this->get('whoops');
-        $whoops->clearHandlers();
-        foreach ($handlers as $handler) {
-            $whoops->pushHandler($handler);
-        }
+        $this->whoops->clearHandlers();
+        $this->whoops->appendHandler($this->make(LogHandler::class));
     }
 }
