@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5bd9389a68917371e33a99d41ddf590",
+    "content-hash": "c037df2b3f8edf6850977df6905a87e4",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2085,16 +2085,16 @@
         },
         {
             "name": "tflori/breyta",
-            "version": "v1.0.0-rc.3",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/breyta.git",
-                "reference": "4febf8be3117ef5e9fc26d2f42c20ddc6e727571"
+                "reference": "43d8b16f919c5d20b7b6d11a25f33facf3445b26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/breyta/zipball/4febf8be3117ef5e9fc26d2f42c20ddc6e727571",
-                "reference": "4febf8be3117ef5e9fc26d2f42c20ddc6e727571",
+                "url": "https://api.github.com/repos/tflori/breyta/zipball/43d8b16f919c5d20b7b6d11a25f33facf3445b26",
+                "reference": "43d8b16f919c5d20b7b6d11a25f33facf3445b26",
                 "shasum": ""
             },
             "require": {
@@ -2118,7 +2118,7 @@
                 "MIT"
             ],
             "description": "Library for database migrations",
-            "time": "2018-12-08T09:51:47+00:00"
+            "time": "2019-03-22T06:04:02+00:00"
         },
         {
             "name": "tflori/dependency-injector",
@@ -2250,16 +2250,16 @@
         },
         {
             "name": "tflori/orm",
-            "version": "v1.8.0-rc.2",
+            "version": "v1.9.0-rc.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "c948bf7cb307f7e0f0c3d20188aa66b81cf31eec"
+                "reference": "d7f14897e1dbb9ffdd088ee01313e528d6e8d5cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/c948bf7cb307f7e0f0c3d20188aa66b81cf31eec",
-                "reference": "c948bf7cb307f7e0f0c3d20188aa66b81cf31eec",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/d7f14897e1dbb9ffdd088ee01313e528d6e8d5cf",
+                "reference": "d7f14897e1dbb9ffdd088ee01313e528d6e8d5cf",
                 "shasum": ""
             },
             "require": {
@@ -2287,7 +2287,7 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2019-12-08T06:52:08+00:00"
+            "time": "2020-03-17T08:07:10+00:00"
         },
         {
             "name": "tflori/riki-framework",
@@ -4209,7 +4209,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "tflori/dependency-injector": 10,
-        "tflori/breyta": 5,
         "tflori/orm": 5,
         "tflori/riki-framework": 5,
         "tflori/syna": 5
