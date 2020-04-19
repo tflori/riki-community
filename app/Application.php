@@ -4,6 +4,7 @@ namespace App;
 
 use App\Model\Gate;
 use App\Model\Mail;
+use App\Service\Cache;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
 use GuzzleHttp\Client;
@@ -11,7 +12,6 @@ use Hugga\Console;
 use Monolog\Logger;
 use NbSessions\SessionInstance;
 use ORM\EntityManager;
-use Psr\SimpleCache\CacheInterface;
 use Redis;
 use Syna\Factory;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -21,7 +21,7 @@ use Whoops;
  * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
- * @method static CacheInterface cache()
+ * @method static Cache cache()
  * @method static Client httpClient()
  * @method static Config config()
  * @method static Console console()
@@ -37,7 +37,7 @@ use Whoops;
  * @method static SessionInstance session()
  * @method static Whoops\Run whoops()
  * @property-read Application $app
- * @property-read CacheInterface $cache
+ * @property-read Cache $cache
  * @property-read Client $httpClient
  * @property-read Config $config
  * @property-read Console $console

@@ -2,8 +2,8 @@
 
 namespace App\Factory;
 
+use App\Service\Cache;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Psr16Cache;
 
 /** @codeCoverageIgnore  */
 class CacheFactory extends AbstractFactory
@@ -12,7 +12,6 @@ class CacheFactory extends AbstractFactory
 
     protected function build()
     {
-        $cache = new Psr16Cache(new RedisAdapter($this->container->redis));
-        return $cache;
+        return new Cache(new RedisAdapter($this->container->redis));
     }
 }

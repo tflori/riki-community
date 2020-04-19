@@ -5,6 +5,7 @@ namespace Test;
 use App\Application;
 use App\Config;
 use App\Environment;
+use App\Service\Cache;
 use App\Service\Mailer;
 use Carbon\Carbon;
 use Community\Model\User;
@@ -17,7 +18,9 @@ use Monolog\Logger;
 use Nette\Mail\Message;
 use ORM\EntityManager;
 use ORM\MockTrait;
+use ORM\Testing\EntityFetcherMock\ResultRepository;
 use ReflectionClass;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Test\Extension\ArraySubsetAssert;
 use Whoops;
 
@@ -96,6 +99,9 @@ abstract class TestCase extends MockeryTestCase
         ], 'pgsql');
         $this->mocks['pdo'] = $this->em->getConnection();
         $this->app->instance('entityManager', $this->em);
+
+        $cache = $this->mocks['cache'] = m::mock(new Cache(new ArrayAdapter()));
+        $this->app->instance('cache', $cache);
 
         /** @var Mailer|m\Mock $mailer */
         $mailer = $this->mocks['mailer'] = m::mock(Mailer::class, []);
@@ -180,5 +186,10 @@ abstract class TestCase extends MockeryTestCase
     protected function resourcePath(string ...$path): string
     {
         return $this->app->environment->path('tests', 'resources', ...$path);
+    }
+
+    protected function randomId(): int
+    {
+        return mt_rand(ResultRepository::RANDOM_KEY_MIN, ResultRepository::RANDOM_KEY_MAX);
     }
 }

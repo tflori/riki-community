@@ -44,11 +44,13 @@ class AuthenticationTest extends TestCase
     public function staysLoggedInViaSession()
     {
         $user = new User([
+            'id' => $this->randomId(),
             'email' => 'john.doe@example.com',
             'password' => password_hash('asdf123', PASSWORD_BCRYPT, ['cost' => 4]),
             'created' => date('c'),
             'updated' => date('c'),
         ]);
+        $this->app->entityManager->map($user);
         $this->ormAddResult(User::class, $user)
             ->where('email', 'john.doe@example.com');
         $this->post('/auth', [], json_encode([
