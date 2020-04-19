@@ -63,7 +63,7 @@ class ApplicationTest extends MockeryTestCase
 
         $kernel->shouldReceive('handle')->with()
             ->once()->andReturnUsing(function () use ($kernelHandler, $app) {
-                self::assertSame($kernelHandler, $app->whoops->getHandlers()[1]);
+                self::assertSame($kernelHandler, $app->whoops->getHandlers()[0]);
                 return 0;
             });
 
