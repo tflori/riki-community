@@ -12,7 +12,7 @@ jobs:
       before_script:
         - composer install --no-interaction
       script:
-        - bin/phpunit -c phpunit.xml --color=always --coverage-text
+        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
       after_success: []
 
     - stage: "Test"
@@ -23,9 +23,9 @@ jobs:
         - composer require php-coveralls/php-coveralls
         - mkdir -p build/logs
       script:
-        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
       after_success:
-        - php bin/php-coveralls -v
+        - vendor/bin/php-coveralls -v
 
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.4)"
@@ -33,7 +33,7 @@ jobs:
       before_script:
         - composer install --no-interaction
       script:
-        - bin/phpunit -c phpunit.xml --color=always --coverage-text
+        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
       after_success: []
 
     - stage: "Test"
