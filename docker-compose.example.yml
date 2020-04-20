@@ -1,72 +1,81 @@
-version: "2.2"
+version: "3.7"
 
 volumes:
   postgres_data:
   redis_data:
-  npm_cache:
-  composer_cache:
+  home:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${NETWORK_IP}/24
 
 services:
   postgres:
     image: postgres:11-alpine
+    shm_size: 256M
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+      - "./docker/config/create-database.sh:/docker-entrypoint-initdb.d/create-database.sh"
     ports:
-      - "127.0.0.1:5432:5432"
+      - "${NETWORK_IP}:5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
 
   redis:
     image: redis:5.0-alpine
     volumes:
       - "redis_data:/data"
     ports:
-      - "127.0.0.1:6379:6379"
+      - "${NETWORK_IP}:6379:6379"
 
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "127.0.0.1:8025:8025"
+      - "${NETWORK_IP}:8025:8025"
 
   composer:
-    image: iras/php7-composer:1
-    user: "$UID"
+    image: iras/php7-composer:3
+    user: "${PUID}"
     working_dir: "/community"
     entrypoint: /usr/bin/composer
     command: help
     volumes:
       - "./:/community"
-      - "composer_cache:/composer/cache"
+      - "./storage/cache/composer:/composer/cache"
+      - "./docker/config/bashrc.sh:/etc/profile.d/bashrc.sh"
 
   npm:
-    image: node:8-alpine
-    user: "$UID"
+    image: iras/node:12
+    user: "${PUID}"
     working_dir: "/community"
-    entrypoint: /usr/local/bin/npm
+    entrypoint: /usr/bin/npm
     command: help
     volumes:
       - "./:/community"
-      - "npm_cache:/home/node/.npm"
-      - "./docker/node/path.sh:/etc/profile.d/path.sh"
+      - "/storage/cache/npm:/home/node/.npm"
+      - "./docker/config/bashrc.sh:/etc/profile.d/bashrc.sh"
 
   php:
     build:
       context: "."
-      dockerfile: "docker/php/Dockerfile"
+      dockerfile: "docker/php-dev/Dockerfile"
     depends_on:
       - postgres
       - mailhog
       - redis
     working_dir: "/community"
+    command: "run" # xdebug disabled
     volumes:
       - ".:/community"
       - "./storage/logs:/var/log/php"
-      - "./docker/php/debug.sh:/usr/bin/debug"
-      # you may want to enable xdebug copy and adept the example file
-      # - "./docker/php/xdebug.ini:/etc/php7/conf.d/xdebug.ini"
-      # you may want to share your psysh configs
-      # - "$HOME:/home/www-user"
+      - "home:/home/www-user"
+      - "./docker/config/xdebug.ini:/etc/php7/conf.d/xdebug.ini"
+      - "./docker/config/bashrc.sh:/etc/profile.d/bashrc.sh"
     environment:
-      - "UID=$UID"
-      - "GID=$GID"
+      - "UID=${PUID}"
+      - "GID=${PGID}"
       - "APP_ENV=development"
 
   nginx:
@@ -74,13 +83,13 @@ services:
       context: "."
       dockerfile: "docker/nginx/Dockerfile"
     depends_on:
-      - "php"
+      - php
     volumes:
       - "./public:/community/public"
       - "./storage/logs:/var/log/httpd"
       - "./docker/nginx/server.conf:/etc/nginx/conf.d/server/community.conf"
     ports:
-      - "8080:8080"
+      - "${NETWORK_IP}:80:8080"
     environment:
-      - "UID=$UID"
-      - "GID=$GID"
+      - "UID=${PUID}"
+      - "GID=${PGID}"

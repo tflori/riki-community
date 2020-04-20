@@ -7,18 +7,6 @@ before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv versi
 jobs:
   include:
     - stage: "Test"
-      name: "PHPUnit Tests (PHP 7.1)"
-      php: 7.1
-      before_script:
-        - composer install --no-interaction
-        - composer require php-coveralls/php-coveralls
-        - mkdir -p build/logs
-      script:
-        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-      after_success:
-        - php bin/php-coveralls -v
-
-    - stage: "Test"
       name: "PHPUnit Tests (PHP 7.2)"
       php: 7.2
       before_script:
@@ -30,6 +18,18 @@ jobs:
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.3)"
       php: 7.3
+      before_script:
+        - composer install --no-interaction
+        - composer require php-coveralls/php-coveralls
+        - mkdir -p build/logs
+      script:
+        - bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
+      after_success:
+        - php bin/php-coveralls -v
+
+    - stage: "Test"
+      name: "PHPUnit Tests (PHP 7.4)"
+      php: 7.4
       before_script:
         - composer install --no-interaction
       script:
@@ -68,6 +68,7 @@ jobs:
         - docker
       before_script:
         - docker info
+        - rm .dockerignore # this file is only for development
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
         - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
       name: "php"
@@ -91,6 +92,7 @@ jobs:
         - docker
       before_script:
         - docker info
+        - rm .dockerignore # this file is only for development
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
         - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
       name: "nginx"

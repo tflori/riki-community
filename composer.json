@@ -3,9 +3,6 @@
   "description":  "",
   "type":         "project",
   "license":      "proprietary",
-  "config":       {
-    "bin-dir": "bin"
-  },
   "require":      {
     "erusev/parsedown":                  "^1.7",
     "ext-bcmath":                        "*",
@@ -63,12 +60,6 @@
       "phpcs --standard=PSR2 --colors app",
       "phpcs --standard=PSR2 --colors src",
       "phpcs --standard=PSR2 --ignore=example --extensions=php --colors tests"
-    ],
-    "start":      "docker-compose up -d",
-    "cli":        "docker-compose exec -T php community",
-    "test":       "docker-compose exec -T php phpunit",
-    "stop":       "docker-compose stop",
-    "debug-cli":  "docker-compose exec -T php debug bin/community",
-    "debug-test": "docker-compose exec -T php debug bin/phpunit"
+    ]
   }
 }

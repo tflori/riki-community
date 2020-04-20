@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+# Script for managing development environment
+set -e
+
+BASE_PATH=$(dirname $(dirname $(realpath $0)))
+cd $BASE_PATH
+
+usage() {
+    if [[ ! -z "$1" ]]; then
+        echo "$0 $1 [options]"
+        echo ""
+
+        case "$1" in
+            "env")
+                echo "Create missing environment variables"
+                echo ""
+                echo "Options:"
+                echo "  -f | --force    Ignore that environment variables exist and create new keys/passwords"
+                echo "  -h | --help     Show this help screen"
+            ;;
+            "build")
+                echo "Build the docker image for the php containers"
+                echo ""
+                echo "Options:"
+                echo "  -u | --update    Try to update the base image"
+                echo "  -h | --help      Show this help screen"
+            ;;
+            "start") ;;
+            "list") ;;
+            "xdebug") ;;
+        esac
+    else
+        echo "$0 <command> [options]"
+        echo ""
+        echo "Actions:"
+        echo "  env             Create missing environment variables"
+        echo "  xdebug          Show xdebug status or enable/disable xdebug via http"
+        echo "  build           Build the docker image for the php containers"
+        echo "  start           Start the development environment (checks and prepares the environment first)"
+        echo "  list            Show the list of commands"
+    fi
+}
+
+if [[ -z "$1" ]]; then
+    echo "No command given" >&2
+    usage
+    exit 1
+fi
+
+[[ -f .env ]] || cp .env.example .env
+[[ -f docker-compose.yml ]] || cp docker-compose.example.yml docker-compose.yml
+
+# create a random key with $1 length
+randomKey()
+{
+    if [[ "$1" -ne "$1" ]]; then
+        echo "[randomKey] first parameter has to be a number"
+        exit 128;
+    fi
+
+    # openssl rand...: generate a random base64 string with at least $1 bytes
+    # tr -d...: remove special characters (base 62)
+    # cut -b...: get the first $1 characters
+    echo $(openssl rand -base64 $1 | \
+      tr -d + | tr -d / | \
+      cut -b1-$1
+    )
+}
+
+# command env
+setupEnvironment() {
+    # parse options
+    OPTS=`getopt -o fhq --long force,help,quiet -n "$0 env" -- "$@"`
+    if [[ $? != 0 ]] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+    eval set -- "$OPTS"
+
+    # set defaults and reading options
+    force=false
+    quiet=false
+    while true; do
+      case "$1" in
+        -f | --force ) force=true; shift ;;
+        -q | --quiet ) quiet=true; shift ;;
+        -h | --help ) usage "env"; exit 0 ;; # print usage for env command and exit
+        -- ) shift; break ;;
+        * ) break ;;
+      esac
+    done
+
+    # read the current .env file
+    source .env
+
+    # check if database password is defined
+    if [[ -z "$DB_PASSWORD" ]] || ${force}; then
+        DB_PASSWORD=$(randomKey 12)
+        sed -i.f -e 's/^DB_PASSWORD=.*$/DB_PASSWORD='"$DB_PASSWORD"'/' .env && rm .env.f
+    fi
+
+    # check if user id is defined
+    if [[ -z "$PUID" ]] || ${force}; then
+        PUID=$(id -u)
+        sed -i.f -e 's/^PUID=.*$/PUID='"$PUID"'/' .env && rm .env.f
+    fi
+
+    # check if group id is defined
+    if [[ -z "$PGID" ]] || ${force}; then
+        PGID=$(id -g)
+        sed -i.f -e 's/^PGID=.*$/PGID='"$PGID"'/' .env && rm .env.f
+    fi
+
+    # check if network ip is defined
+    if [[ -z "$NETWORK_IP" ]] || ${force}; then
+        NETWORK_IP=10.127.1.1
+        sed -i.f -e 's/^NETWORK_IP=.*$/NETWORK_IP='"$NETWORK_IP"'/' .env && rm .env.f
+    fi
+
+    # check if network ip is defined
+    if [[ -z "$PROJECT_PATH" ]] || ${force}; then
+        PROJECT_PATH=${BASE_PATH}
+        sed -i.f -e 's#^PROJECT_PATH=.*$#PROJECT_PATH='"$PROJECT_PATH"'#' .env && rm .env.f
+    fi
+
+    if ! ${quiet}; then
+        echo "You environment has been setup successfully."
+        echo "You can now start the development environment with > $0 start"
+        echo ""
+        echo "We suggest to put $NETWORK_IP to your /etc/hosts file with anything.localhost - otherwise recaptcha"
+        echo "will not work as expected. Alternatively you could modify the ips and maybe the ports for localhost"
+        echo "in docker-compose.yml"
+    fi
+}
+
+startEnvironment() {
+    # prepare the environment
+    setupEnvironment --quiet
+
+    # start the environment
+    set +e
+    docker-compose up -d
+    set -e
+
+    # show info when errors appear
+    if [[ $? -ne "0" ]]; then
+        echo "###########################################"
+        echo "############ AN ERROR OCCURRED ############"
+        echo "###########################################"
+        echo "Read the output above and find a solution below."
+        echo ""
+        echo "'could not find an available [...] IPv4 address pool [...] to assign to the network'"
+        echo "  By default we are using the network in the range of 10.127.[0-128] for our networks. If "
+        echo "  a route for this network already exists this error is shown."
+        echo "  SOLUTION: change the network to use in docker-compose.yml"
+    else
+        echo "The application should now be available at http://$NETWORK_IP"
+        echo "Emails will be sent to http://$NETWORK_IP:8025"
+    fi
+}
+
+command=$1 && shift;
+case "$command" in
+    "env") setupEnvironment "$@";;
+    "build") buildPhpImage "$@";;
+    "start") startEnvironment;;
+    "list") usage;;
+    "xdebug") xdebugCmd;;
+    *) echo "unknown command $command" >&2; usage; exit 1;;
+esac

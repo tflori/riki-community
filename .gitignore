@@ -1,7 +1,6 @@
 /vendor
 /.env
 /docker-compose.yml
-/docker/php/xdebug.ini
 /node_modules
 /public/bundle*
 /tests/coverage
