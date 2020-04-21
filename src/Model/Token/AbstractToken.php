@@ -74,17 +74,17 @@ abstract class AbstractToken extends Entity
 
         for ($pos = $len - 1; $pos > 0; $pos--) {
             $factor = bcpow($base, $pos);
-            $result .= $alphabet{bcdiv($decimal, $factor, 0)};
+            $result .= $alphabet[bcdiv($decimal, $factor, 0)];
             $decimal = bcmod($decimal, $factor);
         }
-        $result .= $alphabet{(int)$decimal};
+        $result .= $alphabet[(int)$decimal];
 
         if (strlen($result) > $length) {
             // return end when length > expected
             return substr($result, -$length);
         } elseif (strlen($result) < $length) {
             // prepend first char from alphabet when length < expected
-            return str_repeat($alphabet{0}, $length - strlen($result)) . $result;
+            return str_repeat($alphabet[0], $length - strlen($result)) . $result;
         } else {
             return $result;
         }
