@@ -70,12 +70,12 @@ jobs:
         - docker info
         - rm .dockerignore # this file is only for development
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
-        - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
+        - docker run --rm -v $(pwd):/community -w /community iras/node:12 npm install
       name: "php"
       script:
         - rm -Rf vendor
-        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:1 composer install --no-dev --no-ansi --optimize-autoloader
-        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:lts-alpine npm run build
+        - docker run --rm -v $(pwd):/community -w /community iras/php7-composer:3 composer install --no-dev --no-ansi --optimize-autoloader
+        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:iras/node:12 npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG --file docker/php/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-php:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-php:latest &&
@@ -94,10 +94,10 @@ jobs:
         - docker info
         - rm .dockerignore # this file is only for development
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin $DOCKER_REGISTRY
-        - docker run --rm -v $(pwd):/community -w /community node:lts-alpine npm install
+        - docker run --rm -v $(pwd):/community -w /community iras/node:12 npm install
       name: "nginx"
       script:
-        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production node:lts-alpine npm run build
+        - docker run --rm -v $(pwd):/community -w /community -e NODE_ENV=production iras/node:12 npm run build
         - if [ ! -z "$TRAVIS_TAG" ]; then
             docker build --tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG --file docker/nginx/Dockerfile . &&
             docker tag $DOCKER_REGISTRY/riki-community-nginx:$TRAVIS_TAG $DOCKER_REGISTRY/riki-community-nginx:latest &&
