@@ -4344,5 +4344,6 @@
         "ext-redis": "*",
         "php": "^7.1"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
