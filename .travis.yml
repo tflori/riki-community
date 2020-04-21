@@ -33,7 +33,7 @@ jobs:
       before_script:
         - composer install --no-interaction
       script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text --debug
+        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
       after_success: []
 
     - stage: "Test"
