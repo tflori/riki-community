@@ -78,6 +78,6 @@ class RequestHandler implements RequestHandlerInterface
 
         return count($parameters) > 0 &&
             $parameters[0]->hasType() &&
-            in_array($parameters[0]->getType(), self::REQUEST_TYPES);
+            in_array($parameters[0]->getType()->getName(), self::REQUEST_TYPES);
     }
 }
