@@ -18,13 +18,16 @@ class Cache extends AbstractCommand
     public function __construct(Application $app, Console $console)
     {
         parent::__construct($app, $console);
-        $this->addOption(Option::create(null, 'clear')->setDescription('Clear the cache'));
+        $this->addOption(Option::create(null, 'clear')
+            ->setDescription('Clear the cache'));
+        $this->addOption(Option::create('f', 'force')
+            ->setDescription('Force cache if caching is disabled in this environment'));
     }
 
 
     public function handle(GetOpt $getOpt): int
     {
-        if (!$this->app->environment->canCacheConfig()) {
+        if (!$this->app->environment->canCacheConfig() && !$getOpt->getOption('force')) {
             $this->console->warn('The environment does not allow to cache the configuration!');
             return 0;
         }
