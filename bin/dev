@@ -25,9 +25,18 @@ usage() {
                 echo "  -u | --update    Try to update the base image"
                 echo "  -h | --help      Show this help screen"
             ;;
-            "start") ;;
-            "list") ;;
-            "xdebug") ;;
+            "start")
+                echo "start the local development environment"
+            ;;
+            "xdebug")
+                echo "check the status, enable or disable xdebug"
+                echo ""
+                echo "Sub Commands:"
+                echo "  [status]     Show the current status of xdebug"
+                echo "  enable       Enable xdebug"
+                echo "  disable      Disable xdebug"
+                echo "  help         Show this information"
+            ;;
         esac
     else
         echo "$0 <command> [options]"
