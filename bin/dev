@@ -33,10 +33,12 @@ usage() {
         echo "$0 <command> [options]"
         echo ""
         echo "Actions:"
-        echo "  env             Create missing environment variables"
-        echo "  xdebug          Show xdebug status or enable/disable xdebug via http"
-        echo "  build           Build the docker image for the php containers"
         echo "  start           Start the development environment (checks and prepares the environment first)"
+        echo "  xdebug          Show xdebug status or enable/disable xdebug via http"
+        echo "  cli             execute a cli command (todo)"
+        echo "  sh              start a shell on on a container (todo)"
+        echo "  build           Build the docker image for the php containers"
+        echo "  env             Create missing environment variables"
         echo "  list            Show the list of commands"
     fi
 }
@@ -51,8 +53,7 @@ fi
 [[ -f docker-compose.yml ]] || cp docker-compose.example.yml docker-compose.yml
 
 # create a random key with $1 length
-randomKey()
-{
+randomKey() {
     if [[ "$1" -ne "$1" ]]; then
         echo "[randomKey] first parameter has to be a number"
         exit 128;
@@ -130,6 +131,27 @@ setupEnvironment() {
     fi
 }
 
+# command build
+buildPhpImage() {
+    # parse options
+    OPTS=`getopt -o uh --long update,help -n "$0 env" -- "$@"`
+    if [[ $? != 0 ]] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+    # set defaults and reading options
+    pull=""
+    while true; do
+      case "$1" in
+        -u | --update ) pull="--pull"; shift ;;
+        -h | --help ) usage "build"; exit 0 ;; # print usage for env command and exit
+        -- ) shift; break ;;
+        * ) break ;;
+      esac
+    done
+
+    docker-compose build ${pull} php
+}
+
+# command start
 startEnvironment() {
     # prepare the environment
     setupEnvironment --quiet
@@ -156,12 +178,42 @@ startEnvironment() {
     fi
 }
 
+xdebugCmd() {
+    xdebugEnable() {
+        # prepare the environment
+        setupEnvironment --quiet
+        export PHP_FPM_ARGS=$(echo $PHP_FPM_ARGS | sed 's/-dzend_extension=xdebug.so//')" -dzend_extension=xdebug.so"
+        docker-compose up -d
+        xdebugStatus
+    }
+
+    xdebugDisable() {
+        # prepare the environment
+        setupEnvironment --quiet
+        export PHP_FPM_ARGS=$(echo $PHP_FPM_ARGS | sed 's/-dzend_extension=xdebug.so//')
+        docker-compose up -d
+        xdebugStatus
+    }
+
+    xdebugStatus() {
+        cmd=$(docker-compose ps -q php | xargs docker inspect --format '{{.Config.Cmd}}' | tr -d '[]')
+        [[ $cmd =~ "-dzend_extension=xdebug.so" ]] && echo 'enabled' || echo 'disabled'
+    }
+
+    case "$1" in
+        "disable") xdebugDisable;;
+        "enable") xdebugEnable;;
+        "status") xdebugStatus;;
+        *) xdebugStatus;;
+    esac
+}
+
 command=$1 && shift;
 case "$command" in
     "env") setupEnvironment "$@";;
     "build") buildPhpImage "$@";;
     "start") startEnvironment;;
+    "xdebug") xdebugCmd "$@";;
     "list") usage;;
-    "xdebug") xdebugCmd;;
     *) echo "unknown command $command" >&2; usage; exit 1;;
 esac
