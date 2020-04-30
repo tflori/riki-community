@@ -1,6 +1,13 @@
 # About this framework
 
-The ríki framework is a micro framework. At the moment I'm writing this it contains only five classes (four of them are
+The concept of riki-framework is to write frameworkless. The framework is just providing some very basics that you
+need in every application. Frameworkless development sounds in the first place like a lot of more work to do. But in
+fact it is just more factories for the libraries you need.
+
+These factories could be added to the framework itself but it would make it too specific. Then we just had more
+dependencies to other libraries that you might not need or want to use other libraries.
+
+Ríki-framework is a micro framework. At the moment I'm writing this it contains only five classes (four of them are
 abstract and one is an exception). Also it has only two dependencies: `symfony/dotenv` for reading a `.env` file with
 custom configuration for an instance and `tflori/dependency-injector` as a lightweight dependency injection system with
 PSR-11 compatibility.
