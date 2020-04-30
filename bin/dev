@@ -226,7 +226,7 @@ xdebugCmd() {
 execCli() {
     # start the whole environment if php is not up
     if ! docker-compose ps php|grep Up > /dev/null; then
-        echo "Local environment is not started, trying to start it..."
+        echo "Local environment is not running, trying to start it..."
         startEnvironment
         echo ""
     fi
@@ -241,7 +241,7 @@ openShell() {
 
     # start the whole environment if php is not up
     if ! docker-compose ps php | grep Up > /dev/null; then
-        echo "Local environment is not started, trying to start it..."
+        echo "Local environment is not running, trying to start it..."
         startEnvironment
         echo ""
     fi
