@@ -54,8 +54,12 @@ use Whoops;
  */
 class Application extends \Riki\Application
 {
-    public function __construct(string $basePath)
+    /** @var Whoops\Run */
+    protected $whoops;
+
+    public function __construct(string $basePath, Whoops\Run $whoops = null)
     {
+        $this->whoops = $whoops;
         parent::__construct($basePath);
 
         // bootstrap the application
@@ -69,9 +73,10 @@ class Application extends \Riki\Application
         // Register a namespace for factories
         $this->registerNamespace('App\Factory', 'Factory');
 
-        // Register shared instances / classes
+        $this->instance('whoops', $this->whoops ?? $this->make(Whoops\Run::class));
+
         $this->share('cssInliner', CssToInlineStyles::class);
-        $this->instance('whoops', $this->make(Whoops\Run::class, $this->make(Whoops\Util\SystemFacade::class)));
+
         $this->instance('entityManager', new EntityManager([
             EntityManager::OPT_CONNECTION => $this->config->dbConfig,
             'tableNameTemplate' => '%short%s',

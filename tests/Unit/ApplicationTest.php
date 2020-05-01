@@ -8,6 +8,7 @@ use App\Service\Exception\ConsoleHandler;
 use App\Service\Exception\LogHandler;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Whoops\Run;
 use Whoops\Util\SystemFacade;
 
 class ApplicationTest extends MockeryTestCase
@@ -31,21 +32,17 @@ class ApplicationTest extends MockeryTestCase
     /** @test */
     public function registersErrorHandler()
     {
-        /** @var m\MockInterface|Application $app */
-        $app = m::mock(Application::class)->makePartial();
-        $app->instance(SystemFacade::class, $this->systemFacade);
-
         $this->systemFacade->shouldReceive('setErrorHandler')->once();
         $this->systemFacade->shouldReceive('setExceptionHandler')->once();
         $this->systemFacade->shouldReceive('registerShutdownFunction')->once();
 
-        $app->__construct('/app');
+        new Application('/app', new Run($this->systemFacade));
     }
 
     /** @test */
     public function definesAnErrorHandlerForLogging()
     {
-        $app = new Application('/app');
+        $app = new Application('/app', new Run($this->systemFacade));
 
         self::assertInstanceOf(LogHandler::class, $app->whoops->popHandler());
     }
@@ -53,7 +50,7 @@ class ApplicationTest extends MockeryTestCase
     /** @test */
     public function prependsAndRemovesHandlerFromKernel()
     {
-        $app = new Application('/app');
+        $app = new Application('/app', new Run($this->systemFacade));
 
         $kernelHandler = new ConsoleHandler();
         $kernel = m::mock(Kernel::class);
