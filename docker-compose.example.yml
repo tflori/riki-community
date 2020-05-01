@@ -59,14 +59,17 @@ services:
 
   php:
     build:
-      context: "."
-      dockerfile: "docker/php-dev/Dockerfile"
+      context: "./docker/php-dev"
+      args:
+        - "UID=${PUID}"
+        - "GID=${PGID}"
     depends_on:
       - postgres
       - mailhog
       - redis
     working_dir: "/community"
-    command: "run ${PHP_FPM_ARGS-}"
+    user: www-user
+    command: "php-fpm ${PHP_FPM_ARGS-}"
     volumes:
       - ".:/community"
       - "./storage/logs:/var/log/php"
