@@ -1,6 +1,11 @@
 #!/bin/sh
 
-PATH="/community/bin:/community/vendor/bin:/community/node_modules/.bin:$PATH"
+if which php >/dev/null; then
+    PATH="/community/bin:/community/vendor/bin:$PATH"
+fi
+if which node >/dev/null; then
+    PATH="/community/node_modules/.bin:$PATH"
+fi
 
 if [[ $- != *i* ]] ; then
 	# Shell is non-interactive.  Be done now!
