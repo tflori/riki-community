@@ -57,11 +57,13 @@ abstract class TestCase extends MockeryTestCase
     {
         $this->basePath = $basePath;
 
+        $whoops = new Whoops\Run(m::mock(Whoops\Util\SystemFacade::class)->shouldIgnoreMissing());
+
         /** @var Application|m\Mock $app */
         $app = $this->app = m::mock(Application::class)->makePartial();
         $app->shouldReceive('make')->passthru()->byDefault();
         $app->shouldReceive('get')->passthru()->byDefault();
-        $app->__construct($basePath);
+        $app->__construct($basePath, $whoops);
         $app->registerNamespace('Test\Factory', 'Factory');
 
         $this->initDependencies();
