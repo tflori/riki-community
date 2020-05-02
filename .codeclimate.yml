@@ -1,0 +1,30 @@
+version: "2"
+
+checks:
+  method-complexity:
+    config:
+      threshold: 10
+
+exclude_patterns:
+  - "config/"
+  - "db/"
+  - "dist/"
+  - "docs/"
+  - "features/"
+  - "**/node_modules/"
+  - "script/"
+  - "js/prim.js"
+  - "**/spec/"
+  - "**/test/"
+  - "**/tests/"
+  - "Tests/"
+  - "example.php"
+  - "**/vendor/"
+  - "**/*_test.go"
+  - "**/*.d.ts"
+
+plugins:
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "PSR2"
