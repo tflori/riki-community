@@ -44,8 +44,7 @@ class Cache extends AbstractCommand
         if ($getOpt->getOption('clear')) {
             // remove the configuration cache
             if (file_exists($cachePath) && !@unlink($cachePath)) {
-                // when the file exists we usually can unlink
-                //   except the directory is not writable but this is fetched earlier
+                // unreachable during tests
                 // @codeCoverageIgnoreStart
                 $this->console->error('Failed to clear the configuration cache!');
                 return 4;
@@ -57,8 +56,11 @@ class Cache extends AbstractCommand
             // create a fresh configuration (don't use the cached version)
             $config = new Config($this->app->environment);
             if (!@file_put_contents($cachePath, serialize($config))) {
+                // unreachable during tests
+                // @codeCoverageIgnoreStart
                 $this->console->error('Failed to cache the configuration!');
                 return 3;
+                // @codeCoverageIgnoreEnd
             }
 
             $this->console->info('Configuration cache created successfully!');

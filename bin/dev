@@ -46,6 +46,7 @@ usage() {
         echo "  xdebug          Show xdebug status or enable/disable xdebug via http"
         echo "  cli             execute a cli command (use --help for more info)"
         echo "  sh              start a shell on on a container"
+        echo "  test            execute tests (todo)"
         echo "  build           Build the docker image for the php containers"
         echo "  env             Create missing environment variables"
         echo "  list            Show the list of commands"
@@ -245,7 +246,6 @@ openShell() {
         startEnvironment
         echo ""
     fi
-#  set -l script
 
     if ! docker-compose ps | grep Up >/dev/null | grep $service; then
         docker-compose exec -u $uid $service sh -c "exec bash -l"
@@ -255,12 +255,35 @@ openShell() {
     fi
 }
 
+testCmd() {
+    uid=$(id -u)
+
+     # start the whole environment if php is not up
+    if ! docker-compose ps php | grep Up > /dev/null; then
+        echo "Local environment is not running, trying to start it..."
+        startEnvironment
+        echo ""
+    fi
+
+    case "$1" in
+        "php")
+            docker-compose exec -u $uid php /usr/bin/phpdbg -qrr vendor/bin/phpunit --coverage-html tests/coverage/php
+            xdg-open tests/coverage/php/index.html
+        ;;
+        "js")
+            docker-compose run --rm -u $uid npm test
+            xdg-open tests/coverage/js/index.html
+        ;;
+    esac
+}
+
 command=$1 && shift;
 case "$command" in
     "env") setupEnvironment "$@";;
     "build") buildPhpImage "$@";;
     "start") startEnvironment;;
     "xdebug") xdebugCmd "$@";;
+    "test") testCmd "$@";;
     "cli") execCli "$@";;
     "sh") openShell "$@";;
     "list") usage;;

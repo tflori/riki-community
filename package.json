@@ -61,9 +61,10 @@
     },
     "coverageReporters": [
       "text",
+      "html",
       "lcov"
     ],
-    "coverageDirectory": "tests/coverage",
+    "coverageDirectory": "tests/coverage/js",
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/tests/"

@@ -1,66 +1,109 @@
+stages:
+  - "Prepare"
+  - "Test"
+  - "Report"
+  - "Build"
+
 language: php
 cache:
   directories:
     - $HOME/.composer/cache
-before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_install:
+  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-rm xdebug.ini
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
+  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+  - aws s3 sync s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
 
 jobs:
   include:
+    - stage: "Prepare"
+      name: "Prepare coverage reports"
+      install:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+      script:
+        - ./cc-test-reporter before-build
+
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.2)"
       php: 7.2
-      before_script:
+      install:
         - composer install --no-interaction
       script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
-      after_success: []
+        - vendor/bin/phpunit -c phpunit.xml --color=always
+      after_script: []
 
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.3)"
       php: 7.3
-      before_script:
+      install:
         - composer install --no-interaction
-        - composer require php-coveralls/php-coveralls
-        - mkdir -p build/logs
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
       script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-clover=build/logs/clover.xml --coverage-text
-      after_success:
-        - vendor/bin/php-coveralls -v
+        - phpdbg -qrr vendor/bin/phpunit -c phpunit.xml --color=always
+            --coverage-clover=tests/coverage/clover.xml --coverage-text
+      after_script:
+        - ./cc-test-reporter format-coverage tests/coverage/clover.xml -t clover
+          -o ~/$TRAVIS_BUILD_NUMBER/cc.backend.json
+        - ls -lAh ~/$TRAVIS_BUILD_NUMBER
+        - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER
+        - ls -lAh ~/$TRAVIS_BUILD_NUMBER
 
     - stage: "Test"
       name: "PHPUnit Tests (PHP 7.4)"
       php: 7.4
-      before_script:
+      install:
         - composer install --no-interaction
       script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
-      after_success: []
+        - vendor/bin/phpunit -c phpunit.xml --color=always
+      after_script: []
 
     - stage: "Test"
       name: "Code Style"
-      language: php
       php: 7.3
       cache:
         directories:
           - $HOME/.composer/cache
-      before_install: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-      before_script:
+      install:
         - composer install --no-interaction
       script:
         - composer code-style
-      after_success: []
+      after_script: []
 
     - stage: "Test"
       name: "Jest Tests"
       language: node_js
       node_js:
         - 8
-      before_script:
+      install:
         - npm install coveralls
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
       script:
         - npm test -- --color --verbose
+      after_script:
+        - ./cc-test-reporter format-coverage tests/coverage/js/lcov.info -t lcov
+          -o ~/$TRAVIS_BUILD_NUMBER/cc.frontend.json
+        - ls -lAh ~/$TRAVIS_BUILD_NUMBER
+        - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER
+        - ls -lAh ~/$TRAVIS_BUILD_NUMBER
+
+    - stage: "Report"
+      name: "Report coverage"
+      install:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+      before_script:
+        - ls -lAh ~/$TRAVIS_BUILD_NUMBER
+      script:
+        - ./cc-test-reporter sum-coverage ~/$TRAVIS_BUILD_NUMBER/cc.*.json  -p 2
+        - ./cc-test-reporter upload-coverage
       after_success:
-        - npm run coveralls
+        - aws s3 rm --recursive s3://tf-coverage-reports/$TRAVIS_BUILD_NUMBER
 
     - stage: "Build"
       if: (!fork) AND (type != pull_request)
