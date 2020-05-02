@@ -10,6 +10,7 @@ cache:
     - $HOME/.composer/cache
 before_install:
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-rm xdebug.ini
   - pyenv global 3.7.1
   - pip install -U pip
   - pip install awscli
@@ -58,7 +59,7 @@ jobs:
       install:
         - composer install --no-interaction
       script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always --coverage-text
+        - vendor/bin/phpunit -c phpunit.xml --color=always
       after_script: []
 
     - stage: "Test"
