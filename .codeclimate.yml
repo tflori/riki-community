@@ -13,7 +13,7 @@ exclude_patterns:
   - "features/"
   - "**/node_modules/"
   - "script/"
-  - "js/prim.js"
+  - "js/prism.js"
   - "**/spec/"
   - "**/test/"
   - "**/tests/"
