@@ -3,4 +3,3 @@
 /docker-compose.yml
 /node_modules
 /public/bundle*
-/tests/coverage

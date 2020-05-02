@@ -86,7 +86,7 @@ jobs:
       script:
         - npm test -- --color --verbose
       after_script:
-        - ./cc-test-reporter format-coverage tests/coverage/lcov.info -t lcov
+        - ./cc-test-reporter format-coverage tests/coverage/js/lcov.info -t lcov
           -o ~/$TRAVIS_BUILD_NUMBER/cc.frontend.json
         - ls -lAh ~/$TRAVIS_BUILD_NUMBER
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER
