@@ -4,6 +4,7 @@ namespace App\Http\Concerns;
 
 use App\Application;
 use App\Http\HttpKernel;
+use App\Model\ErrorResponse;
 use App\Model\Request;
 use Exception;
 use Tal\ServerResponse;
@@ -14,46 +15,17 @@ trait GeneratesResponses
     /**
      * Returns a error response
      *
-     * @param int       $status
-     * @param string    $reason
-     * @param string    $message
-     * @param array     $errors
-     * @param Throwable $exception
-     *
-     * @return ServerResponse
+     * @param int    $status
+     * @param string $reason
+     * @param string $message
+     * @return ErrorResponse
      */
     protected function error(
         int $status,
         string $reason,
-        string $message,
-        array $errors = [],
-        Throwable $exception = null,
-        Request $request = null
-    ): ServerResponse {
-        if (!$request) {
-            $request = $this->request ?? HttpKernel::currentRequest() ?? Request::fromGlobals();
-        }
-        switch ($request->getPreferredContentType(['text/html', 'application/json'])) {
-            case 'application/json':
-                $data = compact('reason', 'message');
-                if (!empty($errors)) {
-                    $data['errors'] = $errors;
-                }
-                if ($exception instanceof Exception) {
-                    $data['exception'] = [
-                        'type' => get_class($exception),
-                        'message' => $exception->getMessage(),
-                        'line' => $exception->getFile() . ':' . $exception->getLine(),
-                        'trace' => base64_encode($exception->__toString()),
-                    ];
-                }
-                return $this->json($data)
-                    ->withStatus($status);
-            case 'text/html':
-            default:
-                return $this->view('error', compact('status', 'reason', 'message', 'exception'), null)
-                    ->withStatus($status);
-        }
+        string $message
+    ): ErrorResponse {
+        return (new ErrorResponse($status, $reason, $message))->setRequest($this->request ?? null);
     }
 
     /**
