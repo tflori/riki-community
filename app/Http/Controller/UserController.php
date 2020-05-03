@@ -69,7 +69,7 @@ class UserController extends AbstractController
             'name.NO_MATCH' => 'Only letters, numbers, spaces, dots and dashes are allowed',
         ]);
         if (!$valid) {
-            return $this->error(400, 'Bad Request', 'Invalid user data', $errors);
+            return $this->error(400, 'Bad Request', 'Invalid user data')->addErrors($errors);
         }
 
         $user = new User();
