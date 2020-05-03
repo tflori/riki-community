@@ -48,18 +48,12 @@ class UserController extends AbstractController
 
         list($valid, $userData, $errors) = $request->validate([
             'email' => ['required', 'notEmpty', 'emailAddress', function ($value) use ($em) {
-                if (!$value) {
-                    return true;
-                }
-                return $em->fetch(User::class)->where('email', $value)->count() === 0 ? true :
+                return !$value || $em->fetch(User::class)->where('email', $value)->count() === 0 ? true :
                     new Error('EMAIL_TAKEN', $value, 'Email address already taken');
             }],
             'password' => ['required', 'notEmpty', 'passwordStrength:50', 'equals:passwordConfirmation'],
             'displayName' => ['required', 'notEmpty', 'pregMatch:/^[\w @._-]+$/', function ($value) use ($em) {
-                if (!$value) {
-                    return true;
-                }
-                return $em->fetch(User::class)->where('displayName', $value)->count() === 0 ? true :
+                return !$value || $em->fetch(User::class)->where('displayName', $value)->count() === 0 ? true :
                     new Error('DISPLAY_NAME_TAKEN', $value, 'Display name already taken');
             }, 'strLen:1:20'],
             'name' => ['pregMatch:/^[\p{L}\p{N} .-]+$/u']
