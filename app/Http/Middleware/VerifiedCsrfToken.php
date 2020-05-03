@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Application;
+use App\Http\Concerns\GeneratesResponses;
 use App\Model\Request;
 use Community\Model\Token\AbstractToken;
 use Psr\Http\Message\ResponseInterface;
@@ -10,8 +11,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class VerifyCsrfToken implements MiddlewareInterface
+class VerifiedCsrfToken implements MiddlewareInterface
 {
+    use GeneratesResponses;
+
     /** @var Application */
     protected $app;
 
@@ -28,13 +31,13 @@ class VerifyCsrfToken implements MiddlewareInterface
     {
         $token = $request->get('csrf_token');
         $key   = $this->getKey($token ?? '');
-        if ($token && $this->app->session->get('csrfToken') &&
-            $this->app->cache->get($key) === session_id()
+        if (!$token || !$this->app->session->get('csrfToken') ||
+            $this->app->cache->get($key) !== session_id()
         ) {
-            $this->app->cache->delete($key);
-            $request = $request->withAttribute('csrfTokenVerified', true);
+            return $this->error(400, 'Bad Request', 'Invalid CSRF Token');
         }
 
+        $this->app->cache->delete($key);
         return $handler->handle($request);
     }
 

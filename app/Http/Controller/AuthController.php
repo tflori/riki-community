@@ -2,7 +2,7 @@
 
 namespace App\Http\Controller;
 
-use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\VerifiedCsrfToken;
 use Community\Model\Token\AbstractToken;
 use Community\Model\User;
 use Tal\ServerResponse;
@@ -55,18 +55,13 @@ class AuthController extends AbstractController
 
     public function logout()
     {
-        if (!$this->request->getAttribute('csrfTokenVerified', false)) {
-            return $this->error(400, 'Bad Request', 'Invalid Request Token');
-        }
-
         $this->app->session->destroy();
-
         return $this->json('OK');
     }
 
     public function getCsrfToken(): ServerResponse
     {
-        return $this->json($this->app->get(VerifyCsrfToken::class)->createToken());
+        return $this->json($this->app->get(VerifiedCsrfToken::class)->createToken());
     }
 
     protected function attemptLimitReached(array $limits, array $attempts): bool

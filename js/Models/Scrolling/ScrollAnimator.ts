@@ -15,6 +15,7 @@ export class ScrollAnimator {
 
     public stop() {
         jQuery(window).off('scroll', this.executor);
+        /* istanbul ignore else */
         if (this.worker) {
             clearTimeout(this.worker);
             this.worker = undefined;
