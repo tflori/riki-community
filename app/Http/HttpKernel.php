@@ -170,6 +170,7 @@ class HttpKernel extends \App\Kernel
         return $this->router;
     }
 
+    /** @codeCoverageIgnore trivial */
     public static function currentRequest(): ?Request
     {
         return self::$lastRequest;

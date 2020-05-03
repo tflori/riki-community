@@ -16,8 +16,6 @@ namespace App\Http;
 /** @var Router\MiddlewareRouteCollector $router */
 $r = $router;
 
-$r->addHandler(Middleware\VerifyCsrfToken::class);
-
 $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
 
@@ -29,7 +27,7 @@ $r->get('/user/activate/{token}', 'activateByToken@UserController');
 $r->get('/auth', 'getUser@AuthController');
 $r->get('/auth/token', 'getCsrfToken@AuthController');
 $r->post('/auth', 'authenticate@AuthController');
-$r->delete('/auth', 'logout@AuthController');
+$r->delete('/auth', Middleware\VerifiedCsrfToken::class, 'logout@AuthController');
 
 // example routes - comment them out and use as reference
 //$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
