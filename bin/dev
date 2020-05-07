@@ -188,6 +188,7 @@ startEnvironment() {
     else
         echo "The application should now be available at http://$NETWORK_IP"
         echo "Emails will be sent to http://$NETWORK_IP:8025"
+        echo "The database is available on $NETWORK_IP through port 5432"
     fi
     set -e
 }
