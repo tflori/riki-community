@@ -42,15 +42,15 @@ class ApplicationTest extends MockeryTestCase
     /** @test */
     public function definesAnErrorHandlerForLogging()
     {
-        $app = new Application('/app', new Run($this->systemFacade));
+        $app = new Application('/app', $whoops = new Run($this->systemFacade));
 
-        self::assertInstanceOf(LogHandler::class, $app->whoops->popHandler());
+        self::assertInstanceOf(LogHandler::class, $whoops->popHandler());
     }
 
     /** @test */
     public function prependsAndRemovesHandlerFromKernel()
     {
-        $app = new Application('/app', new Run($this->systemFacade));
+        $app = new Application('/app', $whoops = new Run($this->systemFacade));
 
         $kernelHandler = new ConsoleHandler();
         $kernel = m::mock(Kernel::class);
@@ -59,13 +59,13 @@ class ApplicationTest extends MockeryTestCase
             ->once()->andReturn([$kernelHandler]);
 
         $kernel->shouldReceive('handle')->with()
-            ->once()->andReturnUsing(function () use ($kernelHandler, $app) {
-                self::assertSame($kernelHandler, $app->whoops->getHandlers()[0]);
+            ->once()->andReturnUsing(function () use ($kernelHandler, $whoops) {
+                self::assertSame($kernelHandler, $whoops->getHandlers()[0]);
                 return 0;
             });
 
         $app->run($kernel);
 
-        self::assertInstanceOf(LogHandler::class, $app->whoops->popHandler());
+        self::assertInstanceOf(LogHandler::class, $whoops->popHandler());
     }
 }

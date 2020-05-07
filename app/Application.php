@@ -35,7 +35,6 @@ use Whoops;
  * @method static Mailer mailer()
  * @method static Redis Redis()
  * @method static SessionInstance session()
- * @method static Whoops\Run whoops()
  * @property-read Application $app
  * @property-read Cache $cache
  * @property-read Client $httpClient
@@ -50,7 +49,6 @@ use Whoops;
  * @property-read Mailer $mailer
  * @property-read Redis $redis
  * @property-read SessionInstance $session
- * @property-read Whoops\Run $whoops
  */
 class Application extends \Riki\Application
 {
@@ -73,8 +71,6 @@ class Application extends \Riki\Application
         // Register a namespace for factories
         $this->registerNamespace('App\Factory', 'Factory');
 
-        $this->instance('whoops', $this->whoops ?? $this->make(Whoops\Run::class));
-
         $this->share('cssInliner', CssToInlineStyles::class);
 
         $this->instance('entityManager', new EntityManager([
@@ -85,6 +81,7 @@ class Application extends \Riki\Application
 
     protected function initWhoops()
     {
+        $this->whoops || $this->whoops = $this->make(Whoops\Run::class);
         $this->whoops->register();
         $this->resetErrorHandlers();
     }
