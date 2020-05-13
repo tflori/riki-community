@@ -3,4 +3,12 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css');
 @import './prism';
 
+$baseHighlight: #00897b;
+$baseBackground: #f0f0f0;
+$baseForeground: #333333;
+
+$darkHighlight: #00796b;
+$darkBackground: #222222;
+$darkForeground: #e0e0e0;
+
 @import './main';

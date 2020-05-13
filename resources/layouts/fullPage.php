@@ -23,12 +23,12 @@ use App\Application;
     <?php endif; ?>
     <link rel="stylesheet" href="<?= $v->cacheBuster('/bundle.css'); ?>">
   </head>
-  <body class="grey lighten-4">
-    <div id="riki-community">
+  <body>
+    <div id="riki-community" :class="{ dark: darkmodeEnabled }">
 
       <!-- Header -->
       <header>
-        <nav class="teal darken-1">
+        <nav>
           <div class="nav-wrapper">
             <div class="logo-wrapper">
               <div id="header-background-icon"></div>
@@ -51,7 +51,7 @@ use App\Application;
 
       <!-- Toolbar -->
       <div class="navbar-fixed">
-        <nav class="teal darken-1">
+        <nav>
           <div class="nav-wrapper">
             <a href="#" class="sidenav-toggle left hide-on-large-only">
               <i class="material-icons menu-icon">menu</i><i class="material-icons close-icon">close</i>

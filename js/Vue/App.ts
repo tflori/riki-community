@@ -25,6 +25,7 @@ export default class App extends Vue {
     public data() {
         return {
             user: null,
+            darkmodeEnabled: true,
         };
     }
 
