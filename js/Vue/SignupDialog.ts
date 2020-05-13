@@ -52,7 +52,7 @@ export default class SignupDialog extends AbstractDialog {
             this.close();
             this.$root.$data.user = response.data;
         }).catch((error: any) => {
-            if (error.response && error.response.data && error.response.data.message) {
+            if (error && error.response && error.response.data && error.response.data.message) {
                 this.errorMessage = error.response.data.message;
                 if (error.response.data.message === 'Invalid user data') {
                     this.errors = error.response.data.errors;

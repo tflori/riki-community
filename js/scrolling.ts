@@ -28,26 +28,26 @@ jQuery(function ($) {
         return new ScrollAnimator([
             // toggles for header, fixed nav and left navigation
             new ScrollAnimation($fixedNav, 'display', {
-                from: headerAnimationEnd,
-                to: headerAnimationEnd,
+                from: headerAnimationEnd-1,
+                to: headerAnimationEnd-1,
                 before: 'none',
                 after: 'block',
             }),
             new ScrollAnimation($header, 'opacity', {
-                from: headerAnimationEnd,
-                to: headerAnimationEnd,
+                from: headerAnimationEnd-1,
+                to: headerAnimationEnd-1,
                 before: '1',
                 after: '0',
             }),
             new ScrollAnimation($leftNav, 'position', {
-                from: headerAnimationEnd,
-                to: headerAnimationEnd,
+                from: headerAnimationEnd-1,
+                to: headerAnimationEnd-1,
                 before: 'absolute',
                 after: 'fixed'
             }),
             new ScrollAnimation($leftNav, 'top', {
-                from: headerAnimationEnd,
-                to: headerAnimationEnd,
+                from: headerAnimationEnd-1,
+                to: headerAnimationEnd-1,
                 before: '',
                 suffix: 'px',
                 steps: [
