@@ -4,6 +4,9 @@ namespace App\Factory;
 
 use ORM\EntityManager;
 
+/**
+ * @codeCoverageIgnore em is mocked in tests and this is trivial
+ */
 class EntityManagerFactory extends AbstractFactory
 {
     protected $shared = true;

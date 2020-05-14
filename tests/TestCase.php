@@ -99,8 +99,9 @@ abstract class TestCase extends MockeryTestCase
         $this->em = $this->mocks['entityManager'] = $this->ormInitMock([
             'tableNameTemplate' => '%short%s',
         ], 'pgsql');
-        $this->mocks['pdo'] = $this->em->getConnection();
+        $pdo = $this->mocks['pdo'] = $this->em->getConnection();
         $this->app->instance('entityManager', $this->em);
+        $this->app->instance('db', $pdo);
 
         $cache = $this->mocks['cache'] = m::mock(new Cache(new ArrayAdapter()));
         $this->app->instance('cache', $cache);

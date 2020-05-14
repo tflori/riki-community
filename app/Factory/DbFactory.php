@@ -4,6 +4,9 @@ namespace App\Factory;
 
 use PDO;
 
+/**
+ * @codeCoverageIgnore We don't create database connections during tests
+ */
 class DbFactory extends AbstractFactory
 {
     protected $shared = true;
