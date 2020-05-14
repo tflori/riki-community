@@ -12,6 +12,7 @@ use Hugga\Console;
 use Monolog\Logger;
 use NbSessions\SessionInstance;
 use ORM\EntityManager;
+use PDO;
 use Redis;
 use Syna\Factory;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -26,6 +27,7 @@ use Whoops;
  * @method static Config config()
  * @method static Console console()
  * @method static CssToInlineStyles cssInliner()
+ * @method static EntityManager em()
  * @method static EntityManager entityManager()
  * @method static Environment environment()
  * @method static Factory views()
@@ -33,6 +35,7 @@ use Whoops;
  * @method static Logger logger()
  * @method static Mail mail(string $name, array $data = [])
  * @method static Mailer mailer()
+ * @method static PDO db()
  * @method static Redis Redis()
  * @method static SessionInstance session()
  * @property-read Application $app
@@ -41,12 +44,14 @@ use Whoops;
  * @property-read Config $config
  * @property-read Console $console
  * @property-read CssToInlineStyles $cssInliner
+ * @property-read EntityManager $em
  * @property-read EntityManager $entityManager
  * @property-read Environment $environment
  * @property-read Factory $views
  * @property-read Gate $gate
  * @property-read Logger $logger
  * @property-read Mailer $mailer
+ * @property-read PDO $db
  * @property-read Redis $redis
  * @property-read SessionInstance $session
  */
@@ -71,12 +76,14 @@ class Application extends \Riki\Application
         // Register a namespace for factories
         $this->registerNamespace('App\Factory', 'Factory');
 
+        // share some base classes
         $this->share('cssInliner', CssToInlineStyles::class);
 
-        $this->instance('entityManager', new EntityManager([
-            EntityManager::OPT_CONNECTION => $this->config->dbConfig,
-            'tableNameTemplate' => '%short%s',
-        ]));
+        EntityManager::setResolver(function () {
+            return $this->entityManager;
+        });
+        $this->alias('entityManager', 'em');
+        $this->alias('entityManager', EntityManager::class);
     }
 
     protected function initWhoops()

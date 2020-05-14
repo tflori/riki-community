@@ -125,7 +125,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
         if (!$this->breyta) {
             $this->breyta = $this->app->make(
                 Migrations::class,
-                $this->app->entityManager->getConnection(),
+                $this->app->db,
                 $this->app->environment->resourcePath('database', 'migrations')
             );
             $this->breyta->setProgress($this);
