@@ -16,6 +16,7 @@ usage() {
                 echo ""
                 echo "Options:"
                 echo "  -f | --force    Ignore that environment variables exist and create new keys/passwords"
+                echo "  -q | --quiet    Dont output the outcome"
                 echo "  -h | --help     Show this help screen"
             ;;
             "build")
@@ -43,11 +44,16 @@ usage() {
         echo ""
         echo "Actions:"
         echo "  start           Start the development environment (checks and prepares the environment first)"
+        echo "  status          Show the status of the development environment"
+        echo "  stop            Stop the development environment"
+        echo "  restart         Restart the development environment"
         echo "  xdebug          Show xdebug status or enable/disable xdebug via http"
         echo "  cli             execute a cli command (use --help for more info)"
         echo "  sh              start a shell on on a container"
         echo "  test            execute tests (todo)"
         echo "  build           Build the docker image for the php containers"
+        echo "  composer        Execute a composer command"
+        echo "  npm             Execute a npm command"
         echo "  env             Create missing environment variables"
         echo "  list            Show the list of commands"
     fi
@@ -62,8 +68,29 @@ fi
 [[ -f .env ]] || cp .env.example .env
 [[ -f docker-compose.yml ]] || cp docker-compose.example.yml docker-compose.yml
 
+# create or replace an env var if not exists
+function checkEnvVar() {
+    if [ -z $2 ]; then
+        echo "This command requires exactly 2 parameters"
+        exit 1
+    fi
+
+    local key=$1
+    local default=$2
+    local force=$3
+
+    source .env
+    if [[ -z "${!key}" ]] || [[ $force == "1" ]]; then
+        if egrep -e "^${key}=" .env > /dev/null 2>&1; then
+            sed -i.f -e 's#^'$key'=.*$#'$key'='$default'#' .env && rm .env.f
+        else
+            echo $key'='$default >> .env
+        fi
+    fi
+}
+
 # create a random key with $1 length
-randomKey() {
+function randomKey() {
     if [[ "$1" -ne "$1" ]]; then
         echo "[randomKey] first parameter has to be a number"
         exit 128;
@@ -79,63 +106,76 @@ randomKey() {
 }
 
 # command env
-setupEnvironment() {
+function setupEnvironment() {
     # parse options
-    OPTS=`getopt -o fhq --long force,help,quiet -n "$0 env" -- "$@"`
+    OPTS=`getopt -o fhqub:l:n: --long force,help,quiet,update,base-port:,listen-ip:,network-ip: -n "$0 env" -- "$@"`
     if [[ $? != 0 ]] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
     eval set -- "$OPTS"
 
     # set defaults and reading options
-    force=false
-    quiet=false
+    local force=0
+    local quiet=false
+    local basePort=0
+    local networkIp=10.127.1.0
+    local listenIp=
+    local update=0
     while true; do
       case "$1" in
-        -f | --force ) force=true; shift ;;
+        -f | --force ) force=1; update=1; shift ;;
         -q | --quiet ) quiet=true; shift ;;
+        -b | --base-port ) shift; basePort=$1; shift ;;
+        -l | --listen-ip ) shift; listenIp=$1; shift ;;
+        -n | --network-ip ) shift; networkIp=$1; shift ;;
+        -u | --update ) update=1; shift ;;
         -h | --help ) usage "env"; exit 0 ;; # print usage for env command and exit
         -- ) shift; break ;;
         * ) break ;;
       esac
     done
 
-    # read the current .env file
+    checkEnvVar PROJECT_PATH $BASE_PATH $update
+    checkEnvVar DB_PASSWORD $(randomKey 12) $force
+    checkEnvVar PUID $(id -u)  $update
+    checkEnvVar PGID $(id -g) $update
+    checkEnvVar NETWORK_IP $networkIp $update
+
+    if [[ -z $listenIp ]]; then
+        case "$(uname -s)" in
+            "Linux")
+                # we assume docker environment runs on the host
+                # we can use the network ip of the host inside the network to use
+                # e. g. network ip is 10.127.1.0, the host ip is 10.127.1.1
+                listenIp=$(echo $networkIp|cut -d'.' -f1-3)".1"
+                basePort=0
+            ;;
+            *)
+                # we assume docker environment gets executed in a vm
+                # we listen on localhost with the base port + default port (mod 100)
+                # e. g. postgres's default port is 5432, the base port 4200 = 4232
+                # e. g. http's default port is 80, the base port 2300 = 2380
+                listenIp=127.0.0.1
+                [[ "$basePort" -gt "1000" ]] || basePort=4200
+            ;;
+        esac
+    fi
+
+    function getPort() {
+        [[ $basePort -gt "1000" ]] && echo $(( $basePort + ($1 % 100) )) || echo $1;
+    }
+
+    checkEnvVar LISTEN_IP $listenIp $update
+    checkEnvVar HTTP_PORT $(getPort 80) $update
+    checkEnvVar MAILHOG_PORT $(getPort 8025) $update
+    checkEnvVar POSTGRES_PORT $(getPort 5432) $update
+
+    # read the new .env file
     source .env
-
-    # check if database password is defined
-    if [[ -z "$DB_PASSWORD" ]] || ${force}; then
-        DB_PASSWORD=$(randomKey 12)
-        sed -i.f -e 's/^DB_PASSWORD=.*$/DB_PASSWORD='"$DB_PASSWORD"'/' .env && rm .env.f
-    fi
-
-    # check if user id is defined
-    if [[ -z "$PUID" ]] || ${force}; then
-        PUID=$(id -u)
-        sed -i.f -e 's/^PUID=.*$/PUID='"$PUID"'/' .env && rm .env.f
-    fi
-
-    # check if group id is defined
-    if [[ -z "$PGID" ]] || ${force}; then
-        PGID=$(id -g)
-        sed -i.f -e 's/^PGID=.*$/PGID='"$PGID"'/' .env && rm .env.f
-    fi
-
-    # check if network ip is defined
-    if [[ -z "$NETWORK_IP" ]] || ${force}; then
-        NETWORK_IP=10.127.1.1
-        sed -i.f -e 's/^NETWORK_IP=.*$/NETWORK_IP='"$NETWORK_IP"'/' .env && rm .env.f
-    fi
-
-    # check if network ip is defined
-    if [[ -z "$PROJECT_PATH" ]] || ${force}; then
-        PROJECT_PATH=${BASE_PATH}
-        sed -i.f -e 's#^PROJECT_PATH=.*$#PROJECT_PATH='"$PROJECT_PATH"'#' .env && rm .env.f
-    fi
 
     if ! ${quiet}; then
         echo "You environment has been setup successfully."
         echo "You can now start the development environment with > $0 start"
         echo ""
-        echo "We suggest to put $NETWORK_IP to your /etc/hosts file with anything.localhost - otherwise recaptcha"
+        echo "We suggest to put $listenIp to your /etc/hosts file with anything.localhost - otherwise recaptcha"
         echo "will not work as expected. Alternatively you could modify the ips and maybe the ports for localhost"
         echo "in docker-compose.yml"
     fi
@@ -166,6 +206,10 @@ startEnvironment() {
     # prepare the environment
     setupEnvironment --quiet
 
+    # install dependencies
+    [[ -d "./vendor" ]] || $0 composer install
+    [[ -d "./node_modules" ]] || $0 npm install
+
     # start the environment
     set +e
     docker-compose up -d
@@ -186,9 +230,9 @@ startEnvironment() {
         echo "  SOLUTION: Restore the original docker-compose.example.yml"
         exit 1
     else
-        echo "The application should now be available at http://$NETWORK_IP"
-        echo "Emails will be sent to http://$NETWORK_IP:8025"
-        echo "The database is available on $NETWORK_IP through port 5432"
+        echo "The application should now be available at http://$LISTEN_IP:$HTTP_PORT"
+        echo "Emails will be sent to http://$NETWORK_IP:$MAILHOG_PORT"
+        echo "The database is available on $NETWORK_IP through port $POSTGRES_PORT"
     fi
     set -e
 }
@@ -278,14 +322,36 @@ testCmd() {
     esac
 }
 
+composer() {
+    docker-compose run --rm composer "$@"
+}
+
+npm() {
+    docker-compose run --rm npm "$@"
+}
+
+postgres() {
+    # prepare the environment
+    setupEnvironment --quiet
+    export PGPASSWORD=$DB_PASSWORD
+    exec psql -p $POSTGRES_PORT  -h $LISTEN_IP -U ${DB_USERNAME-riki} -d \
+        ${DB_DATABASE-riki_community} "$@"
+}
+
 command=$1 && shift;
 case "$command" in
     "env") setupEnvironment "$@";;
     "build") buildPhpImage "$@";;
     "start") startEnvironment;;
+    "stop") docker-compose stop;;
+    "status") docker-compose ps;;
+    "restart") docker-compose restart;;
     "xdebug") xdebugCmd "$@";;
     "test") testCmd "$@";;
     "cli") execCli "$@";;
+    "composer") composer "$@";;
+    "npm") npm "$@";;
+    "psql") postgres "$@";;
     "sh") openShell "$@";;
     "list") usage;;
     *) echo "unknown command $command" >&2; usage; exit 1;;
