@@ -11,13 +11,9 @@ use Test\TestCase;
 
 class UserTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->ormAllowFetch(ActivationCode::class)[0]->byDefault();
-        $this->ormAllowFetch(ActivationToken::class)[0]->byDefault();
-        $this->ormAllowFetch(PasswordResetToken::class)[0]->byDefault();
-        $this->ormAllowFetch(RememberToken::class)[0]->byDefault();
     }
 
     /** @dataProvider provideNotAllowedStatuses

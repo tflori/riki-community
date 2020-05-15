@@ -18,7 +18,7 @@ use Test\TestCase;
 
 class RegisterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -24,7 +24,7 @@ class SessionConfigTest extends TestCase
 
         $path = $config->getSavePath();
 
-        self::assertContains(http_build_query([
+        self::assertStringContainsString(http_build_query([
             'prefix' => 'a_sess:'
         ]), $path);
     }
@@ -36,7 +36,7 @@ class SessionConfigTest extends TestCase
 
         $path = $config->getSavePath();
 
-        self::assertContains(http_build_query([
+        self::assertStringContainsString(http_build_query([
             'database' => 2
         ]), $path);
     }

@@ -25,7 +25,6 @@ class ArraySubset extends Constraint
 
     public function __construct(iterable $subset, bool $strict = false, float $delta = null)
     {
-        parent::__construct();
         $this->delta = $delta;
         $this->strict = $strict;
         $this->subset = $subset;
@@ -38,7 +37,7 @@ class ArraySubset extends Constraint
      */
     public function toString(): string
     {
-        return 'has the subset ' . $this->exporter->export($this->subset);
+        return 'has the subset ' . $this->exporter()->export($this->subset);
     }
 
     /**

@@ -8,7 +8,7 @@ use Test\TestCase;
 
 class MailFactoryTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -47,8 +47,8 @@ BODY
             'name' => 'John Doe',
         ]);
 
-        self::assertContains('<title>This is a test</title>', $mail->getHtmlBody());
-        self::assertContains(
+        self::assertStringContainsString('<title>This is a test</title>', $mail->getHtmlBody());
+        self::assertStringContainsString(
             <<<'HTMLBODY'
 <p>Hello John Doe,</p>
 <p><strong>Note:</strong> This is an automated message.</p>

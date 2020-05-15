@@ -10,7 +10,7 @@ use Test\TestCase;
 
 class AuthControllerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->ormAddResult(User::class, new User([

@@ -41,7 +41,7 @@ class LogHandlerTest extends TestCase
 
         $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exceptionMessage) {
-                self::assertContains($exceptionMessage, $message);
+                self::assertStringContainsString($exceptionMessage, $message);
             });
 
         $handler->handle();
@@ -55,7 +55,7 @@ class LogHandlerTest extends TestCase
 
         $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($code) {
-                self::assertContains((string)$code, $message);
+                self::assertStringContainsString((string)$code, $message);
             });
 
         $handler->handle();
@@ -69,8 +69,8 @@ class LogHandlerTest extends TestCase
 
         $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
-                self::assertContains($exception->getFile(), $message);
-                self::assertContains((string)$exception->getLine(), $message);
+                self::assertStringContainsString($exception->getFile(), $message);
+                self::assertStringContainsString((string)$exception->getLine(), $message);
             });
 
         $handler->handle();
@@ -89,7 +89,7 @@ class LogHandlerTest extends TestCase
         $this->mocks['logger']->shouldReceive('error')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
                 $expected = '/project' . substr($exception->getFile(), strlen($this->app->getBasePath()));
-                self::assertContains($expected, $message);
+                self::assertStringContainsString($expected, $message);
             });
 
         $handler->handle();
@@ -106,9 +106,9 @@ class LogHandlerTest extends TestCase
             ->once()->andReturnUsing(function (string $message) use ($innerException) {
                 $messages = explode('Caused by', $message);
                 self::assertCount(2, $messages);
-                self::assertContains('Inner Exception', $messages[1]);
-                self::assertContains('23', $messages[1]);
-                self::assertContains((string)$innerException->getLine(), $messages[1]);
+                self::assertStringContainsString('Inner Exception', $messages[1]);
+                self::assertStringContainsString('23', $messages[1]);
+                self::assertStringContainsString((string)$innerException->getLine(), $messages[1]);
             });
 
         $handler->handle();

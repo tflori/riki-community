@@ -27,7 +27,7 @@ class ErrorControllerTest extends TestCase
 
         $body = $errorController->unexpectedError()->getBody()->getContents();
 
-        self::assertContains('Unexpected Error', $body);
+        self::assertStringContainsString('Unexpected Error', $body);
     }
 
     /** @test */
@@ -81,8 +81,8 @@ class ErrorControllerTest extends TestCase
 
         $body = $errorController->notFound()->getBody()->getContents();
 
-        self::assertContains('File Not Found', $body);
-        self::assertContains('/any/path', $body);
+        self::assertStringContainsString('File Not Found', $body);
+        self::assertStringContainsString('/any/path', $body);
     }
 
     /** @test */
@@ -102,8 +102,8 @@ class ErrorControllerTest extends TestCase
 
         $body = $errorController->methodNotAllowed(['GET'])->getBody()->getContents();
 
-        self::assertContains('Method Not Allowed', $body);
-        self::assertContains('/any/path', $body);
-        self::assertContains('GET', $body);
+        self::assertStringContainsString('Method Not Allowed', $body);
+        self::assertStringContainsString('/any/path', $body);
+        self::assertStringContainsString('GET', $body);
     }
 }

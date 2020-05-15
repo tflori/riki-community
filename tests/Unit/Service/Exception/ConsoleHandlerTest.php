@@ -43,7 +43,7 @@ class ConsoleHandlerTest extends TestCase
         
         $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exceptionMessage) {
-                self::assertContains($exceptionMessage, $message);
+                self::assertStringContainsString($exceptionMessage, $message);
             });
 
         $handler->handle();
@@ -57,7 +57,7 @@ class ConsoleHandlerTest extends TestCase
 
         $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($code) {
-                self::assertContains((string)$code, $message);
+                self::assertStringContainsString((string)$code, $message);
             });
 
         $handler->handle();
@@ -71,8 +71,8 @@ class ConsoleHandlerTest extends TestCase
 
         $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
-                self::assertContains($exception->getFile(), $message);
-                self::assertContains((string)$exception->getLine(), $message);
+                self::assertStringContainsString($exception->getFile(), $message);
+                self::assertStringContainsString((string)$exception->getLine(), $message);
             });
 
         $handler->handle();
@@ -91,7 +91,7 @@ class ConsoleHandlerTest extends TestCase
         $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
             ->once()->andReturnUsing(function (string $message) use ($exception) {
                 $expected = '/project' . substr($exception->getFile(), strlen($this->app->getBasePath()));
-                self::assertContains($expected, $message);
+                self::assertStringContainsString($expected, $message);
             });
 
         $handler->handle();
@@ -108,9 +108,9 @@ class ConsoleHandlerTest extends TestCase
             ->once()->andReturnUsing(function (string $message) use ($innerException) {
                 $messages = explode('Caused by', $message);
                 self::assertCount(2, $messages);
-                self::assertContains('Inner Exception', $messages[1]);
-                self::assertContains('23', $messages[1]);
-                self::assertContains((string)$innerException->getLine(), $messages[1]);
+                self::assertStringContainsString('Inner Exception', $messages[1]);
+                self::assertStringContainsString('23', $messages[1]);
+                self::assertStringContainsString((string)$innerException->getLine(), $messages[1]);
             });
 
         $handler->handle();
@@ -153,20 +153,20 @@ class ConsoleHandlerTest extends TestCase
 
         $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'), Console::WEIGHT_NORMAL)
             ->once()->andReturnUsing(function (string $message) {
-                self::assertContains('{closure}', $message);
+                self::assertStringContainsString('{closure}', $message);
                 self::assertSame(1, preg_match(
                     '~\{closure\}\((.*)\)~',
                     $this->mocks['console']->format($message), // strip formatting
                     $match
                 ));
                 $args = $match[1];
-                self::assertContains('array', $args);
-                self::assertContains('"a too long string wi…"', $args);
-                self::assertContains('"App\Http\Router\MiddlewareRouteCollector"', $args);
-                self::assertContains('23', $args);
-                self::assertContains('0.42', $args);
-                self::assertContains('false', $args);
-                self::assertContains(static::class, $args);
+                self::assertStringContainsString('array', $args);
+                self::assertStringContainsString('"a too long string wi…"', $args);
+                self::assertStringContainsString('"App\Http\Router\MiddlewareRouteCollector"', $args);
+                self::assertStringContainsString('23', $args);
+                self::assertStringContainsString('0.42', $args);
+                self::assertStringContainsString('false', $args);
+                self::assertStringContainsString(static::class, $args);
             });
 
         $handler->handle();

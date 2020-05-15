@@ -23,7 +23,7 @@ class ApplicationTest extends MockeryTestCase
         $this->systemFacade = m::mock(SystemFacade::class)->shouldIgnoreMissing();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Application::app()->destroy();

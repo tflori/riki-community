@@ -11,7 +11,7 @@ class IndexTest extends TestCase
     {
         $result = $this->get('/home');
 
-        self::assertContains('<header', (string)$result->getBody());
-        self::assertContains('<footer', (string)$result->getBody());
+        self::assertStringContainsString('<header', (string)$result->getBody());
+        self::assertStringContainsString('<footer', (string)$result->getBody());
     }
 }

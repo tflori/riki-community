@@ -103,7 +103,7 @@ class CacheTest extends TestCase
 
         $result = $this->start('config:cache', '--clear');
 
-        self::assertFileNotExists($cachePath);
+        self::assertFileDoesNotExist($cachePath);
         self::assertEquals('Configuration cache cleared successfully!', trim($result['output']));
         self::assertSame(0, $result['returnVar']);
     }

@@ -15,7 +15,7 @@ use Test\TestCase;
 
 class ResendActivationTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->ormAllowInsert(ActivationCode::class, [

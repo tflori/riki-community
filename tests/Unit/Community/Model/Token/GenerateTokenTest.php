@@ -61,7 +61,7 @@ class GenerateTokenTest extends TestCase
         for ($i = 0; $i < 10; $i++) {
             $token = ActivationCode::generateToken();
 
-            self::assertNotContains($char, $token);
+            self::assertStringNotContainsString($char, $token);
         }
     }
 

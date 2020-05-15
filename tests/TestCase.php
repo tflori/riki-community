@@ -40,13 +40,13 @@ abstract class TestCase extends MockeryTestCase
     /** @var string */
     protected $basePath;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->initApplication(realpath(__DIR__ . '/..'));
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Application::app()->destroy();

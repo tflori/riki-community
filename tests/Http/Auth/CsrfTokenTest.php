@@ -12,6 +12,6 @@ class CsrfTokenTest extends TestCase
         $response = $this->get('/auth/token');
 
         self::assertJson($response->getBody());
-        self::assertInternalType('string', json_decode($response->getBody()));
+        self::assertIsString(json_decode($response->getBody()));
     }
 }

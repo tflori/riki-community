@@ -18,7 +18,7 @@ class ActivateByTokenTest extends TestCase
         $response = $controller->activateByToken($request, 'foobar123');
 
         self::assertSame(400, $response->getStatusCode());
-        self::assertContains('Invalid activation token', (string)$response->getBody());
+        self::assertStringContainsString('Invalid activation token', (string)$response->getBody());
     }
 
     /** @test */
@@ -74,6 +74,6 @@ class ActivateByTokenTest extends TestCase
         $response = $controller->activateByToken($request, 'foobar123');
 
         self::assertSame(400, $response->getStatusCode());
-        self::assertContains('Account disabled', (string)$response->getBody());
+        self::assertStringContainsString('Account disabled', (string)$response->getBody());
     }
 }

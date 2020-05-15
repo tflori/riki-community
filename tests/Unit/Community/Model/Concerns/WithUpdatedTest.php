@@ -40,7 +40,7 @@ class WithUpdatedTest extends TestCase
 
         $user->setUpdated();
 
-        self::assertEquals(microtime(true), (double)$user->updated->format('U.u'), '', 0.01);
+        self::assertEqualsWithDelta(microtime(true), (double)$user->updated->format('U.u'), 0.01);
     }
 
     /** @test */

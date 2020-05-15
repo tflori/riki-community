@@ -14,7 +14,7 @@ use Mockery as m;
 
 class StatusTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mocks['breyta'] = m::mock(Migrations::class);

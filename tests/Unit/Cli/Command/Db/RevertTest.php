@@ -11,7 +11,7 @@ use Mockery as m;
 
 class RevertTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mocks['breyta'] = m::mock(Migrations::class);

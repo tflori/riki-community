@@ -39,7 +39,7 @@ class WithCreatedTest extends TestCase
 
         $user->setCreated();
 
-        self::assertEquals(microtime(true), (double)$user->created->format('U.u'), '', 0.01);
+        self::assertEqualsWithDelta(microtime(true), (double)$user->created->format('U.u'), 0.01);
     }
 
     /** @test */
