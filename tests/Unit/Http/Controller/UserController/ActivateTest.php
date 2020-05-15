@@ -23,21 +23,6 @@ class ActivateTest extends TestCase
     }
 
     /** @test */
-    public function requiresVerifiedCsrfToken()
-    {
-        $this->signIn(['accountStatus' => User::PENDING]);
-        $request = (new Request('POST', '/user/activate', ['Accept' => 'application/json']));
-        $controller = new UserController($this->app, $request);
-
-        $response = $controller->activate($request);
-
-        self::assertSame(400, $response->getStatusCode());
-        self::assertArraySubset([
-            'message' => 'Invalid request token'
-        ], json_decode($response->getBody(), true));
-    }
-
-    /** @test */
     public function failsWithInvalidToken()
     {
         $this->signIn(['accountStatus' => User::PENDING]);

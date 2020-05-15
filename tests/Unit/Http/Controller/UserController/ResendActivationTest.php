@@ -38,26 +38,10 @@ class ResendActivationTest extends TestCase
     }
 
     /** @test */
-    public function requiresVerifiedCsrfToken()
-    {
-        $this->signIn(['accountStatus' => User::PENDING]);
-        $request = (new Request('GET', '/user/resendActivation', ['Accept' => 'application/json']));
-        $controller = new UserController($this->app, $request);
-
-        $response = $controller->resendActivation($request);
-
-        self::assertSame(400, $response->getStatusCode());
-        self::assertArraySubset([
-            'message' => 'Invalid request token'
-        ], json_decode($response->getBody(), true));
-    }
-
-    /** @test */
     public function requiresStatusPending()
     {
         $this->signIn(['accountStatus' => User::DISABLED]);
-        $request = (new Request('GET', '/user/resendActivation', ['Accept' => 'application/json']))
-            ->withAttribute('csrfTokenVerified', true);
+        $request = (new Request('GET', '/user/resendActivation', ['Accept' => 'application/json']));
         $controller = new UserController($this->app, $request);
 
         $response = $controller->resendActivation($request);

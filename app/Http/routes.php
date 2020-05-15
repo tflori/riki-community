@@ -20,9 +20,14 @@ $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
 
 $r->post('/registration', 'register@UserController');
-$r->post('/user/activate', 'activate@UserController');
-$r->addRoute(['GET', 'POST'], '/user/resendActivation', 'resendActivation@UserController');
+$r->post('/user/activate', Middleware\VerifiedCsrfToken::class, 'activate@UserController');
 $r->get('/user/activate/{token}', 'activateByToken@UserController');
+$r->addRoute(
+    ['GET', 'POST'],
+    '/user/resendActivation',
+    Middleware\VerifiedCsrfToken::class,
+    'resendActivation@UserController'
+);
 
 $r->get('/auth', 'getUser@AuthController');
 $r->get('/auth/token', 'getCsrfToken@AuthController');

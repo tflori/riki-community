@@ -106,10 +106,6 @@ class UserController extends AbstractController
         }
         /** @var User $user */
 
-        if (!$request->getAttribute('csrfTokenVerified')) {
-            return ($this->error(400, 'Bad Request', 'Invalid request token'));
-        }
-
         list(,$data) = $request->validate(['token'], 'json');
         $activationCode = $this->app->entityManager->fetch(ActivationCode::class)
             ->where('user_id', $user->id)
@@ -158,10 +154,6 @@ class UserController extends AbstractController
             return $this->error(401, 'Unauthorized', 'This service requires authorization');
         }
         /** @var User $user */
-
-        if (!$request->getAttribute('csrfTokenVerified')) {
-            return ($this->error(400, 'Bad Request', 'Invalid request token'));
-        }
 
         if ($user->accountStatus !== User::PENDING) {
             return $this->error(400, 'Bad Request', 'Account disabled');
