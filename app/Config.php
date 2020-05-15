@@ -7,6 +7,7 @@ use App\Config\SessionConfig;
 use App\Config\SmtpConfig;
 use Monolog\Logger;
 use ORM\DbConfig;
+use ORM\EntityManager;
 use Riki\Config as BaseConfig;
 
 /**
@@ -51,6 +52,13 @@ class Config extends BaseConfig
     public $frontEnd = [
         /** The site key to request a recaptcha token */
         'recaptchaKey' => '',
+    ];
+
+    /** @var array
+     * @see https://tflori.github.io/orm/configuration.html
+     * @note please be reminded that the connection configuration is hardcoded overwritten by $dbConfig */
+    public $emConfig = [
+        EntityManager::OPT_TABLE_NAME_TEMPLATE => '%short%s'
     ];
 
     public function __construct(Environment $environment)
