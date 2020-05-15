@@ -14,7 +14,7 @@ class ViewsFactory extends \App\Factory\ViewsFactory
     {
         $factory = m::mock(Factory::class, [
             new ViewLocator($this->container->environment->resourcePath('views')),
-            new HelperLocator('App\View\Helper'),
+            new HelperLocator('App\View\Helper', [$this->container, 'get']),
             new ViewLocator($this->container->environment->resourcePath('layouts'))
         ])->makePartial();
 

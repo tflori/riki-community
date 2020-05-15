@@ -29,7 +29,7 @@ class RequestHandlerTest extends TestCase
         $handler = new RequestHandler($this->app, ErrorController::class, 'unexpectedError');
         $request = new Request('GET', '/');
 
-        $this->app->shouldReceive('make')->with(ErrorController::class, $this->app, $request)
+        $this->app->shouldReceive('make')->with(ErrorController::class, $request)
             ->once()->passthru();
 
         $handler->handle($request);

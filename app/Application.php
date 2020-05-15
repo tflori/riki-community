@@ -2,11 +2,15 @@
 
 namespace App;
 
+use App\Http\Controller;
 use App\Model\Gate;
 use App\Model\Mail;
 use App\Service\Cache;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
+use App\Service\Url;
+use App\View\Helper;
+use DependencyInjector\Factory\NamespaceFactory;
 use GuzzleHttp\Client;
 use Hugga\Console;
 use Monolog\Logger;
@@ -38,6 +42,7 @@ use Whoops;
  * @method static PDO db()
  * @method static Redis Redis()
  * @method static SessionInstance session()
+ * @method static Url url()
  * @property-read Application $app
  * @property-read Cache $cache
  * @property-read Client $httpClient
@@ -54,6 +59,7 @@ use Whoops;
  * @property-read PDO $db
  * @property-read Redis $redis
  * @property-read SessionInstance $session
+ * @property-read Url $url
  */
 class Application extends \Riki\Application
 {
@@ -78,6 +84,12 @@ class Application extends \Riki\Application
 
         // share some base classes
         $this->share('cssInliner', CssToInlineStyles::class);
+
+        // initialize namespace factories
+        $this->share(Helper::class, (new NamespaceFactory($this, Helper::class))
+            ->addArguments($this));
+        $this->add(Controller::class, (new NamespaceFactory($this, Controller::class))
+            ->addArguments($this));
 
         EntityManager::setResolver(function () {
             return $this->entityManager;

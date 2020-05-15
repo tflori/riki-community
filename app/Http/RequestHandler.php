@@ -60,7 +60,7 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         if ($reflection->isSubclassOf(AbstractController::class)) {
-            $instance = $this->app->make($this->class, $this->app, $request);
+            $instance = $this->app->make($this->class, $request);
         } else {
             $instance = $this->app->make($this->class);
         }

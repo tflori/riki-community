@@ -41,7 +41,7 @@ class ViewsFactoryTest extends TestCase
         $views = $factory->getInstance();
 
         self::assertEquals(
-            new HelperLocator('App\View\Helper'),
+            new HelperLocator('App\View\Helper', [$this->app, 'get']),
             $views->getHelperLocator()
         );
     }
