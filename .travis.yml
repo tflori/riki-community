@@ -28,15 +28,6 @@ jobs:
         - ./cc-test-reporter before-build
 
     - stage: "Test"
-      name: "PHPUnit Tests (PHP 7.2)"
-      php: 7.2
-      install:
-        - composer install --no-interaction
-      script:
-        - vendor/bin/phpunit -c phpunit.xml --color=always
-      after_script: []
-
-    - stage: "Test"
       name: "PHPUnit Tests (PHP 7.3)"
       php: 7.3
       install:
