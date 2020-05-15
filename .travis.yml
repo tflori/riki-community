@@ -36,9 +36,9 @@ jobs:
         - chmod +x ./cc-test-reporter
       script:
         - phpdbg -qrr vendor/bin/phpunit -c phpunit.xml --color=always
-            --coverage-clover=tests/coverage/clover.xml --coverage-text
+            --coverage-clover=storage/logs/php-coverage/clover.xml --coverage-text
       after_script:
-        - ./cc-test-reporter format-coverage tests/coverage/clover.xml -t clover
+        - ./cc-test-reporter format-coverage storage/logs/php-coverage/clover.xml -t clover
           -o ~/$TRAVIS_BUILD_NUMBER/cc.backend.json
         - ls -lAh ~/$TRAVIS_BUILD_NUMBER
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER
@@ -77,7 +77,7 @@ jobs:
       script:
         - npm test -- --color --verbose
       after_script:
-        - ./cc-test-reporter format-coverage tests/coverage/js/lcov.info -t lcov
+        - ./cc-test-reporter format-coverage storage/logs/js-coverage/lcov.info -t lcov
           -o ~/$TRAVIS_BUILD_NUMBER/cc.frontend.json
         - ls -lAh ~/$TRAVIS_BUILD_NUMBER
         - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://tf-coverage-reports/riki-community/$TRAVIS_BUILD_NUMBER

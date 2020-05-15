@@ -64,7 +64,7 @@
       "html",
       "lcov"
     ],
-    "coverageDirectory": "tests/coverage/js",
+    "coverageDirectory": "storage/logs/js-coverage/",
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/tests/"
