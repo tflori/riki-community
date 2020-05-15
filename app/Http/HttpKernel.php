@@ -40,7 +40,7 @@ class HttpKernel extends \App\Kernel
         if (!$request) {
             // During tests we don't create a request object from super globals
             // @codeCoverageIgnoreStart
-            $request = Request::fromGlobals($this->app);
+            $request = Request::fromGlobals();
             // @codeCoverageIgnoreEnd
         }
 
