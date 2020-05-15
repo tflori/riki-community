@@ -2,8 +2,6 @@
 
 namespace App\Config;
 
-use App\Environment;
-
 class SessionConfig extends RedisConfig
 {
     /** @var string */
@@ -11,11 +9,15 @@ class SessionConfig extends RedisConfig
 
     /** @var array */
     public $cookie = [
-        'lifetime'    => 604800, // one week in seconds
+        'lifetime' => 604800, // one week in seconds
+        'path'     => '/',
+        'domain'   => null,
+        'secure'   => true,
+        'httponly' => true,
     ];
 
     public function __construct(
-        Environment $environment,
+        array $cookieOptions,
         string $name,
         string $host,
         int $port = 6379,
@@ -23,7 +25,7 @@ class SessionConfig extends RedisConfig
     ) {
         $prefix = $name . ':';
         $this->name = $name;
-        $this->cookie = array_merge($this->cookie, $environment->cookieOptions());
+        $this->cookie = array_merge($this->cookie, $cookieOptions);
         parent::__construct($host, $port, $dbNumber, $prefix);
     }
 

@@ -33,6 +33,9 @@ class Config extends BaseConfig
     /** @var RedisConfig */
     public $cacheConfig;
 
+    /** @var string */
+    public $fallbackUrl;
+
     public $email = [
         'headers' => [
             'From' => ['riki@w00tserver.org' => 'ríki community'],
@@ -46,7 +49,7 @@ class Config extends BaseConfig
         ],
     ];
 
-    /** The secret to verify recaptcha tokens */
+    /** @var string The secret to verify recaptcha tokens */
     public $recaptchaSecret = '';
 
     public $frontEnd = [
@@ -65,6 +68,7 @@ class Config extends BaseConfig
     {
         parent::__construct($environment);
         $this->logLevel = Logger::toMonologLevel($this->env('LOG_LEVEL', $this->logLevel));
+        $this->fallbackUrl = $this->env('FALLBACK_URL', 'http://localhost');
 
         $this->dbConfig = new DbConfig(
             'pgsql',
@@ -84,7 +88,7 @@ class Config extends BaseConfig
         );
 
         $this->sessionConfig = new SessionConfig(
-            $this->environment,
+            ['secure' => substr($this->fallbackUrl, 0, 5) === 'https'],
             $this->env('SESSION_NAME', 'riki_session'),
             $this->env('SESSION_HOST', 'redis'),
             $this->env('SESSION_PORT', 6379),
