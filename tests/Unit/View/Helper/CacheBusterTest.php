@@ -10,7 +10,7 @@ class CacheBusterTest extends TestCase
     /** @test */
     public function appendsMd5ToAFileInPublicPath()
     {
-        $cacheBuster = new CacheBuster();
+        $cacheBuster = new CacheBuster($this->app);
         $md5 = md5_file($this->mocks['environment']->publicPath('/favicon.ico'));
 
         $uri = $cacheBuster('/favicon.ico');
@@ -21,7 +21,7 @@ class CacheBusterTest extends TestCase
     /** @test */
     public function returnsThePathWithoutCacheBuster()
     {
-        $cacheBuster = new CacheBuster();
+        $cacheBuster = new CacheBuster($this->app);
 
         $uri = $cacheBuster('/any/filePath');
 

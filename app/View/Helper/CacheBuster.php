@@ -3,7 +3,6 @@
 namespace App\View\Helper;
 
 use App\Application;
-use Syna\ViewHelper\AbstractViewHelper;
 
 class CacheBuster extends AbstractViewHelper
 {
