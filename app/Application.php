@@ -2,14 +2,13 @@
 
 namespace App;
 
-use App\Http\Controller;
 use App\Model\Gate;
 use App\Model\Mail;
+use App\Model\Request;
 use App\Service\Cache;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
 use App\Service\Url;
-use App\View\Helper;
 use DependencyInjector\Factory\NamespaceFactory;
 use GuzzleHttp\Client;
 use Hugga\Console;
@@ -40,7 +39,8 @@ use Whoops;
  * @method static Mail mail(string $name, array $data = [])
  * @method static Mailer mailer()
  * @method static PDO db()
- * @method static Redis Redis()
+ * @method static Redis redis()
+ * @method static Request request()
  * @method static SessionInstance session()
  * @method static Url url()
  * @property-read Application $app
@@ -58,6 +58,7 @@ use Whoops;
  * @property-read Mailer $mailer
  * @property-read PDO $db
  * @property-read Redis $redis
+ * @property-read Request $request
  * @property-read SessionInstance $session
  * @property-read Url $url
  */
@@ -86,10 +87,15 @@ class Application extends \Riki\Application
         $this->share('cssInliner', CssToInlineStyles::class);
 
         // initialize namespace factories
-        $this->share(Helper::class, (new NamespaceFactory($this, Helper::class))
-            ->addArguments($this));
-        $this->add(Controller::class, (new NamespaceFactory($this, Controller::class))
-            ->addArguments($this));
+        $controllerFactory = new NamespaceFactory($this->app, Http\Controller::class);
+        $controllerFactory->addArguments($this->app);
+        $this->app->addPatternFactory($controllerFactory);
+        $middlewareFactory = new NamespaceFactory($this->app, Http\Middleware::class);
+        $middlewareFactory->addArguments($this->app);
+        $this->app->addPatternFactory($middlewareFactory);
+        $helperFactory = new NamespaceFactory($this->app, View\Helper::class);
+        $helperFactory->addArguments($this->app)->share();
+        $this->app->addPatternFactory($helperFactory);
 
         EntityManager::setResolver(function () {
             return $this->entityManager;

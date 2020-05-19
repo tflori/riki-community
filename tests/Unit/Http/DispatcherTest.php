@@ -16,10 +16,21 @@ use Mockery as m;
 
 class DispatcherTest extends TestCase
 {
+    /** @var m\MockInterface|HttpKernel */
+    protected $httpKernel;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->httpKernel = m::mock(HttpKernel::class)->makePartial();
+        $this->httpKernel->__construct($this->app);
+    }
+
     /** @test */
     public function throwsWhenCalledOnEmptyQueue()
     {
-        $dispatcher = new Dispatcher([], [new HttpKernel($this->app), 'getHandler']);
+        $dispatcher = new Dispatcher([], [$this->httpKernel, 'getHandler']);
 
         self::expectException(\LogicException::class);
         self::expectExceptionMessage('Queue is empty');
@@ -32,7 +43,7 @@ class DispatcherTest extends TestCase
     {
         $middleware = m::mock(MiddlewareInterface::class);
         $requestHandler = m::mock(RequestHandlerInterface::class);
-        $httpKernel = m::mock(HttpKernel::class);
+        $httpKernel = $this->httpKernel;
         $request = new Request('GET', '/');
         $response = new ServerResponse();
 
@@ -57,7 +68,7 @@ class DispatcherTest extends TestCase
     /** @test */
     public function resolvesHandlerWithResolver()
     {
-        $httpKernel = m::mock(HttpKernel::class);
+        $httpKernel = $this->httpKernel;
         $handler = new RequestHandler($this->app, ErrorController::class, 'unexpectedError');
 
         $dispatcher = new Dispatcher([
@@ -77,7 +88,7 @@ class DispatcherTest extends TestCase
             return new ServerResponse(333);
         });
 
-        $dispatcher = new Dispatcher([$spy], [new HttpKernel($this->app), 'getHandler']);
+        $dispatcher = new Dispatcher([$spy], [$this->httpKernel, 'getHandler']);
 
         $dispatcher->handle($request = new Request('GET', '/'));
 
