@@ -275,19 +275,54 @@ class RequestTest extends TestCase
             'REMOTE_ADDR' => '172.19.0.9',
         ]));
 
-        self::assertSame('172.19.0.9', $request->getIp());
+        $ip = $request->getIp();
+
+        self::assertSame('172.19.0.9', $ip);
+    }
+
+    /** @dataProvider provideIpHeaders
+     * @test */
+    public function getIpReturnsTheRealIpByDefault(array $header, string $remoteAddr, string $expected)
+    {
+        $request = (new Request('GET', '/any/path', $header, null, '1.1', [
+            'REMOTE_ADDR' => $remoteAddr,
+        ]));
+
+        $ip = $request->getIp();
+
+        self::assertSame($expected, $ip);
+    }
+
+    public function provideIpHeaders()
+    {
+        return [
+            [['X-Real-Ip' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
+            [['X-Forwarded-For' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
+            [[ // prefers x-real-ip
+                'X-Forwarded-For' => '23.0.4.2',
+                'X-Real-Ip' => '8.8.8.8',
+            ], '10.0.0.1', '8.8.8.8'],
+            [[ // uses the last entry
+                'X-Forwarded-For' => '23.0.4.2, 8.8.8.8',
+            ], '10.0.0.1', '8.8.8.8'],
+        ];
     }
 
     /** @test */
-    public function getIpReturnsTheRealIpByDefault()
+    public function getIpReturnsTheRemoteAddrWhenProxyIsUntrusted()
     {
-        $request = (new Request('GET', '/any/path', [
-            'X-Real-Ip' => '8.8.8.8'
+        /** @var Request|m\MockInterface $request */
+        $request = m::mock(Request::class)->makePartial();
+        $request->__construct('GET', '/any/path', [
+            'X-Forwarded-For' => '23.0.4.2'
         ], null, '1.1', [
-            'REMOTE_ADDR' => '172.19.0.9',
-        ]));
+            'REMOTE_ADDR' => '8.8.8.8',
+        ]);
+        $request->shouldReceive('isTrustedForward')->once()->andReturnFalse();
 
-        self::assertSame('8.8.8.8', $request->getIp());
+        $ip = $request->getIp();
+
+        self::assertSame('8.8.8.8', $ip);
     }
 
     /** @test */
@@ -330,5 +365,106 @@ class RequestTest extends TestCase
             'foo' => 'bar',
             'answer' => 42,
         ], $request->get());
+    }
+
+    /** @test */
+    public function getProtocolReturnsTheProtocolTheClientUsed()
+    {
+        // by default (on cli) it is http
+        $request = new Request('GET', '/any/path');
+
+        $protocol = $request->getProtocol();
+
+        self::assertSame('http', $protocol);
+    }
+
+    /** @test */
+    public function getProtocolReadsServerParamHttps()
+    {
+        $request = new Request('GET', '/any/path', [], null, '1.1', ['HTTPS' => 'on']);
+
+        $protocol = $request->getProtocol();
+
+        self::assertSame('https', $protocol);
+    }
+
+    /** @test */
+    public function getProtocolAcceptsXForwardedProtoForTrustedProxies()
+    {
+        /** @var m\MockInterface|Request $request */
+        $request = m::mock(Request::class)->makePartial();
+        $request->__construct('GET', '/any/path', ['X-Forwarded-Proto' => 'foobar']);
+        $request->shouldReceive('isTrustedForward')->once()->andReturn(true);
+
+        $protocol = $request->getProtocol();
+
+        self::assertSame('foobar', $protocol);
+    }
+
+    /** @test */
+    public function getProtocolOffMeansNoSsl()
+    {
+        $request = new Request('GET', '/any/path', [], null, '1.1', ['HTTPS' => 'off']);
+
+        $protocol = $request->getProtocol();
+
+        self::assertSame('http', $protocol);
+    }
+
+    /** @test */
+    public function isTrustedForwardIsTrueWhenTrustedProxiesIsNull()
+    {
+        $this->app->config->trustedProxies = null;
+        $request = new Request('GET', '/any/path');
+
+        $trusted = $request->isTrustedForward();
+
+        self::assertTrue($trusted);
+    }
+
+    /** @test */
+    public function isTrustedForwardIsFalseWhenNoProxiesAreTrusted()
+    {
+        $this->app->config->trustedProxies = [];
+        $request = new Request('GET', '/any/path');
+
+        $trusted = $request->isTrustedForward();
+
+        self::assertFalse($trusted);
+    }
+
+    /** @test */
+    public function isTrustedForwardIsTrueWhenTheRemoteAddrMatches()
+    {
+        $this->app->config->trustedProxies = ['127.0.0.1'];
+        $request = new Request('GET', '/any/path', [], null, '1.1', ['REMOTE_ADDR' => '127.0.0.1']);
+
+        $trusted = $request->isTrustedForward();
+
+        self::assertTrue($trusted);
+    }
+
+    /** @test */
+    public function isTrustedForwardIsTrueWhenTheRemoteAddrMatchesAnyRange()
+    {
+        $this->app->config->trustedProxies = ['127.0.0.1', '10.23.42.0/24'];
+        $request = new Request('GET', '/any/path', [], null, '1.1', ['REMOTE_ADDR' => '10.23.42.1']);
+
+        $trusted = $request->isTrustedForward();
+
+        self::assertTrue($trusted);
+    }
+
+    /** @test */
+    public function isSslSecuredIsTrueWhenTheProtocolIsHttps()
+    {
+        /** @var m\MockInterface|Request $request */
+        $request = m::mock(Request::class)->makePartial();
+        $request->__construct('GET', '/any/path');
+        $request->shouldReceive('getProtocol')->once()->andReturn('https');
+
+        $secured = $request->isSslSecured();
+
+        self::assertTrue($secured);
     }
 }

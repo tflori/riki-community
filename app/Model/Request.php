@@ -4,12 +4,15 @@ namespace App\Model;
 
 use App\Application;
 use App\Exception\InvalidJsonBody;
+use App\Service\IpHelper;
 use App\Service\ValidatorMessages;
 use InvalidArgumentException;
 use Tal\ServerRequest;
 
 class Request extends ServerRequest
 {
+    const REAL_IP_HEADER = ['X-Real-Ip', 'X-Forwarded-For'];
+
     /** @var array */
     protected $input;
 
@@ -26,22 +29,109 @@ class Request extends ServerRequest
     }
 
     /**
-     * Get the most precise IP from the request
+     * Get the IP of the client
      *
-     * The $trustedHeaders are checked in order.
+     * If we run behind a reversed proxy make sure to set the TRUSTED_PROXIES variable accordingly.
      *
-     * @param array $trustedHeaders
+     * Returns the x-real-ip and x-forwarded-for header when the proxy is trusted.
+     *
      * @return string
      */
-    public function getIp(array $trustedHeaders = ['X-Real-Ip']): string
+    public function getIp(): string
     {
-        foreach ($trustedHeaders as $header) {
+        $remoteAddr = $this->serverParams['REMOTE_ADDR'] ?? '127.0.0.1';
+
+        if (!$this->isTrustedForward()) {
+            return $remoteAddr;
+        }
+
+        foreach (static::REAL_IP_HEADER as $header) {
             if ($this->hasHeader($header)) {
-                return $this->getHeader($header)[0];
+                $forwardedFor = array_reverse(array_map('trim', explode(',', $this->getHeader($header)[0])));
+                return $forwardedFor[0];
             }
         }
 
-        return $this->serverParams['REMOTE_ADDR'] ?? '127.0.0.1';
+        return $remoteAddr;
+    }
+
+    /**
+     * Get the currently used protocol
+     *
+     * If we run behind a reversed proxy make sure to set the TRUSTED_PROXIES variable accordingly.
+     *
+     * Returns the x-forwarded-proto header when the proxy is trusted.
+     *
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        // any non empty value means it is using https except the value 'off'
+        $currentProtocol = ($this->serverParams['HTTPS'] ?? 'off') !== 'off' ? 'https' : 'http';
+
+        if (!$this->isTrustedForward()) {
+            return $currentProtocol;
+        }
+
+        if ($this->hasHeader('X-Forwarded-Proto')) {
+            return $this->getHeader('X-Forwarded-Proto')[0];
+        }
+
+        return $currentProtocol;
+    }
+
+    /**
+     * Check if the proxy is a trusted proxy.
+     *
+     * Returns whether or not the direct client ip ($_SERVER['REMOTE_ADDR']) matches against on of the defined proxies
+     * in $config->trustedProxies. If this setting is null (default) it means every ip is trusted. This is very
+     * dangerous on a production environment where the http server is not behind a firewall and available only
+     * through the revers proxy. However we are not running on a production environment where this is not the case
+     * but we have to keep this in mind.
+     *
+     * $config->trustedProxies is an array of ip addresses, address ranges or a partial reg ex pattern.
+     *
+     * Examples:
+     * ```php
+     * $config->trustedProxies = [
+     *     '192.168.0.1', // ipv4 of our reverse proxy (only one proxy)
+     *     '42.42.42.64/28', // ipv4 subnet (the proxy comes from this subnet)
+     *     '42.42.42.\d+', // ipv4 reg ex matching any ip from a /24 subnet
+     *     'fe80::/64', // link local ipv6 range
+     *     'fe80:(:|(0:)+)+[0-9a-f:]+', // unsure if this works - ipv6 reg ex patterns are horrible
+     * ];
+     *```
+     *
+     * @return bool
+     */
+    public function isTrustedForward(): bool
+    {
+        $config = Application::config();
+        if (is_null($config->trustedProxies)) {
+            return true;
+        }
+
+        /** @var IpHelper $ipHelper */
+        $ipHelper = Application::app()->make(IpHelper::class);
+        foreach ($config->trustedProxies as $ipRange) {
+            if ($ipHelper->isInRange($this->serverParams['REMOTE_ADDR'] ?? '127.0.0.1', $ipRange)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Was the request an ssl secured request
+     *
+     * You might want to return an error response when the request was not secured via ssl.
+     *
+     * @return bool
+     */
+    public function isSslSecured(): bool
+    {
+        return $this->getProtocol() === 'https';
     }
 
     /**
