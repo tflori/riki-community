@@ -5,6 +5,7 @@ namespace App;
 use App\Config\RedisConfig;
 use App\Config\SessionConfig;
 use App\Config\SmtpConfig;
+use App\Service\IpHelper;
 use Monolog\Logger;
 use ORM\DbConfig;
 use ORM\EntityManager;
@@ -57,6 +58,14 @@ class Config extends BaseConfig
         'recaptchaKey' => '',
     ];
 
+    /** A list of ip address ranges, ip addresses and regular expressions  where we trust forward headers
+     *
+     * null = we trust every forward header
+     * [] = we never trust forward headers
+     * @var null|array
+     * @see IpHelper::isInRange() */
+    public $trustedProxies = null;
+
     /** @var array
      * @see https://tflori.github.io/orm/configuration.html
      * @note please be reminded that the connection configuration is hardcoded overwritten by $dbConfig */
@@ -104,5 +113,7 @@ class Config extends BaseConfig
 
         $this->recaptchaSecret = $this->env('RECAPTCHA_SECRET', '');
         $this->frontEnd['recaptchaKey'] = $this->env('RECAPTCHA_KEY', '');
+
+        $this->trustedProxies = $this->env('TRUSTED_PROXIES');
     }
 }
