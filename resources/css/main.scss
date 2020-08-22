@@ -83,6 +83,15 @@ nav {
 .sidenav {
     top: 64px;
     width: 248px;
+    height: calc(100% - 64px);
+    padding: 40px 0 0;
+
+    .toggles {
+        padding: calc(40px - 0.5rem) 0 0.5rem;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
 
     .dark & {
         background-color: #333;
@@ -538,12 +547,24 @@ header ul {
         max-height: 90%;
         top: 5% !important;
     }
+
+    .sidenav .toggles {
+        position: static;
+    }
 }
 
 @media only screen and (max-height: 400px) {
     .modal {
         max-height: 100%;
         top: 0 !important;
+    }
+
+    .sidenav {
+        padding: 20px 0 0;
+
+        .toggles {
+            padding: calc(20px - 0.5rem) 0 0.5rem
+        }
     }
 }
 
@@ -611,6 +632,7 @@ header ul {
 
     .sidenav {
         top: 56px;
+        height: calc(100% - 56px);
     }
 
     nav .icon-text {
