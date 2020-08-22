@@ -15,13 +15,13 @@
       </div>
       <div class="row">
         <div class="input-field col s12 m6">
-          <input id="signup-password" ref="password" type="password"
+          <input id="signup-password" ref="password" type="password" autocomplete="new-password"
                  v-model="password" v-bind:class="{invalid: errors.password}"/>
           <label for="signup-password">Password</label>
           <span v-for="error in errors.password" class="helper-text red-text">{{error}}</span>
         </div>
         <div class="input-field col s12 m6">
-          <input id="signup-password-confirmation" type="password"
+          <input id="signup-password-confirmation" type="password" autocomplete="new-password"
                  v-model="passwordConfirmation"/>
           <label for="signup-password-confirmation">Confirmation</label>
         </div>

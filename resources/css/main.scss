@@ -481,6 +481,12 @@ header ul {
 .modal {
     background-color: rgba(lighten($baseBackground, 10%), 0.98);
 
+    &.open {
+        position: fixed;
+        top: 50% !important;
+        transform: translatey(-50%) !important;
+    }
+
     .dark & {
         background-color: rgba(lighten($darkBackground, 10%), 0.98);
     }

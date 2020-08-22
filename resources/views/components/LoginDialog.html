@@ -7,14 +7,15 @@
     <form class="col s12 l8 offset-l2" @submit.prevent="authenticate">
       <div class="row">
         <div class="input-field col s12">
-          <input id="login-email" name="email" ref="email" type="email" v-model="email"/>
+          <input id="login-email" name="email" ref="email" autocomplete="username"
+                 type="email" v-model="email"/>
           <label for="login-email">eMail Address</label>
         </div>
         <div class="input-field col s12">
           <a class="btn-flat suffix" @click.prevent="showPassword = !showPassword">
             <i class="material-icons">{{showPassword ? 'visibility' : 'visibility_off'}}</i>
           </a>
-          <input id="login-password" name="password" ref="password"
+          <input id="login-password" name="password" ref="password" autocomplete="current-password"
                  :type="showPassword ? 'text' : 'password'" v-model="password"/>
           <label for="login-password">Password</label>
         </div>
