@@ -83,6 +83,18 @@ nav {
 .sidenav {
     top: 64px;
     width: 248px;
+
+    .dark & {
+        background-color: #333;
+
+        li>a {
+            color: darken($darkForeground, 10%);
+
+            >i {
+                color: darken($darkForeground, 10%);
+            }
+        }
+    }
 }
 
 .tabs {
@@ -93,6 +105,21 @@ nav {
     .indicator {
         background-color: #00897b;
     }
+}
+
+.btn.btn-icon {
+    line-height: 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    padding: 0;
+    text-align: center;
+}
+
+hr {
+    border-style: solid;
+    border-color: #9e9e9e;
+    border-width: 1px 0 0;
 }
 
 label.label-icon.right {

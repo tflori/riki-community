@@ -23,10 +23,19 @@ export default class App extends Vue {
     private recaptchaLoaded!: Promise<void>;
 
     public data() {
+        if (!localStorage.darkmodeEnabled) {
+            localStorage.darkmodeEnabled = true;
+        }
+
         return {
             user: null,
-            darkmodeEnabled: true,
+            darkmodeEnabled: JSON.parse(localStorage.darkmodeEnabled),
         };
+    }
+
+    public toggleDarkMode() {
+        this.$data.darkmodeEnabled = !this.$data.darkmodeEnabled;
+        localStorage.darkmodeEnabled = this.$data.darkmodeEnabled;
     }
 
     /**

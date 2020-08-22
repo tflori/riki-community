@@ -78,6 +78,12 @@ use App\Application;
         <li><a href="/guide"><i class="material-icons">toc</i> Guide</a></li>
         <li><a href="/docs"><i class="material-icons">library_books</i> Documentation</a></li>
         <li><a href="/exchange"><i class="material-icons">question_answer</i> Exchange</a></li>
+        <li>
+          <hr style="margin-top: 40px; width: 80%">
+          <div class="center-align">
+            <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkmodeEnabled, 'grey': !darkmodeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
+          </div>
+        </li>
       </ul>
 
       <!-- Content -->
@@ -101,6 +107,10 @@ use App\Application;
                 <li><a href="/docs"><i class="material-icons">library_books</i> Documentation</a></li>
                 <li><a href="/exchange"><i class="material-icons">question_answer</i> Exchange</a></li>
               </ul>
+              <hr style="margin-top: 40px; width: 80%">
+              <div class="center-align">
+                <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkmodeEnabled, 'grey': !darkmodeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
+              </div>
             </div>
           </aside>
 
