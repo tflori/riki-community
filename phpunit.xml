@@ -30,4 +30,7 @@
             </exclude>
         </whitelist>
     </filter>
+    <php>
+        <env name="TRUSTED_PROXIES" value="null"/>
+    </php>
 </phpunit>

@@ -156,13 +156,14 @@ label.label-icon.right {
     width: 100%;
     max-width: 1280px;
     position: absolute;
+    padding-bottom: 68px;
 
     #left-col-wrapper {
         margin-right: calc(75% + 1.5rem);
     }
 
     .nav {
-        margin-top: 24px;
+        margin: 24px 0;
     }
 
     .nav li {
@@ -188,6 +189,12 @@ label.label-icon.right {
         line-height: 48px;
         margin: 0 32px 0 0;
         width: 24px;
+    }
+
+    .toggles {
+        position: fixed;
+        bottom: 0;
+        width: calc(min(1280px, 100%) / 4 - 1.5rem);
     }
 }
 

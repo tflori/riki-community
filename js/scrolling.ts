@@ -7,7 +7,7 @@ jQuery(function ($) {
     function createScrollAnimator(): ScrollAnimator {
         // get sizes
         $navBar.show();
-        let heightOfLargeHeader = $body.height() || 0;
+        let heightOfLargeHeader = $header.height() || 0;
         let heightOfSmallHeader = $navBar.height() || 0;
         let headerAnimationEnd = heightOfLargeHeader - heightOfSmallHeader;
         let iconRatio = ($logoIcon.width() || 1) / ($headerIcon.width() || 1);
@@ -57,8 +57,28 @@ jQuery(function ($) {
 
                         $leftNav.css('top', '88px');
                         // @ts-ignore
-                        let space = $parent.offset().top + $parent.height() - $leftNav.offset().top - $leftNav.height();
+                        let space = $parent.offset().top + $parent.height() - $leftNav.offset().top - $leftNav.outerHeight();
                         return space < 0 ? 88 + space : 88;
+                    }, true),
+                ],
+            }),
+            new ScrollAnimation($toggles, 'bottom', {
+                from: 0,
+                to: 0,
+                before: '',
+                suffix: 'px',
+                steps: [
+                    new CalculatedStep((scrollTop) => {
+                        let leftNavEnd: number = (<{top: number}>$leftNav.offset()).top +
+                            <number>$leftNav.outerHeight();
+                        let bottomFromBody: number = window.innerHeight + scrollTop;
+                        let posUnderMenu: number = bottomFromBody - leftNavEnd;
+                        if (posUnderMenu < 0) {
+                            return posUnderMenu;
+                        }
+
+                        let topOfFooter: number = bottomFromBody - (<{top: number}>$footer.offset()).top;
+                        return Math.max(topOfFooter + 40, 8);
                     }, true),
                 ],
             }),
@@ -195,7 +215,7 @@ jQuery(function ($) {
     }
 
     // get the elements
-    let $body = $('#riki-community > header');
+    let $header = $('#riki-community > header');
     let $navBar = $('.navbar-fixed');
     let $headerIcon = $('#header-background-icon');
     let $headerModules = $('#header-background-modules');
@@ -205,8 +225,9 @@ jQuery(function ($) {
     let $logoName = $('#logo-name');
     let $logoSubtitle = $('#logo-subtitle');
     let $leftNav = $('#left-col');
+    let $toggles = $leftNav.find('.toggles');
     let $fixedNav = $('div.navbar-fixed');
-    let $header = $('body header');
+    let $footer = $('footer.page-footer');
 
     let scrollAnimator: ScrollAnimator | undefined;
     $(window).on('resize', () => {
