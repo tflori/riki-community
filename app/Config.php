@@ -114,6 +114,6 @@ class Config extends BaseConfig
         $this->recaptchaSecret = $this->env('RECAPTCHA_SECRET', '');
         $this->frontEnd['recaptchaKey'] = $this->env('RECAPTCHA_KEY', '');
 
-        $this->trustedProxies = $this->env('TRUSTED_PROXIES');
+        $this->trustedProxies = (array)$this->env('TRUSTED_PROXIES');
     }
 }

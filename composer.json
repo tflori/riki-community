@@ -3,6 +3,7 @@
   "description":  "",
   "type":         "project",
   "license":      "proprietary",
+  "minimum-stability": "RC",
   "require":      {
     "erusev/parsedown":                  "^1.7",
     "ext-bcmath":                        "*",
@@ -25,8 +26,8 @@
     "tflori/breyta":                     "^1.0.0",
     "tflori/hugga":                      "1.0.0",
     "tflori/nb-sessions":                "^1.1",
-    "tflori/orm":                        "dev-emResolver",
-    "tflori/riki-framework":             "1.0.0-rc.3",
+    "tflori/orm":                        "dev-feature-observers",
+    "tflori/riki-framework":             "1.0.0-rc.4",
     "tflori/secure-token":               "^1.0",
     "tflori/syna":                       "1.0.0-rc.1",
     "tflori/tal":                        "^1.0.1",

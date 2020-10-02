@@ -83,11 +83,8 @@ class Request extends ServerRequest
     /**
      * Check if the proxy is a trusted proxy.
      *
-     * Returns whether or not the direct client ip ($_SERVER['REMOTE_ADDR']) matches against on of the defined proxies
-     * in $config->trustedProxies. If this setting is null (default) it means every ip is trusted. This is very
-     * dangerous on a production environment where the http server is not behind a firewall and available only
-     * through the revers proxy. However we are not running on a production environment where this is not the case
-     * but we have to keep this in mind.
+     * Returns whether or not the direct client ip ($_SERVER['REMOTE_ADDR']) matches against one of the defined proxies
+     * in $config->trustedProxies.
      *
      * $config->trustedProxies is an array of ip addresses, address ranges or a partial reg ex pattern.
      *
@@ -98,7 +95,7 @@ class Request extends ServerRequest
      *     '42.42.42.64/28', // ipv4 subnet (the proxy comes from this subnet)
      *     '42.42.42.\d+', // ipv4 reg ex matching any ip from a /24 subnet
      *     'fe80::/64', // link local ipv6 range
-     *     'fe80:(:|(0:)+)+[0-9a-f:]+', // unsure if this works - ipv6 reg ex patterns are horrible
+     *     'fe80:(:|(0:)+)+[0-9a-f:]+', // unsure if this works - ipv6 reg ex patterns are terrible
      * ];
      *```
      *
@@ -107,8 +104,8 @@ class Request extends ServerRequest
     public function isTrustedForward(): bool
     {
         $config = Application::config();
-        if (is_null($config->trustedProxies)) {
-            return true;
+        if (empty($config->trustedProxies)) {
+            return false;
         }
 
         /** @var IpHelper $ipHelper */

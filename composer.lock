@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48f6aba1315e68c799041f832673f372",
+    "content-hash": "8b4050a1318db375e74928fe3060736d",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1548,77 +1548,6 @@
             "time": "2020-03-27T16:56:45+00:00"
         },
         {
-            "name": "symfony/dotenv",
-            "version": "v4.4.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/dotenv.git",
-                "reference": "a78e698cfb8aca8ef6814639eb5ffc17180a4326"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/a78e698cfb8aca8ef6814639eb5ffc17180a4326",
-                "reference": "a78e698cfb8aca8ef6814639eb5ffc17180a4326",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3"
-            },
-            "require-dev": {
-                "symfony/process": "^3.4.2|^4.0|^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Dotenv\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Registers environment variables from a .env file",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "dotenv",
-                "env",
-                "environment"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2020-03-27T16:54:36+00:00"
-        },
-        {
             "name": "symfony/polyfill-intl-idn",
             "version": "v1.17.0",
             "source": {
@@ -2365,6 +2294,44 @@
             "time": "2020-05-10T21:17:54+00:00"
         },
         {
+            "name": "tflori/envparser",
+            "version": "v1.0.0-rc.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tflori/envparser.git",
+                "reference": "0a047d0fb99c68ac730ea004d31942baa90bfcb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tflori/envparser/zipball/0a047d0fb99c68ac730ea004d31942baa90bfcb8",
+                "reference": "0a047d0fb99c68ac730ea004d31942baa90bfcb8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "1.3.*",
+                "phpunit/phpunit": "^7.5",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "bin": [
+                "testEnv"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EnvParser\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "time": "2020-08-28T11:19:34+00:00"
+        },
+        {
             "name": "tflori/hugga",
             "version": "v1.0.0",
             "source": {
@@ -2444,16 +2411,16 @@
         },
         {
             "name": "tflori/orm",
-            "version": "dev-emResolver",
+            "version": "dev-feature-observers",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "34fa2a9ea3171125efc29d303a650b2fc29d7137"
+                "reference": "f10c7a7058d99f39845db8f59939d57240f103ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/34fa2a9ea3171125efc29d303a650b2fc29d7137",
-                "reference": "34fa2a9ea3171125efc29d303a650b2fc29d7137",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/f10c7a7058d99f39845db8f59939d57240f103ec",
+                "reference": "f10c7a7058d99f39845db8f59939d57240f103ec",
                 "shasum": ""
             },
             "require": {
@@ -2481,26 +2448,26 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2020-05-14T19:30:52+00:00"
+            "time": "2020-09-29T20:19:36+00:00"
         },
         {
             "name": "tflori/riki-framework",
-            "version": "v1.0.0-rc.3",
+            "version": "v1.0.0-rc.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/riki-framework.git",
-                "reference": "7cfd045f4146cd0701fd67521d12d96186aeb428"
+                "reference": "d2d88906fc6f83273758d9dba9dadf32ad72e874"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/7cfd045f4146cd0701fd67521d12d96186aeb428",
-                "reference": "7cfd045f4146cd0701fd67521d12d96186aeb428",
+                "url": "https://api.github.com/repos/tflori/riki-framework/zipball/d2d88906fc6f83273758d9dba9dadf32ad72e874",
+                "reference": "d2d88906fc6f83273758d9dba9dadf32ad72e874",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1",
-                "symfony/dotenv": "^4.1",
-                "tflori/dependency-injector": "^2.1"
+                "tflori/dependency-injector": "^2.1",
+                "tflori/envparser": "1.0.0-rc.3"
             },
             "require-dev": {
                 "mockery/mockery": "^1.1",
@@ -2524,7 +2491,7 @@
                 }
             ],
             "description": "A minimalistic framework to connect different libraries within your application.",
-            "time": "2019-06-10T06:15:50+00:00"
+            "time": "2020-08-28T13:20:18+00:00"
         },
         {
             "name": "tflori/secure-token",
@@ -3790,6 +3757,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-05-06T09:56:31+00:00"
         },
         {
@@ -4624,6 +4592,77 @@
             "time": "2020-04-17T01:09:41+00:00"
         },
         {
+            "name": "symfony/dotenv",
+            "version": "v4.4.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/dotenv.git",
+                "reference": "a78e698cfb8aca8ef6814639eb5ffc17180a4326"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/a78e698cfb8aca8ef6814639eb5ffc17180a4326",
+                "reference": "a78e698cfb8aca8ef6814639eb5ffc17180a4326",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "symfony/process": "^3.4.2|^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Dotenv\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Registers environment variables from a .env file",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "dotenv",
+                "env",
+                "environment"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-03-27T16:54:36+00:00"
+        },
+        {
             "name": "symfony/polyfill-ctype",
             "version": "v1.17.0",
             "source": {
@@ -4848,7 +4887,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "RC",
     "stability-flags": {
         "tflori/dependency-injector": 10,
         "tflori/orm": 20,
