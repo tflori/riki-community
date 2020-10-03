@@ -27,7 +27,7 @@
     "tflori/hugga":                      "1.0.0",
     "tflori/nb-sessions":                "^1.1",
     "tflori/orm":                        "dev-feature-observers",
-    "tflori/riki-framework":             "1.0.0-rc.4",
+    "tflori/riki-framework":             "1.0.0-rc.5",
     "tflori/secure-token":               "^1.0",
     "tflori/syna":                       "1.0.0-rc.1",
     "tflori/tal":                        "^1.0.1",
