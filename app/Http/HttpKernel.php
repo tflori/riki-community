@@ -143,7 +143,7 @@ class HttpKernel extends \App\Kernel
             return [$handler];
         } else {
             return [function ($exception = null) {
-                $request = ($this->app->request)
+                $request = ($this->app->request ?? Request::fromGlobals())
                     ->withAttribute('arguments', ['exception' => $exception]);
                 /** @var ErrorController $errorController */
                 $errorController = $this->getHandler([ErrorController::class, 'unexpectedError']);
@@ -174,7 +174,7 @@ class HttpKernel extends \App\Kernel
      */
     public static function currentRequest(): ?Request
     {
-        return self::$requests[count(self::$requests) - 1] ?? Request::fromGlobals();
+        return self::$requests[count(self::$requests) - 1] ?? null;
     }
 
     /** Add the request to our stack */

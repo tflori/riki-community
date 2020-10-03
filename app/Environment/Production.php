@@ -11,9 +11,4 @@ use App\Environment;
  */
 class Production extends Environment
 {
-    protected function isSslSecured()
-    {
-        return ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http') === 'https' ||
-            ($_SERVER['HTTPS'] ?? 'off') !== 'off';
-    }
 }

@@ -59,29 +59,4 @@ class Environment extends \Riki\Environment
         array_unshift($path, $this->getBasePath());
         return implode(DIRECTORY_SEPARATOR, $path);
     }
-
-    public function url(string ...$path): string
-    {
-        array_unshift(
-            $path,
-            ($this->isSslSecured() ? 'https' : 'http') . '://' .
-            ($_SERVER['HTTP_HOST'] ?? 'localhost')
-        );
-        return implode('/', $path);
-    }
-
-    public function cookieOptions()
-    {
-        return [
-            'path'     => '/',
-            'domain'   => null,
-            'secure'   => $this->isSslSecured(),
-            'httponly' => true,
-        ];
-    }
-
-    protected function isSslSecured()
-    {
-        return false;
-    }
 }

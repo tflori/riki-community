@@ -75,7 +75,7 @@ class UserController extends AbstractController
 
         $this->app->mailer->send(a::mail('user/registration', [
             'user' => $user,
-            'activationLink' => $this->app->environment->url('user/activate', $activationToken->token),
+            'activationLink' => $this->app->url->absolute('user/activate/' . $activationToken->token),
             'activationCode' => $activationCode->token,
         ])->addTo($user->email));
 
@@ -164,7 +164,7 @@ class UserController extends AbstractController
 
         $this->app->mailer->send(a::mail('user/resendActivation', [
             'user' => $user,
-            'activationLink' => $this->app->environment->url('user/activate', $activationToken->token),
+            'activationLink' => $this->app->url->absolute('user/activate/' . $activationToken->token),
             'activationCode' => $activationCode->token,
         ])->addTo($user->email));
 

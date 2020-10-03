@@ -15,6 +15,6 @@ class CacheBuster extends AbstractViewHelper
         }
 
         $md5 = md5_file($filePath);
-        return $path . '?_=' . substr($md5, 0, 10);
+        return $this->app->url->local($path, ['_' => substr($md5, 0, 10)]);
     }
 }
