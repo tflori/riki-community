@@ -282,8 +282,10 @@ class RequestTest extends TestCase
 
     /** @dataProvider provideIpHeaders
      * @test */
-    public function getIpReturnsTheRealIpByDefault(array $header, string $remoteAddr, string $expected)
+    public function getIpReturnsTheRealIpWhenProxyIsTrusted(array $header, string $remoteAddr, string $expected)
     {
+        $config = $this->app->config;
+        $config->trustedProxies = [$remoteAddr];
         $request = (new Request('GET', '/any/path', $header, null, '1.1', [
             'REMOTE_ADDR' => $remoteAddr,
         ]));
@@ -296,13 +298,13 @@ class RequestTest extends TestCase
     public function provideIpHeaders()
     {
         return [
-            [['X-Real-Ip' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
-            [['X-Forwarded-For' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
-            [[ // prefers x-real-ip
+            'X-Real-Ip' => [['X-Real-Ip' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
+            'X-Forwarded-For' => [['X-Forwarded-For' => '8.8.8.8'], '10.0.0.1', '8.8.8.8'],
+            'precedence' => [[ // prefers x-real-ip
                 'X-Forwarded-For' => '23.0.4.2',
                 'X-Real-Ip' => '8.8.8.8',
             ], '10.0.0.1', '8.8.8.8'],
-            [[ // uses the last entry
+            'last-entry' => [[ // uses the last entry
                 'X-Forwarded-For' => '23.0.4.2, 8.8.8.8',
             ], '10.0.0.1', '8.8.8.8'],
         ];
@@ -409,17 +411,6 @@ class RequestTest extends TestCase
         $protocol = $request->getProtocol();
 
         self::assertSame('http', $protocol);
-    }
-
-    /** @test */
-    public function isTrustedForwardIsTrueWhenTrustedProxiesIsNull()
-    {
-        $this->app->config->trustedProxies = null;
-        $request = new Request('GET', '/any/path');
-
-        $trusted = $request->isTrustedForward();
-
-        self::assertTrue($trusted);
     }
 
     /** @test */

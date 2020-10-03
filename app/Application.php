@@ -97,11 +97,10 @@ class Application extends \Riki\Application
         $helperFactory->addArguments($this->app)->share();
         $this->app->addPatternFactory($helperFactory);
 
+        // initialize entity manager
         EntityManager::setResolver(function () {
             return $this->entityManager;
         });
-        $this->alias('entityManager', 'em');
-        $this->alias('entityManager', EntityManager::class);
     }
 
     protected function initWhoops()
