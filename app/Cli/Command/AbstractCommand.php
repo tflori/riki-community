@@ -3,12 +3,15 @@
 namespace App\Cli\Command;
 
 use App\Application;
+use App\Cli\Concerns\WritesToConsole;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use Hugga\Console;
 
 abstract class AbstractCommand extends Command
 {
+    use WritesToConsole;
+
     /** @var string */
     protected $description = '';
 

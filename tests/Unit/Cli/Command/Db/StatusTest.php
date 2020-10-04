@@ -47,7 +47,7 @@ class StatusTest extends TestCase
                 'executed' => new \DateTime('-1 hour'),
                 'execution_time' => 0.23
             ])));
-        $this->mocks['console']->shouldReceive('info')->with('No migrations need to be applied.')
+        $this->mocks['console']->shouldReceive('info')->with('No migrations need to be applied.', m::type('int'))
             ->once();
 
         $command->handle($getOpt);
@@ -64,7 +64,7 @@ class StatusTest extends TestCase
                 'file' => 'any/migration.php',
                 'status' => 'new',
             ])));
-        $this->mocks['console']->shouldReceive('warn')->with('1 migration need to be applied.')
+        $this->mocks['console']->shouldReceive('warn')->with('1 migration need to be applied.', m::type('int'))
             ->once();
 
         $command->handle($getOpt);

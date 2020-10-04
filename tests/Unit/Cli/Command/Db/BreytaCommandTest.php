@@ -53,7 +53,7 @@ class BreytaCommandTest extends TestCase
     {
         $command = new Example($this->app, $this->mocks['console']);
 
-        $this->mocks['console']->shouldReceive('info')->with('No migrations to execute.')
+        $this->mocks['console']->shouldReceive('info')->with('No migrations to execute.', m::type('int'))
             ->once();
 
         $task = (object) [
@@ -70,7 +70,7 @@ class BreytaCommandTest extends TestCase
         $command = new Example($this->app, $this->mocks['console']);
         $command->start((object)['task' => 'migrate', 'count' => 3]);
 
-        $this->mocks['console']->shouldReceive('line')->with(m::type('string'))
+        $this->mocks['console']->shouldReceive('line')->with(m::type('string'), m::type('int'))
             ->once()->andReturnUsing(function ($text) {
                 self::assertSame(
                     'Applying any/filename.php...',
@@ -167,7 +167,7 @@ class BreytaCommandTest extends TestCase
         $command->start((object)['task' => 'migrate', 'count' => 3]);
         $command->beforeMigration($migration);
 
-        $this->mocks['console']->shouldReceive('line')->with(m::type('string'))
+        $this->mocks['console']->shouldReceive('line')->with(m::type('string'), m::type('int'))
             ->once()->andReturnUsing(function ($text) {
                 self::assertSame(
                     '... done (2.3 seconds)',

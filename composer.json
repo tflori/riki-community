@@ -11,6 +11,8 @@
     "ext-mbstring":                      "*",
     "ext-pdo":                           "*",
     "ext-redis":                         "*",
+    "ext-pcntl":                         "*",
+    "ext-posix":                         "*",
     "filp/whoops":                       "^2.7",
     "monolog/monolog":                   "^1.9",
     "nesbot/carbon":                     "^2.16",
@@ -43,7 +45,8 @@
   "autoload":     {
     "psr-4": {
       "App\\":       "app",
-      "Community\\": "src"
+      "Community\\": "src",
+      "Seeder\\": "resources/database/seeds"
     }
   },
   "require-dev":  {

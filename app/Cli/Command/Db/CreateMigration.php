@@ -29,7 +29,7 @@ class CreateMigration extends BreytaCommand
             $path
         );
 
-        $this->console->info('Created migration ' . $path);
+        $this->info('Created migration ' . $path);
         return 0;
     }
 }

@@ -28,7 +28,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
     public function start(\stdClass $info)
     {
         if ($info->count === 0) {
-            $this->console->info('No migrations to execute.');
+            $this->info('No migrations to execute.');
             return;
         }
 
@@ -40,7 +40,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
 
     public function beforeMigration(Migration $migration)
     {
-        $this->console->line(sprintf(
+        $this->line(sprintf(
             '%s ${b}%s${r}...',
             ucfirst($this->action),
             $migration->file
@@ -79,7 +79,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
 
             // in the fork we start an endless loop
             while (true) {
-                usleep(10 * 1000);
+                usleep(20 * 1000);
                 $this->statementProgress->advance();
             }
             // to be sure we exit the fork (if true is not true...)
@@ -106,7 +106,7 @@ abstract class BreytaCommand extends AbstractCommand implements ProgressInterfac
 
     public function afterMigration(Migration $migration)
     {
-        $this->console->line(sprintf(
+        $this->line(sprintf(
             '... ${green}done${r} (%.6g seconds)',
             $migration->execution_time
         ));
