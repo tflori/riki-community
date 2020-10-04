@@ -64,11 +64,11 @@ class Status extends BreytaCommand
             ])->draw();
         }
 
-        $status->count > 0 ? $this->console->warn(sprintf(
+        $status->count > 0 ? $this->warn(sprintf(
             '%d migration%s need to be applied.',
             $status->count,
             $status->count === 1 ? '' : 's'
-        )) : $this->console->info('No migrations need to be applied.');
+        )) : $this->info('No migrations need to be applied.');
 
         return 0;
     }

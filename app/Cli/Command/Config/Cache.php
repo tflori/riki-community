@@ -28,16 +28,16 @@ class Cache extends AbstractCommand
     public function handle(GetOpt $getOpt): int
     {
         if (!$this->app->environment->canCacheConfig() && !$getOpt->getOption('force')) {
-            $this->console->warn('The environment does not allow to cache the configuration!');
+            $this->warn('The environment does not allow to cache the configuration!');
             return 0;
         }
 
         $cachePath = $this->app->environment->getConfigCachePath();
         if (!file_exists(dirname($cachePath)) && !@mkdir(dirname($cachePath), umask() ^ 0777, true)) {
-            $this->console->error('Could not create parent directory for caching!');
+            $this->error('Could not create parent directory for caching!');
             return 1;
         } elseif (!is_writeable(dirname($cachePath)) || !is_dir(dirname($cachePath))) {
-            $this->console->error('Cache directory is not writeable!');
+            $this->error('Cache directory is not writeable!');
             return 2;
         }
 
@@ -46,24 +46,24 @@ class Cache extends AbstractCommand
             if (file_exists($cachePath) && !@unlink($cachePath)) {
                 // unreachable during tests
                 // @codeCoverageIgnoreStart
-                $this->console->error('Failed to clear the configuration cache!');
+                $this->error('Failed to clear the configuration cache!');
                 return 4;
                 // @codeCoverageIgnoreEnd
             }
 
-            $this->console->info('Configuration cache cleared successfully!');
+            $this->info('Configuration cache cleared successfully!');
         } else {
             // create a fresh configuration (don't use the cached version)
             $config = new Config($this->app->environment);
             if (!@file_put_contents($cachePath, serialize($config))) {
                 // unreachable during tests
                 // @codeCoverageIgnoreStart
-                $this->console->error('Failed to cache the configuration!');
+                $this->error('Failed to cache the configuration!');
                 return 3;
                 // @codeCoverageIgnoreEnd
             }
 
-            $this->console->info('Configuration cache created successfully!');
+            $this->info('Configuration cache created successfully!');
         }
         return 0;
     }
