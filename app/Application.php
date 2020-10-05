@@ -5,6 +5,7 @@ namespace App;
 use App\Model\Gate;
 use App\Model\Mail;
 use App\Model\Request;
+use App\Service\Authorization;
 use App\Service\Cache;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
@@ -25,6 +26,7 @@ use Whoops;
  * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
+ * @method static Authorization auth();
  * @method static Cache cache()
  * @method static Client httpClient()
  * @method static Config config()
@@ -44,6 +46,7 @@ use Whoops;
  * @method static SessionInstance session()
  * @method static Url url()
  * @property-read Application $app
+ * @property-read Authorization $auth
  * @property-read Cache $cache
  * @property-read Client $httpClient
  * @property-read Config $config

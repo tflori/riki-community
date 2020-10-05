@@ -2,8 +2,6 @@
 
 namespace App\Http\Controller;
 
-use App\Http\Middleware\VerifiedCsrfToken;
-use Community\Model\Token\AbstractToken;
 use Community\Model\User;
 use Tal\ServerResponse;
 
@@ -17,8 +15,7 @@ class AuthController extends AbstractController
 
     public function getUser(): ServerResponse
     {
-        $session = $this->app->session;
-        return $this->json($session->get('user'));
+        return $this->json($this->app->auth->user);
     }
 
     public function authenticate(): ServerResponse
@@ -49,19 +46,21 @@ class AuthController extends AbstractController
             return $this->increaseAttempts($key, $authAttempts);
         }
 
-        $this->app->session->set('user', $user);
+        $this->app->auth->setUser($user);
         return $this->json($user);
     }
 
     public function logout()
     {
+        $this->app->auth->reset();
         $this->app->session->destroy();
+
         return $this->json('OK');
     }
 
     public function getCsrfToken(): ServerResponse
     {
-        return $this->json($this->app->get(VerifiedCsrfToken::class)->createToken());
+        return $this->json($this->app->auth->getCsrfToken());
     }
 
     protected function attemptLimitReached(array $limits, array $attempts): bool

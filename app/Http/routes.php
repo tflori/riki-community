@@ -13,6 +13,10 @@
 
 namespace App\Http;
 
+use App\Application;
+use App\Http\Middleware\VerifiedCsrfToken;
+
+/** @var Application $app */
 /** @var Router\MiddlewareRouteCollector $router */
 $r = $router;
 
@@ -20,19 +24,19 @@ $r->get('/', 'getHome@HomeController');
 $r->get('/home', 'getHome@HomeController');
 
 $r->post('/registration', 'register@UserController');
-$r->post('/user/activate', Middleware\VerifiedCsrfToken::class, 'activate@UserController');
 $r->get('/user/activate/{token}', 'activateByToken@UserController');
+$r->post('/user/activate', VerifiedCsrfToken::class, 'activate@UserController');
 $r->addRoute(
     ['GET', 'POST'],
     '/user/resendActivation',
-    Middleware\VerifiedCsrfToken::class,
+    VerifiedCsrfToken::class,
     'resendActivation@UserController'
 );
 
 $r->get('/auth', 'getUser@AuthController');
 $r->get('/auth/token', 'getCsrfToken@AuthController');
 $r->post('/auth', 'authenticate@AuthController');
-$r->delete('/auth', Middleware\VerifiedCsrfToken::class, 'logout@AuthController');
+$r->delete('/auth', VerifiedCsrfToken::class, 'logout@AuthController');
 
 // example routes - comment them out and use as reference
 //$r->addHandler(function (ServerRequest $request, RequestHandlerInterface $next) {
