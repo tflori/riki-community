@@ -12,8 +12,8 @@ use Community\Model\User;
  */
 class Authorization
 {
-    /** @var bool|User */
-    protected $user = false;
+    /** @var User */
+    protected $user;
 
     /** @var Application */
     protected $app;
@@ -33,22 +33,23 @@ class Authorization
         return null;
     }
 
+    /** @codeCoverageIgnore trivial code */
+    public function isAuthenticated()
+    {
+        return $this->getUser() !== null;
+    }
+
     public function getUser(): ?User
     {
-        if ($this->user === false) {
-            $userId = $this->app->session->get('userId');
+        $userId = $this->app->session->get('userId');
+        if (!$userId) {
+            return null;
+        }
 
-            if (!$userId) {
-                return $this->user = null;
-            }
-
-//            $cache = $this->app->cache;
-//            if (!$cache->has('user_' . $userId)) {
-            $this->user = $this->app->entityManager->fetch(User::class, $userId);
-//                $cache->set('user_' . $userId, $this->user, 3600);
-//            } else {
-//                $user = $cache->get('user_' . $userId);
-//            }
+        if (!$this->user) {
+            $this->user = $this->app->cache->remember('user-' . $userId, function () use ($userId) {
+                return $this->app->entityManager->fetch(User::class, $userId);
+            }, 3600);
         }
 
         return $this->user;

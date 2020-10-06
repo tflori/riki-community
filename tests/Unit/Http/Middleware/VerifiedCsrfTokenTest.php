@@ -2,8 +2,6 @@
 
 namespace Test\Unit\Http\Middleware;
 
-use App\Http\Controller\AuthController;
-use App\Http\HttpKernel;
 use App\Http\Middleware\VerifiedCsrfToken;
 use App\Http\RequestHandler;
 use App\Model\Request;
@@ -16,8 +14,9 @@ class VerifiedCsrfTokenTest extends TestCase
     /** @test */
     public function executesTheHandlerWithValidToken()
     {
+        $auth = $this->app->auth;
         $middleware = new VerifiedCsrfToken($this->app);
-        $token = $middleware->createToken();
+        $token = $auth->getCsrfToken();
         $request = (new Request('GET', '/any'))
             ->withQueryParams(['csrf_token' => $token]);
 
@@ -31,8 +30,9 @@ class VerifiedCsrfTokenTest extends TestCase
     /** @test */
     public function verifiesPreviouslyCreatedToken()
     {
+        $auth = $this->app->auth;
         $middleware = new VerifiedCsrfToken($this->app);
-        $token = $middleware->createToken();
+        $token = $auth->getCsrfToken();
         $request = (new Request('GET', '/any'))
             ->withQueryParams(['csrf_token' => $token]);
 
@@ -41,7 +41,7 @@ class VerifiedCsrfTokenTest extends TestCase
             ->once()->andReturn(new ServerResponse());
 
         // create a second token in the meantime
-        $middleware->createToken();
+        $auth->getCsrfToken();
 
         $middleware->process($request, $requestHandler);
     }
@@ -49,8 +49,9 @@ class VerifiedCsrfTokenTest extends TestCase
     /** @test */
     public function tokensAreInvalidAfterUsage()
     {
+        $auth = $this->app->auth;
         $middleware = new VerifiedCsrfToken($this->app);
-        $token = $middleware->createToken();
+        $token = $auth->getCsrfToken();
         $request = (new Request('GET', '/any'))
             ->withQueryParams(['csrf_token' => $token]);
 

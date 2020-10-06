@@ -19,6 +19,7 @@ use Nette\Mail\Message;
 use ORM\EntityManager;
 use ORM\MockTrait;
 use ORM\Testing\EntityFetcherMock\ResultRepository;
+use ORM\Testing\EntityManagerMock;
 use ReflectionClass;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Test\Extension\ArraySubsetAssert;
@@ -31,7 +32,7 @@ abstract class TestCase extends MockeryTestCase
     /** @var Application|m\Mock */
     protected $app;
 
-    /** @var EntityManager|m\Mock */
+    /** @var EntityManager|EntityManagerMock|m\Mock */
     protected $em;
 
     /** @var m\Mock[] */

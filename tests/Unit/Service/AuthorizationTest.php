@@ -21,4 +21,19 @@ class AuthorizationTest extends TestCase
 
         self::assertSame($user, $result);
     }
+
+    /** @test */
+    public function getsTheUserFromCache()
+    {
+        $user = new User();
+        $this->em->addEntity($user);
+        $this->app->session->set('userId', $user->id);
+        $this->app->cache->set('user-' . $user->id, $user);
+
+        $this->mocks['entityManager']->shouldNotReceive('fetch');
+
+        $result = $this->app->auth->getUser();
+
+        self::assertEquals($user, $result);
+    }
 }
