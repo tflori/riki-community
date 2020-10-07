@@ -3,6 +3,7 @@
 namespace Test\Unit\Service;
 
 use Community\Model\User;
+use ORM\Event\Updated;
 use Test\TestCase;
 
 class AuthorizationTest extends TestCase
@@ -35,5 +36,17 @@ class AuthorizationTest extends TestCase
         $result = $this->app->auth->getUser();
 
         self::assertEquals($user, $result);
+    }
+
+    /** @test */
+    public function whenUserGetsUpdatedTheCacheWillBeInvalidated()
+    {
+        $user = new User(['email' => 'john.doe@example.com']);
+        $this->em->addEntity($user);
+        $this->app->cache->set('user-' . $user->id, $user);
+
+        $this->em->fire(new Updated($user, ['email' => ['john.doe@example.com', 'jdoe@example.com']]));
+
+        self::assertFalse($this->app->cache->has('user-' . $user->id));
     }
 }

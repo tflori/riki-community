@@ -114,6 +114,8 @@ abstract class TestCase extends MockeryTestCase
 
         $httpClient = $this->mocks['httpClient'] = m::mock(Client::class);
         $this->app->instance('httpClient', $httpClient);
+
+        $this->executedProtectedMethod($this->app, 'initObservers');
     }
 
     /**
@@ -147,6 +149,24 @@ abstract class TestCase extends MockeryTestCase
         $value = $property->getValue($object);
         $property->setAccessible(false);
         return $value;
+    }
+
+    /**
+     * Execute the protected method $method from $object
+     *
+     * @param $object
+     * @param string $method
+     * @param mixed  ...$args
+     * @return mixed
+     */
+    protected function executedProtectedMethod($object, string $method, ...$args)
+    {
+        $class = new ReflectionClass($object);
+        $method = $class->getMethod($method);
+        $method->setAccessible(true);
+        $result = $method->invoke($object, ...$args);
+        $method->setAccessible(false);
+        return $result;
     }
 
     /**
