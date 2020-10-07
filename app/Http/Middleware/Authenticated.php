@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class VerifiedCsrfToken implements MiddlewareInterface
+class Authenticated implements MiddlewareInterface
 {
     use GeneratesResponses;
 
@@ -23,9 +23,9 @@ class VerifiedCsrfToken implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $token = $request->get('csrf_token');
-        if (!$token || !$this->app->auth->isCsrfTokenValid($token)) {
-            return $this->error(400, 'Bad Request', 'Invalid CSRF Token');
+        $user = $this->app->auth->user;
+        if (!$user || $user->accountStatus !== $user::ACTIVATED) {
+            return $this->error(401, 'Unauthorized', 'This service requires authentication');
         }
 
         return $handler->handle($request);

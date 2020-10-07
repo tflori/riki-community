@@ -101,8 +101,9 @@ class UserController extends AbstractController
      */
     public function activate(Request $request): ServerResponse
     {
-        if (!$user = $this->app->session->get('user')) {
-            return $this->error(401, 'Unauthorized', 'This service requires authorization');
+        // This action requires authenticated user that is not activated
+        if (!$user = $this->app->auth->user) {
+            return $this->error(401, 'Unauthorized', 'This service requires authentication');
         }
         /** @var User $user */
 
@@ -150,8 +151,9 @@ class UserController extends AbstractController
 
     public function resendActivation(Request $request)
     {
-        if (!$user = $this->app->session->get('user')) {
-            return $this->error(401, 'Unauthorized', 'This service requires authorization');
+        // This action requires authenticated user that is not activated
+        if (!$user = $this->app->auth->user) {
+            return $this->error(401, 'Unauthorized', 'This service requires authentication');
         }
         /** @var User $user */
 

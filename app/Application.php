@@ -5,16 +5,19 @@ namespace App;
 use App\Model\Gate;
 use App\Model\Mail;
 use App\Model\Request;
+use App\Service\Authorization;
 use App\Service\Cache;
 use App\Service\Exception\LogHandler;
 use App\Service\Mailer;
 use App\Service\Url;
+use Community\Model\User;
 use DependencyInjector\Factory\NamespaceFactory;
 use GuzzleHttp\Client;
 use Hugga\Console;
 use Monolog\Logger;
 use NbSessions\SessionInstance;
 use ORM\EntityManager;
+use ORM\Event\Updated;
 use PDO;
 use Redis;
 use Syna\Factory;
@@ -25,6 +28,7 @@ use Whoops;
  * Application container that holds all instances and provides dependencies.
  *
  * @method static Application app()
+ * @method static Authorization auth();
  * @method static Cache cache()
  * @method static Client httpClient()
  * @method static Config config()
@@ -44,6 +48,7 @@ use Whoops;
  * @method static SessionInstance session()
  * @method static Url url()
  * @property-read Application $app
+ * @property-read Authorization $auth
  * @property-read Cache $cache
  * @property-read Client $httpClient
  * @property-read Config $config
@@ -74,6 +79,7 @@ class Application extends \Riki\Application
 
         // bootstrap the application
         $this->initWhoops();
+        $this->initObservers();
     }
 
     protected function initDependencies()
@@ -100,6 +106,14 @@ class Application extends \Riki\Application
         // initialize entity manager
         EntityManager::setResolver(function () {
             return $this->entityManager;
+        });
+        $this->alias('entityManager', 'em');
+    }
+
+    protected function initObservers()
+    {
+        $this->em->observe(User::class)->on('updated', function (Updated $event) {
+            $this->cache->delete('user-' . $event->entity->id);
         });
     }
 

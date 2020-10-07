@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "378a41b1e895365ea36e9e52239d03eb",
+    "content-hash": "76eb53b525fdc832e3add5caf13ea78f",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2415,12 +2415,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tflori/orm.git",
-                "reference": "f10c7a7058d99f39845db8f59939d57240f103ec"
+                "reference": "6dd24c00fc1133b0a600c03b6571152350a1bf36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tflori/orm/zipball/f10c7a7058d99f39845db8f59939d57240f103ec",
-                "reference": "f10c7a7058d99f39845db8f59939d57240f103ec",
+                "url": "https://api.github.com/repos/tflori/orm/zipball/6dd24c00fc1133b0a600c03b6571152350a1bf36",
+                "reference": "6dd24c00fc1133b0a600c03b6571152350a1bf36",
                 "shasum": ""
             },
             "require": {
@@ -2448,7 +2448,7 @@
                 "MIT"
             ],
             "description": "lightweight object relational mapper",
-            "time": "2020-09-29T20:19:36+00:00"
+            "time": "2020-10-07T05:25:53+00:00"
         },
         {
             "name": "tflori/riki-framework",
@@ -4902,6 +4902,8 @@
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
+        "ext-pcntl": "*",
+        "ext-posix": "*",
         "php": "^7.1"
     },
     "platform-dev": [],

@@ -160,7 +160,7 @@ class HttpKernel extends \App\Kernel
             $dataGenerator = $this->app->make(MiddlewareDataGenerator::class);
             $routeParser = $this->app->make(FastRoute\RouteParser\Std::class);
             $routeCollector = $this->app->make(MiddlewareRouteCollector::class, $routeParser, $dataGenerator);
-            self::collectRoutes($routeCollector);
+            self::collectRoutes($this->app, $routeCollector);
             $this->router = $this->app->make(MiddlewareRouter::class, $routeCollector->getData());
         }
 
@@ -189,7 +189,7 @@ class HttpKernel extends \App\Kernel
         array_pop(self::$requests);
     }
 
-    protected static function collectRoutes(MiddlewareRouteCollector $router)
+    protected static function collectRoutes(Application $app, MiddlewareRouteCollector $router)
     {
         // @todo maybe you want to load different route files or collect them from annotations..
         include __DIR__ . '/routes.php';

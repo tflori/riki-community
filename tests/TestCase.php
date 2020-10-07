@@ -19,6 +19,7 @@ use Nette\Mail\Message;
 use ORM\EntityManager;
 use ORM\MockTrait;
 use ORM\Testing\EntityFetcherMock\ResultRepository;
+use ORM\Testing\EntityManagerMock;
 use ReflectionClass;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Test\Extension\ArraySubsetAssert;
@@ -31,7 +32,7 @@ abstract class TestCase extends MockeryTestCase
     /** @var Application|m\Mock */
     protected $app;
 
-    /** @var EntityManager|m\Mock */
+    /** @var EntityManager|EntityManagerMock|m\Mock */
     protected $em;
 
     /** @var m\Mock[] */
@@ -113,6 +114,8 @@ abstract class TestCase extends MockeryTestCase
 
         $httpClient = $this->mocks['httpClient'] = m::mock(Client::class);
         $this->app->instance('httpClient', $httpClient);
+
+        $this->executedProtectedMethod($this->app, 'initObservers');
     }
 
     /**
@@ -125,7 +128,7 @@ abstract class TestCase extends MockeryTestCase
     protected static function setProtectedProperty($object, string $property, $value)
     {
         /** @noinspection PhpUnhandledExceptionInspection */
-        $property = (new \ReflectionClass($object))->getProperty($property);
+        $property = (new ReflectionClass($object))->getProperty($property);
         $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
@@ -140,7 +143,7 @@ abstract class TestCase extends MockeryTestCase
      */
     protected function getProtectedProperty($object, string $string)
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         $property = $class->getProperty($string);
         $property->setAccessible(true);
         $value = $property->getValue($object);
@@ -149,8 +152,26 @@ abstract class TestCase extends MockeryTestCase
     }
 
     /**
+     * Execute the protected method $method from $object
+     *
+     * @param $object
+     * @param string $method
+     * @param mixed  ...$args
+     * @return mixed
+     */
+    protected function executedProtectedMethod($object, string $method, ...$args)
+    {
+        $class = new ReflectionClass($object);
+        $method = $class->getMethod($method);
+        $method->setAccessible(true);
+        $result = $method->invoke($object, ...$args);
+        $method->setAccessible(false);
+        return $result;
+    }
+
+    /**
      * @param User|array $user
-     * @return User
+     * @return User|m\MockInterface
      */
     protected function signIn($user = null): User
     {
@@ -168,7 +189,7 @@ abstract class TestCase extends MockeryTestCase
             ], $data)));
         }
 
-        $this->app->session->set('user', $user);
+        $this->app->auth->setUser($user);
 
         return $user;
     }
