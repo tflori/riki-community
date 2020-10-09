@@ -30,16 +30,18 @@ abstract class Formatter
 
     protected function replacePath(string $path): string
     {
-        $projectPath = app::config()->env('PROJECT_PATH');
-        if ($projectPath) {
-            $path = preg_replace(
-                '~^' . app::app()->getBasePath() . '~',
-                $projectPath,
-                $path
-            );
+        try {
+            $projectPath = app::config()->env('PROJECT_PATH');
+            if ($projectPath) {
+                $path = preg_replace(
+                    '~^' . app::app()->getBasePath() . '~',
+                    $projectPath,
+                    $path
+                );
+            }
+        } finally {
+            return $path;
         }
-
-        return $path;
     }
 
     protected function generateArgs(array $args): string

@@ -84,7 +84,6 @@ class ConsoleHandlerTest extends TestCase
         $exception = new RuntimeException('Test Exception');
         $handler = $this->prepareHandler($exception);
 
-
         $this->mocks['config']->shouldReceive('env')->with('PROJECT_PATH')
             ->atLeast()->once()->andReturn('/project');
 
@@ -92,6 +91,24 @@ class ConsoleHandlerTest extends TestCase
             ->once()->andReturnUsing(function (string $message) use ($exception) {
                 $expected = '/project' . substr($exception->getFile(), strlen($this->app->getBasePath()));
                 self::assertStringContainsString($expected, $message);
+            });
+
+        $handler->handle();
+    }
+
+    /** @test */
+    public function catchesErrorsThrownInConfig()
+    {
+        $exception = new RuntimeException('Test Exception');
+        $handler = $this->prepareHandler($exception);
+
+        $this->mocks['config']->shouldReceive('env')->with('PROJECT_PATH')
+            ->atLeast()->once()->andThrow(new \Exception('Unable to get env'));
+
+        $this->mocks['console']->shouldReceive('writeError')->with(m::type('string'))
+            ->once()->andReturnUsing(function (string $message) use ($exception) {
+                self::assertStringContainsString($exception->getFile(), $message);
+                self::assertStringContainsString((string)$exception->getLine(), $message);
             });
 
         $handler->handle();
