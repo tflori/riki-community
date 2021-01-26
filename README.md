@@ -1,4 +1,8 @@
-# tflori/riki-community 
+# tflori/riki-community
+
+[![Build Status](https://travis-ci.com/tflori/riki-community.svg?branch=master)](https://travis-ci.com/tflori/riki-community)
+[![Maintainability](https://api.codeclimate.com/v1/badges/14c9aec9c2b0e9860c43/maintainability)](https://codeclimate.com/github/tflori/riki-community/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/14c9aec9c2b0e9860c43/test_coverage)](https://codeclimate.com/github/tflori/riki-community/test_coverage)
 
 Community website for the riki framework. Conceptual ideas at https://github.com/tflori/riki-concepts
 
