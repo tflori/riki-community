@@ -176,7 +176,7 @@ class RegisterTest extends TestCase
     /** @dataProvider provideRequiredFields
      * @param string $field
      * @test */
-    public function requires($field)
+    public function requiresField($field)
     {
         $request = (new Request('POST', '/register', [
             'Content-Type' => 'application/json',
