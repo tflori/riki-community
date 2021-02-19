@@ -28,14 +28,14 @@
     "tflori/breyta":                     "^1.0.0",
     "tflori/hugga":                      "1.0.0",
     "tflori/nb-sessions":                "^1.1",
-    "tflori/orm":                        "dev-feature-observers",
+    "tflori/orm":                        "^v1.9.0-rc.2",
     "tflori/riki-framework":             "1.0.0-rc.7",
     "tflori/secure-token":               "^1.0",
     "tflori/syna":                       "1.0.0-rc.1",
     "tflori/tal":                        "^1.0.1",
     "tflori/verja":                      "^1.1",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
-    "ulrichsg/getopt-php":               "^3.2",
+    "ulrichsg/getopt-php":               "^4.0.0-alpha.1",
     "guzzlehttp/guzzle":                 "^6.4"
   },
   "suggest":      {
