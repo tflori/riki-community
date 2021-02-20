@@ -71,6 +71,8 @@ class User extends Entity implements JsonSerializable
         'account_status' => self::PENDING,
     ];
 
+    protected static $excludedAttributes = ['password'];
+
     public static $bcryptCost = 10;
 
     public function setAccountStatus(string $newStatus)

@@ -28,7 +28,7 @@
     "tflori/breyta":                     "^1.0.0",
     "tflori/hugga":                      "1.0.0",
     "tflori/nb-sessions":                "^1.1",
-    "tflori/orm":                        "^v1.9.0-rc.2",
+    "tflori/orm":                        "^v1.9.0-rc.3",
     "tflori/riki-framework":             "1.0.0-rc.7",
     "tflori/secure-token":               "^1.0",
     "tflori/syna":                       "1.0.0-rc.1",
