@@ -4,6 +4,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
+    "babel-core": "^6.26.3",
     "jquery": "^3.6.0",
     "materialize-css": "^1.0.0",
     "vue": "^2.6.12"
