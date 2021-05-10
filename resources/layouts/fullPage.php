@@ -24,7 +24,7 @@ use App\Application;
     <link rel="stylesheet" href="<?= $v->cacheBuster('/bundle.css'); ?>">
   </head>
   <body>
-    <div id="riki-community" :class="{ dark: darkmodeEnabled }">
+    <div id="riki-community" :class="{ dark: darkModeEnabled }">
 
       <!-- Header -->
       <header>
@@ -81,7 +81,7 @@ use App\Application;
         <li class="toggles">
           <hr style="width: 80%">
           <div class="center-align">
-            <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkmodeEnabled, 'grey': !darkmodeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
+            <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkModeEnabled, 'grey': !darkModeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
           </div>
         </li>
       </ul>
@@ -110,7 +110,7 @@ use App\Application;
               <div class="toggles">
                 <hr style="width: 80%">
                 <div class="center-align">
-                  <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkmodeEnabled, 'grey': !darkmodeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
+                  <a class="btn btn-icon waves-effect waves-light darken-1" :class="{'teal': darkModeEnabled, 'grey': !darkModeEnabled}" @click="toggleDarkMode" title="Dark Mode"><i class="material-icons">bedtime</i></a>
                 </div>
               </div>
             </div>

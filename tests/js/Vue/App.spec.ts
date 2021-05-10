@@ -4,6 +4,7 @@ import App from "@src/Vue/App";
 import ConfirmDialog from "@src/Vue/ConfirmDialog";
 import moxios from "moxios";
 import Vue from 'vue';
+import fn = jest.fn;
 
 describe('App', () => {
     beforeAll(() => {
@@ -188,6 +189,44 @@ describe('App', () => {
                 expect(response).toBe('foo');
                 done();
             });
+        });
+    });
+
+    describe('toggleDarkMode', () => {
+        it('gets initialized with dark mode', () => {
+            window.localStorage.removeItem('darkModeEnabled');
+
+            new App();
+
+            expect(window.localStorage.darkModeEnabled).toBe('true');
+        });
+
+        it('keeps stored status', () => {
+            window.localStorage.darkModeEnabled = false;
+
+            new App();
+
+            expect(window.localStorage.darkModeEnabled).toBe('false');
+        });
+
+        it('changes the dark mode status to false', () => {
+            window.localStorage.removeItem('darkModeEnabled');
+            let app = new App();
+
+            app.toggleDarkMode();
+
+            expect(window.localStorage.darkModeEnabled).toBe('false');
+            expect(app.$data.darkModeEnabled).toBe(false);
+        });
+
+        it('changes the dark mode status to true', () => {
+            window.localStorage.darkModeEnabled = false;
+            let app = new App();
+
+            app.toggleDarkMode();
+
+            expect(window.localStorage.darkModeEnabled).toBe('true');
+            expect(app.$data.darkModeEnabled).toBe(true);
         });
     });
 });
