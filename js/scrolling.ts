@@ -71,33 +71,25 @@ jQuery(function ($) {
     function createIconAnimation(sizes: any): ScrollAnimation[] {
         return [
             new ScrollAnimation($headerIcon, 'left', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerIconPosition.left,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerIconPosition.left,
                 end: sizes.offset + sizes.logoIconPosition.left,
                 easing: new Easing(EasingFx.Quad, EasingDirection.Out),
             }),
             new ScrollAnimation($headerIcon, 'top', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerIconPosition.top,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerIconPosition.top,
                 end: sizes.logoIconPosition.top + sizes.headerAnimationEnd,
                 easing: new Easing(EasingFx.Sine, EasingDirection.In),
             }),
             new ScrollAnimation($headerIcon, 'width', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerIconWidth,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerIconWidth,
                 end: sizes.headerIconWidth * sizes.iconRatio,
             }),
             new ScrollAnimation($headerIcon, 'height', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerIconHeight,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerIconHeight,
                 end: sizes.headerIconHeight * sizes.iconRatio,
             }),
         ];
@@ -106,9 +98,7 @@ jQuery(function ($) {
     function createModulesAnimation(sizes: any): ScrollAnimation[] {
         return [// modules animation
             new ScrollAnimation($headerModules, 'left', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 steps: [
                     new CalculatedStep(() => {
                         // bound to center of icon
@@ -118,9 +108,7 @@ jQuery(function ($) {
                 ],
             }),
             new ScrollAnimation($headerModules, 'top', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 steps: [
                     new CalculatedStep(() => {
                         // bound to center of icon
@@ -130,24 +118,18 @@ jQuery(function ($) {
                 ],
             }),
             new ScrollAnimation($headerModules, 'width', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 start: sizes.headerModulesWidth,
                 end: sizes.headerModulesWidth * sizes.iconRatio,
             }),
             new ScrollAnimation($headerModules, 'height', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 start: sizes.headerModulesHeight,
                 end: sizes.headerModulesHeight * sizes.iconRatio,
             }),
             new ScrollAnimation($headerModules, 'opacity', {
-                from: 0,
-                to: sizes.headerAnimationEnd / 4 * 3,
-                start: 1,
-                end: 0,
+                from: 0, to: sizes.headerAnimationEnd / 4 * 3,
+                start: 1, end: 0,
                 easing: new Easing(EasingFx.Quad, EasingDirection.Out),
             }),
         ];
@@ -156,27 +138,20 @@ jQuery(function ($) {
     function createNameAnimation(sizes: any): ScrollAnimation[] {
         return [// name animation
             new ScrollAnimation($headerName, 'left', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 start: sizes.headerNamePosition.left,
                 end: sizes.offset + sizes.logoNamePosition.left,
                 easing: new Easing(EasingFx.Quad, EasingDirection.Out),
             }),
             new ScrollAnimation($headerName, 'top', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
                 start: sizes.headerNamePosition.top,
                 end: sizes.logoNamePosition.top + sizes.headerAnimationEnd,
                 easing: new Easing(EasingFx.Sine, EasingDirection.In),
             }),
             new ScrollAnimation($headerName, 'width', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: $headerName.width(),
-                end: $logoName.width(),
+                suffix: 'px', from: 0, to: sizes.headerAnimationEnd,
+                start: $headerName.width(), end: $logoName.width(),
             }),
         ];
     }
@@ -184,26 +159,20 @@ jQuery(function ($) {
     function createSubtitleAnimation(sizes: any): ScrollAnimation[] {
         return [// subtitle animation
             new ScrollAnimation($headerSubtitle, 'left', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerSubtitlePosition.left,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerSubtitlePosition.left,
                 end: sizes.showSubtitle ? sizes.offset + sizes.logoSubtitlePosition.left : $(window).width(),
                 easing: new Easing(EasingFx.Sine, EasingDirection.Out),
             }),
             new ScrollAnimation($headerSubtitle, 'top', {
-                from: 0,
-                to: sizes.headerAnimationEnd,
-                suffix: 'px',
-                start: sizes.headerSubtitlePosition.top,
+                from: 0, to: sizes.headerAnimationEnd,
+                suffix: 'px', start: sizes.headerSubtitlePosition.top,
                 end: sizes.logoSubtitlePosition.top + sizes.headerAnimationEnd,
                 // easing: new Easing(EasingFx.Sine, EasingDirection.In),
             }),
             new ScrollAnimation($headerSubtitle, 'opacity', {
-                from: 0,
-                to: sizes.headerAnimationEnd / 4 * 3,
-                start: 1,
-                end: sizes.showSubtitle ? 1 : 0,
+                from: 0, to: sizes.headerAnimationEnd / 4 * 3,
+                start: 1, end: sizes.showSubtitle ? 1 : 0,
                 easing: new Easing(EasingFx.Quad, EasingDirection.Out),
             }),
         ];
