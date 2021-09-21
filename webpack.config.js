@@ -1,4 +1,3 @@
-const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Path = require('path');
@@ -75,7 +74,7 @@ module.exports = {
             },
             {
                 test: /\.ts$/,
-                loader: 'awesome-typescript-loader',
+                loader: 'ts-loader',
             },
             {
                 test: /\.html$/,
@@ -84,7 +83,6 @@ module.exports = {
         ],
     },
     plugins: [
-        new CheckerPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name]',
         }),
